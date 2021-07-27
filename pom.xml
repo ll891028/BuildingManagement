@@ -8,7 +8,7 @@
     <version>4.6.2</version>
 
     <name>BuildingManagement</name>
-    <description>物业管理系统</description>
+    <description>Building Management System</description>
     
     <properties>
         <liulin.version>4.6.2</liulin.version>

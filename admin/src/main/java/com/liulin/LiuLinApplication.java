@@ -16,7 +16,7 @@ public class LiuLinApplication
     {
         // System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(LiuLinApplication.class, args);
-        System.out.println("(♥◠‿◠)ﾉﾞ  物业管理系统启动成功   ლ(´ڡ`ლ)ﾞ  \n");
+        System.out.println("(♥◠‿◠)ﾉﾞ  Building Management System启动成功   ლ(´ڡ`ლ)ﾞ  \n");
 
     }
 }
