@@ -829,7 +829,7 @@ var table = {
             	    shade: 0.3,
             	    title: title,
             	    content: url,
-            	    btn: ['确定', '关闭'],
+            	    btn: ['ok', 'close'],
             	    // 弹层外区域关闭
             	    shadeClose: true,
             	    yes: callback,
@@ -1023,7 +1023,7 @@ var table = {
             	} else {
             	    var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
             	    if (id.length == 0) {
-                        $.modal.alertWarning("请至少选择一条记录");
+                        $.modal.alertWarning("At least select one record");
                         return;
             	    }
             	    url = table.options.detailUrl.replace("{id}", id);
@@ -1033,7 +1033,7 @@ var table = {
             // 删除信息
             remove: function(id) {
             	table.set();
-            	$.modal.confirm("确定删除该条" + table.options.modalName + "信息吗？", function() {
+            	$.modal.confirm("Are you sure to delete this record？", function() {
                     var url = $.common.isEmpty(id) ? table.options.removeUrl : table.options.removeUrl.replace("{id}", id);
                     if(table.options.type == table_type.bootstrapTreeTable) {
                     	$.operate.get(url);
@@ -1048,10 +1048,10 @@ var table = {
             	table.set();
             	var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
             	if (rows.length == 0) {
-            	    $.modal.alertWarning("请至少选择一条记录");
+            	    $.modal.alertWarning("At least select one record");
             	    return;
             	}
-            	$.modal.confirm("确认要删除选中的" + rows.length + "条数据吗?", function() {
+            	$.modal.confirm("Are you sure to delete those " + rows.length + " records?", function() {
             	    var url = table.options.removeUrl;
             	    var data = { "ids": rows.join() };
             	    $.operate.submit(url, "post", "json", data);
@@ -1068,17 +1068,17 @@ var table = {
             // 添加信息
             add: function(id) {
             	table.set();
-            	$.modal.open("添加" + table.options.modalName, $.operate.addUrl(id));
+            	$.modal.open("Add" + table.options.modalName, $.operate.addUrl(id));
             },
             // 添加信息，以tab页展现
             addTab: function (id) {
             	table.set();
-                $.modal.openTab("添加" + table.options.modalName, $.operate.addUrl(id));
+                $.modal.openTab("Edit" + table.options.modalName, $.operate.addUrl(id));
             },
             // 添加信息 全屏
             addFull: function(id) {
             	table.set();
-                $.modal.openFull("添加" + table.options.modalName, $.operate.addUrl(id));
+                $.modal.openFull("Add" + table.options.modalName, $.operate.addUrl(id));
             },
             // 添加访问地址
             addUrl: function(id) {
@@ -1091,13 +1091,13 @@ var table = {
             	if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
             	    var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
             	    if ($.common.isEmpty(row)) {
-            	        $.modal.alertWarning("请至少选择一条记录");
+            	        $.modal.alertWarning("At least select one record");
             	        return;
             	    }
             	    var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-            	    $.modal.open("修改" + table.options.modalName, url);
+            	    $.modal.open("Edit" + table.options.modalName, url);
             	} else {
-            	    $.modal.open("修改" + table.options.modalName, $.operate.editUrl(id));
+            	    $.modal.open("Edit" + table.options.modalName, $.operate.editUrl(id));
             	}
             },
             // 修改信息，以tab页展现
@@ -1115,7 +1115,7 @@ var table = {
             	    if(table.options.type == table_type.bootstrapTreeTable) {
             	        var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
             	        if ($.common.isEmpty(row)) {
-            	            $.modal.alertWarning("请至少选择一条记录");
+            	            $.modal.alertWarning("At least select one record");
             	            return;
             	        }
             	        url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
@@ -1134,7 +1134,7 @@ var table = {
             	} else {
             	    var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
             	    if (id.length == 0) {
-            	        $.modal.alertWarning("请至少选择一条记录");
+            	        $.modal.alertWarning("At least select one record");
             	        return;
             	    }
             	    url = table.options.updateUrl.replace("{id}", id);

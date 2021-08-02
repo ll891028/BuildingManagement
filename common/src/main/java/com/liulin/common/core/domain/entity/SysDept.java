@@ -47,6 +47,76 @@ public class SysDept extends BaseEntity
     /** 父部门名称 */
     private String parentName;
 
+    private String description;
+
+    private String note;
+
+    private String address;
+
+    private String suburb;
+
+    private Integer type;
+
+    private String attachmentIds;
+
+    private String attachmentUrls;
+
+    public String getAttachmentUrls() {
+        return attachmentUrls;
+    }
+
+    public void setAttachmentUrls(String attachmentUrls) {
+        this.attachmentUrls = attachmentUrls;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getSuburb() {
+        return suburb;
+    }
+
+    public void setSuburb(String suburb) {
+        this.suburb = suburb;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getAttachmentIds() {
+        return attachmentIds;
+    }
+
+    public void setAttachmentIds(String attachmentIds) {
+        this.attachmentIds = attachmentIds;
+    }
+
     public Long getDeptId()
     {
         return deptId;

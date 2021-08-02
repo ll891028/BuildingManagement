@@ -232,6 +232,8 @@ public class SysDeptServiceImpl implements ISysDeptService
             // 如果该部门是启用状态，则启用该部门的所有上级部门
             updateParentDeptStatusNormal(dept);
         }
+        //更新附件表
+        // TODO: 2021/8/2  更新附件表
         return result;
     }
 

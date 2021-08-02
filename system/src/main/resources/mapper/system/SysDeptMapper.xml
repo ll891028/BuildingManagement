@@ -20,10 +20,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="createTime" column="create_time" />
 		<result property="updateBy"   column="update_by"   />
 		<result property="updateTime" column="update_time" />
+		<result property="description" column="description" />
+		<result property="note" column="note" />
+		<result property="address" column="address" />
+		<result property="suburb" column="suburb" />
+		<result property="type" column="type" />
+		<result property="attachment_ids" column="attachmentIds" />
 	</resultMap>
 	
 	<sql id="selectDeptVo">
-        select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.create_by, d.create_time 
+        select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status,
+			   d.del_flag, d.create_by, d.create_time,d.description,d.note,d.address,d.suburb,d.type,d.attachment_ids
         from sys_dept d
     </sql>
     
@@ -69,7 +76,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<select id="selectDeptById" parameterType="Long" resultMap="SysDeptResult">
-		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status,
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email,
+			   d.status,d.type,d.description,d.note,d.address,d.suburb,
 			(select dept_name from sys_dept where dept_id = d.parent_id) parent_name
 		from sys_dept d
 		where d.dept_id = #{deptId}
@@ -95,6 +103,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="email != null and email != ''">email,</if>
  			<if test="status != null">status,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			<if test="description != null and description != ''">description,</if>
+ 			<if test="note != null and note != ''">note,</if>
+ 			<if test="address != null and address != ''">address,</if>
+ 			<if test="suburb != null and suburb != ''">suburb,</if>
+ 			<if test="type != null">type,</if>
+ 			<if test="attachmentIds != null">attachment_ids,</if>
  			create_time
  		)values(
  			<if test="deptId != null and deptId != 0">#{deptId},</if>
@@ -107,6 +121,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="email != null and email != ''">#{email},</if>
  			<if test="status != null">#{status},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			<if test="description != null and description != ''">#{description},</if>
+ 			<if test="note != null and note != ''">#{note},</if>
+ 			<if test="address != null and address != ''">#{address},</if>
+ 			<if test="suburb != null and suburb != ''">#{suburb},</if>
+ 			<if test="type != null">#{type},</if>
+ 			<if test="attachmentIds != null">#{attachmentIds},</if>
  			sysdate()
  		)
 	</insert>
@@ -123,6 +143,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="email != null">email = #{email},</if>
  			<if test="status != null and status != ''">status = #{status},</if>
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="description != null and description != ''">description = #{description},</if>
+ 			<if test="note != null and note != ''">note = #{note},</if>
+ 			<if test="address != null and address != ''">address = #{address},</if>
+ 			<if test="type != null">type = #{type},</if>
+ 			<if test="attachmentIds != null ">attachment_ids = #{attachmentIds},</if>
  			update_time = sysdate()
  		</set>
  		where dept_id = #{deptId}
