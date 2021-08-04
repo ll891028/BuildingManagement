@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.AttachmentMapper">
+    
+    <resultMap type="Attachment" id="AttachmentResult">
+        <result property="attachmentId"    column="attachment_id"    />
+        <result property="type"    column="type"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="attachmentUrl"    column="attachment_url"    />
+        <result property="ext"    column="ext"    />
+        <result property="md5"    column="md5"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectAttachmentVo">
+        select attachment_id, type, file_name,attachment_url, ext, md5, create_by, create_time, update_by, update_time
+        from attachment
+    </sql>
+
+    <select id="selectAttachmentList" parameterType="Attachment" resultMap="AttachmentResult">
+        <include refid="selectAttachmentVo"/>
+        <where>  
+            <if test="type != null "> and type = #{type}</if>
+            <if test="attachmentUrl != null  and attachmentUrl != ''"> and attachment_url = #{attachmentUrl}</if>
+            <if test="ext != null  and ext != ''"> and ext = #{ext}</if>
+            <if test="md5 != null  and md5 != ''"> and md5 = #{md5}</if>
+            <if test="attachmentIds!=null">
+                and attachment_id in
+                <foreach collection="attachmentIds" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectAttachmentById" parameterType="Long" resultMap="AttachmentResult">
+        <include refid="selectAttachmentVo"/>
+        where attachment_id = #{attachmentId}
+    </select>
+        
+    <insert id="insertAttachment" parameterType="Attachment" useGeneratedKeys="true" keyProperty="attachmentId">
+        insert into attachment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="type != null">type,</if>
+            <if test="fileName != null and fileName!=''">file_name,</if>
+            <if test="attachmentUrl != null">attachment_url,</if>
+            <if test="ext != null">ext,</if>
+            <if test="md5 != null">md5,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="type != null">#{type},</if>
+            <if test="fileName != null and fileName!=''">#{fileName},</if>
+            <if test="attachmentUrl != null">#{attachmentUrl},</if>
+            <if test="ext != null">#{ext},</if>
+            <if test="md5 != null">#{md5},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+
+    </insert>
+
+    <update id="updateAttachment" parameterType="Attachment">
+        update attachment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="fileName != null and fileName!=''">file_name = #{fileName},</if>
+            <if test="attachmentUrl != null">attachment_url = #{attachmentUrl},</if>
+            <if test="ext != null">ext = #{ext},</if>
+            <if test="md5 != null">md5 = #{md5},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where attachment_id = #{attachmentId}
+    </update>
+
+    <delete id="deleteAttachmentById" parameterType="Long">
+        delete from attachment where attachment_id = #{attachmentId}
+    </delete>
+
+    <delete id="deleteAttachmentByIds" parameterType="String">
+        delete from attachment where attachment_id in 
+        <foreach item="attachmentId" collection="array" open="(" separator="," close=")">
+            #{attachmentId}
+        </foreach>
+    </delete>
+
+    <select id="getAttachmentByMd5" parameterType="String" resultMap="AttachmentResult">
+        select * from attachment where md5=#{md5} limit 1
+    </select>
+
+</mapper>

@@ -1,8 +1,25 @@
 package com.liulin.system.service.impl;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.liulin.common.config.LiulinConfig;
+import com.liulin.common.config.ServerConfig;
+import com.liulin.common.constant.Constants;
+import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.file.FileTypeUtils;
+import com.liulin.common.utils.file.FileUploadUtils;
+import com.liulin.common.utils.security.Md5Utils;
+import com.liulin.system.domain.Attachment;
+import com.liulin.system.mapper.AttachmentMapper;
+import com.liulin.system.service.IAttachmentService;
+import com.liulin.system.service.IBuildingLevelService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +45,15 @@ public class SysDeptServiceImpl implements ISysDeptService
 {
     @Autowired
     private SysDeptMapper deptMapper;
+
+    @Autowired
+    private IAttachmentService attachmentService;
+
+    @Autowired
+    private IBuildingLevelService buildingLevelService;
+
+    @Autowired
+    private ServerConfig serverConfig;
 
     /**
      * 查询部门管理数据
@@ -60,7 +86,7 @@ public class SysDeptServiceImpl implements ISysDeptService
     /**
      * 查询部门管理树（排除下级）
      * 
-     * @param deptId 部门ID
+     * @param dept 部门ID
      * @return 所有部门信息
      */
     @Override
@@ -195,6 +221,7 @@ public class SysDeptServiceImpl implements ISysDeptService
      * @return 结果
      */
     @Override
+    @Transactional
     public int insertDept(SysDept dept)
     {
         SysDept info = deptMapper.selectDeptById(dept.getParentId());
@@ -204,7 +231,48 @@ public class SysDeptServiceImpl implements ISysDeptService
             throw new BusinessException("部门停用，不允许新增");
         }
         dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
-        return deptMapper.insertDept(dept);
+        String[] attachmentUrls = dept.getAttachmentUrls().split(",");
+        String[] originalFileNames = dept.getOriginalFileNames().split(",");
+        String attachmentIds="";
+        if(attachmentUrls!=null && attachmentUrls.length>0){
+            for (int i = 0; i < attachmentUrls.length; i++) {
+                String attachmentUrl = attachmentUrls[i];
+                if(StringUtils.isEmpty(attachmentUrl)){
+                    continue;
+                }
+                Attachment saver = new Attachment();
+                saver.setExt(FilenameUtils.getExtension(attachmentUrl));
+                saver.setAttachmentUrl(attachmentUrl);
+                String prefix = serverConfig.getUrl()+ Constants.RESOURCE_PREFIX+"/upload";
+                File file =
+                        new File(LiulinConfig.getUploadPath()+StringUtils.substringAfter(attachmentUrl,prefix));
+                String md5 = Md5Utils.getMD5ByFile(file);
+                if(md5!=null){
+                    Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(md5);
+                    if(attachmentByMd5!=null){
+                        saver.setAttachmentUrl(attachmentByMd5.getAttachmentUrl());
+                    }
+                    saver.setFileName(originalFileNames[i]);
+                    saver.setMd5(md5);
+                    saver.setCreateBy(dept.getCreateBy());
+                    attachmentService.insertAttachment(saver);
+                    attachmentIds+=saver.getAttachmentId()+",";
+                }else {
+                    throw new RuntimeException("md5计算错误");
+
+                }
+
+            }
+
+        }
+
+        dept.setAttachmentIds(attachmentIds);
+        int result = deptMapper.insertDept(dept);
+        if(dept.getIfGroundFloor()!=null && dept.getLevels()!=null && dept.getBasements()!=null){
+            buildingLevelService.generateDefaultLevel(dept.getDeptId(),dept.getLevels().intValue(),
+                    dept.getIfGroundFloor().intValue(),dept.getBasements(), ShiroUtils.getLoginName());
+        }
+        return result;
     }
 
     /**
@@ -226,15 +294,68 @@ public class SysDeptServiceImpl implements ISysDeptService
             dept.setAncestors(newAncestors);
             updateDeptChildren(dept.getDeptId(), newAncestors, oldAncestors);
         }
+
+        //更新附件表
+        // TODO: 2021/8/2  更新附件
+        String[] attachmentUrls = dept.getAttachmentUrls().split(",");
+        String[] originalFileNames = dept.getOriginalFileNames().split(",");
+        String attachmentIds=oldDept.getAttachmentIds();
+        if(attachmentUrls!=null && attachmentUrls.length>0) {
+            for (int i = 0; i < attachmentUrls.length; i++) {
+                String attachmentUrl = attachmentUrls[i];
+                if(StringUtils.isEmpty(attachmentUrl)){
+                    continue;
+                }
+                Attachment saver = new Attachment();
+                saver.setExt(FilenameUtils.getExtension(attachmentUrl));
+                saver.setAttachmentUrl(attachmentUrl);
+                String prefix = serverConfig.getUrl() + Constants.RESOURCE_PREFIX + "/upload";
+                File file =
+                        new File(LiulinConfig.getUploadPath() + StringUtils.substringAfter(attachmentUrl, prefix));
+                String md5 = Md5Utils.getMD5ByFile(file);
+                if (md5 != null) {
+                    Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(md5);
+                    if (attachmentByMd5 != null) {
+                        saver.setAttachmentUrl(attachmentByMd5.getAttachmentUrl());
+                    }
+                    saver.setFileName(originalFileNames[i]);
+                    saver.setMd5(md5);
+                    saver.setCreateBy(dept.getUpdateBy());
+                    saver.setType(FileTypeUtils.getFileTypeByExt(saver.getExt()));
+                    attachmentService.insertAttachment(saver);
+                    attachmentIds += saver.getAttachmentId() + ",";
+                } else {
+                    throw new RuntimeException("md5计算错误");
+
+                }
+
+            }
+        }
+        dept.setAttachmentIds(attachmentIds);
         int result = deptMapper.updateDept(dept);
         if (UserConstants.DEPT_NORMAL.equals(dept.getStatus())&&newParentDept!=null)
         {
             // 如果该部门是启用状态，则启用该部门的所有上级部门
             updateParentDeptStatusNormal(dept);
         }
-        //更新附件表
-        // TODO: 2021/8/2  更新附件表
+
         return result;
+    }
+
+    @Override
+    public int updateDeptAttachment(SysDept dept) {
+        Integer attachmentId = dept.getAttachmentId();
+        SysDept sysDept = selectDeptById(dept.getDeptId());
+        String attachmentIds = sysDept.getAttachmentIds();
+        String[] attachmentIdArray = attachmentIds.split(",");
+        String newAttachmentIds="";
+        for (String s : attachmentIdArray) {
+            if(!s.equals(String.valueOf(attachmentId))){
+                newAttachmentIds += s+",";
+            }
+        }
+        sysDept.setAttachmentIds(newAttachmentIds);
+        return deptMapper.updateDept(sysDept);
     }
 
     /**
@@ -310,4 +431,5 @@ public class SysDeptServiceImpl implements ISysDeptService
         }
         return UserConstants.DEPT_NAME_UNIQUE;
     }
+
 }

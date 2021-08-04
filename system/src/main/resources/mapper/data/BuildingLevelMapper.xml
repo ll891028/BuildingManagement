@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.BuildingLevelMapper">
+    
+    <resultMap type="BuildingLevel" id="BuildingLevelResult">
+        <result property="levelId"    column="level_id"    />
+        <result property="buildingId"    column="building_id"    />
+        <result property="levelName"    column="level_name"    />
+        <result property="seq"    column="seq"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBuildingLevelVo">
+        select level_id, building_id, level_name, seq, create_by, create_time, update_by, update_time from building_level
+    </sql>
+
+    <select id="selectBuildingLevelList" parameterType="BuildingLevel" resultMap="BuildingLevelResult">
+        <include refid="selectBuildingLevelVo"/>
+        <where>  
+            <if test="buildingId != null "> and building_id = #{buildingId}</if>
+            <if test="levelName != null  and levelName != ''"> and level_name like concat('%', #{levelName}, '%')</if>
+            <if test="seq != null "> and seq = #{seq}</if>
+        </where>
+    </select>
+    
+    <select id="selectBuildingLevelById" parameterType="Long" resultMap="BuildingLevelResult">
+        <include refid="selectBuildingLevelVo"/>
+        where level_id = #{levelId}
+    </select>
+        
+    <insert id="insertBuildingLevel" parameterType="BuildingLevel" useGeneratedKeys="true" keyProperty="levelId">
+        insert into building_level
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="buildingId != null">building_id,</if>
+            <if test="levelName != null and levelName != ''">level_name,</if>
+            <if test="seq != null">seq,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="buildingId != null">#{buildingId},</if>
+            <if test="levelName != null and levelName != ''">#{levelName},</if>
+            <if test="seq != null">#{seq},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBuildingLevel" parameterType="BuildingLevel">
+        update building_level
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="buildingId != null">building_id = #{buildingId},</if>
+            <if test="levelName != null and levelName != ''">level_name = #{levelName},</if>
+            <if test="seq != null">seq = #{seq},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where level_id = #{levelId}
+    </update>
+
+    <delete id="deleteBuildingLevelById" parameterType="Long">
+        delete from building_level where level_id = #{levelId}
+    </delete>
+
+    <delete id="deleteBuildingLevelByIds" parameterType="String">
+        delete from building_level where level_id in 
+        <foreach item="levelId" collection="array" open="(" separator="," close=")">
+            #{levelId}
+        </foreach>
+    </delete>
+
+</mapper>

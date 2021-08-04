@@ -1,6 +1,8 @@
 package com.liulin.common.utils.file;
 
 import java.io.File;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -10,6 +12,41 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class FileTypeUtils
 {
+
+    private static String[] image ={"gif","jpg","png","psd","bmp"};
+
+    private static String[] html ={"html","jsp","php"};
+
+    private static String[] text ={"txt"};
+
+    private static String[] office ={"doc","wps","docx","xls","xlsx","pdf"};
+
+    private static String[] video = {"wmv","asf","rm","rmvb","mov","mp4","avi"};
+
+    private static String[] audio = {"wav","mp3"};
+
+    private static String[] pdf = {"pdf"};
+
+    private static String[] other = {"rar","zip","z"};
+
+    private static String IMAGE = "image";
+
+    private static String HTML = "html";
+
+    private static String TEXT = "text";
+
+    private static String OFFICE = "office";
+
+    private static String VIDEO = "video";
+
+    private static String AUDIO = "audio";
+
+    private static String PDF = "pdf";
+
+    private static String OTHER = "other";
+
+
+
     /**
      * 获取文件类型
      * <p>
@@ -72,5 +109,26 @@ public class FileTypeUtils
             strFileExtendName = "PNG";
         }
         return strFileExtendName;
+    }
+
+    public static String getFileTypeByExt(String ext){
+        if(ArrayUtils.contains(image,ext)){
+            return FileTypeUtils.IMAGE;
+        }else if(ArrayUtils.contains(html,ext)){
+            return FileTypeUtils.HTML;
+        }else if(ArrayUtils.contains(text,ext)){
+            return FileTypeUtils.TEXT;
+        }else if(ArrayUtils.contains(office,ext)){
+            return FileTypeUtils.OFFICE;
+        }else if(ArrayUtils.contains(pdf,ext)){
+            return FileTypeUtils.PDF;
+        }else if(ArrayUtils.contains(video,ext)){
+            return FileTypeUtils.VIDEO;
+        }else if(ArrayUtils.contains(audio,ext)){
+            return FileTypeUtils.AUDIO;
+        }else if(ArrayUtils.contains(other,ext)){
+            return FileTypeUtils.OTHER;
+        }
+        return FileTypeUtils.OTHER;
     }
 }

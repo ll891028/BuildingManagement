@@ -9,12 +9,16 @@
 		<form class="form-horizontal m" id="form-dept-add">
 			<input id="treeId" name="parentId" type="hidden" th:value="${dept.deptId}"   />
 			<input id="attachmentUrls" name="attachmentUrls" type="hidden"  />
+			<input id="originalFileNames" name="originalFileNames" type="hidden"  />
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Parent：</label>
 				<div class="col-sm-8">
 				    <div class="input-group">
-						<input class="form-control" type="text" onclick="selectDeptTree()" id="treeName" readonly="true" th:value="${dept.deptName}">
-					    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+						<input th:if="${dept.type ne 1}" class="form-control" type="text" onclick="selectDeptTree()" id="treeName"
+							   readonly="true" th:value="${dept.deptName}">
+						<input th:if="${dept.type eq 1}" class="form-control" type="text" id="treeName"
+							   readonly="true" th:value="${dept.deptName}">
+					    <span th:if="${dept.type ne 1}"  class="input-group-addon"><i class="fa fa-search"></i></span>
 				    </div>
 				</div>
 			</div>
@@ -24,6 +28,27 @@
 					<input class="form-control" type="text" name="deptName" id="deptName" required>
 				</div>
 			</div>
+			<div class="form-group" th:if="${dept.type ne 1}">
+				<label class="col-sm-3 control-label is-required">Building type：</label>
+				<div class="col-sm-8">
+					<div class="input-group" style="width: 100%">
+						<select name="type" class="form-control m-b" th:with="type=${@dict.getType('dept_type')}">
+							<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" th:if="${dept.type eq 1}">
+				<label class="col-sm-3 control-label is-required">Building type：</label>
+				<div class="col-sm-8">
+					<div class="input-group" style="width: 100%">
+						<select name="type" class="form-control m-b" th:with="type=${@dict.getType('building_type')}">
+							<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+
 			<div class="form-group">
 				<label class="col-sm-3 control-label is-required">order：</label>
 				<div class="col-sm-8">
@@ -43,39 +68,60 @@
 				</div>
 			</div>
 			<div class="form-group" th:if="${dept.type eq 1}">
-				<label class="col-sm-3 control-label is-required">description：</label>
+				<label class="col-sm-3 control-label is-required">spn：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="spn">
+				</div>
+			</div>
+			<div class="form-group" th:if="${dept.type eq 1}">
+				<label class="col-sm-3 control-label">description：</label>
 				<div class="col-sm-8">
 					<input class="form-control" type="area" name="description">
 				</div>
 			</div>
-			<div class="form-group" th:if="${dept.type eq 1}">
-				<label class="col-sm-3 control-label is-required">note：</label>
-				<div class="col-sm-8">
-					<input class="form-control" type="area" name="note">
-				</div>
-			</div>
-
 			<div class="form-group" th:if="${dept.type eq 1}">
 				<label class="col-sm-3 control-label">attachment</label>
 				<div class="col-sm-8">
 					<input id="multipleFile" name="files" type="file" multiple>
 				</div>
 			</div>
-
-			<div class="form-group">
-				<label class="col-sm-3 control-label is-required">Building type：</label>
+			<div class="form-group" th:if="${dept.type eq 1}">
+				<label class="col-sm-3 control-label ">How many levels?(not including ground floor and basement)：</label>
 				<div class="col-sm-8">
-					<div class="input-group" style="width: 100%">
-						<select name="type" class="form-control m-b" th:with="type=${@dict.getType('dept_type')}">
-							<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-						</select>
+					<input class="form-control" type="text" name="levels" id="levels"
+						   onkeyup="this.value=this.value.replace(/[^1-9][^0-9]{0,1}$/g,'');" maxlength="2"/>
+
+				</div>
+			</div>
+			<div class="form-group" th:if="${dept.type eq 1}">
+				<label class="col-sm-3 control-label ">Is there a ground floor?</label>
+				<div class="col-sm-8">
+					<div class="radio-box" th:each="dict : ${@dict.getType('if_groud_floor')}" >
+						<input type="radio" th:id="${dict.dictCode}" name="ifGroundFloor" th:value="${dict.dictValue}"
+							   th:checked="${dict.default}" id="ifGroundFloor">
+						<label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
 					</div>
 				</div>
 			</div>
+			<div class="form-group" th:if="${dept.type eq 1}">
+				<label class="col-sm-3 control-label ">How many basement levels?</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="basements" id="basements"
+						   onkeyup="this.value=this.value.replace(/[^1-9][^0-9]{0,1}$/g,'');" maxlength="2">
+				</div>
+			</div>
+
+
+<!--			<div class="form-group" th:if="${dept.type eq 1}">-->
+<!--				<div class="col-sm-offset-3">-->
+<!--					<button type="button" class="btn btn-primary" onclick="generateLevelList()">generate level-->
+<!--						list</button>-->
+<!--				</div>-->
+<!--			</div>-->
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Building Status：</label>
 				<div class="col-sm-8">
-				    <div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
+					<div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
 						<input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}">
 						<label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
 					</div>
@@ -91,16 +137,23 @@
 			// 多图上传
 			$("#multipleFile").fileinput({
 				uploadUrl: ctx + 'common/uploads',
-				uploadAsync: false
+				uploadAsync: false,
+				maxFileSize:50*1024, //50MB  单位KB
+				language: 'en'
 			}).on('filebatchuploadsuccess', function (event, data, previewId, index) {
 				var rsp = data.response;
 				var fileJson = rsp.data;
 				var attachmentUrls = $("#attachmentUrls").val();
+				var originalFileNames = $("#originalFileNames").val();
 				for (var i in fileJson) {
 					log.info("return data.url：" + fileJson[i].url)
 					log.info("reutrn data.name：" + fileJson[i].name)
-					$("#attachmentUrls").val(attachmentUrls);
+					log.info("reutrn data.originalFileName：" + fileJson[i].originalFileName)
+					attachmentUrls+=fileJson[i].url+",";
+					originalFileNames+=fileJson[i].originalFileName+",";
 				}
+				$("#attachmentUrls").val(attachmentUrls);
+				$("#originalFileNames").val(originalFileNames);
 			}).on('fileremoved', function (event, id, index) {
 				$("input[name='" + event.currentTarget.id + "']").val('')
 			})
@@ -170,6 +223,27 @@
    			$("#treeId").val(body.find('#treeId').val());
    			$("#treeName").val(body.find('#treeName').val());
    			layer.close(index);
+		}
+		function generateLevelList(){
+			var levels = $('#levels').val();
+			var ifGroundFloor = 0;
+			var basements = $('#basements').val();
+			for(var i = 0; i < $('#ifGroundFloor').length; i++) {
+				if($('#ifGroundFloor')[i].checked) {
+					ifGroundFloor =$('#ifGroundFloor')[i].value;
+				}
+			}
+			if(levels==null || levels==''){
+				$.modal.alertError("Please enter all level information");
+				return
+			}
+			if(basements==null || basements==''){
+				$.modal.alertWarning("Please enter all level information");
+				return;
+			}
+			$.modal.open("Generate Level List", ctx + "data/level/generateBuildingLevel/"+levels+"/"
+					+ifGroundFloor+"/"
+					+basements);
 		}
 	</script>
 </body>

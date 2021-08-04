@@ -1,6 +1,11 @@
 package com.liulin.web.controller.system;
 
+import java.util.Arrays;
 import java.util.List;
+
+import com.liulin.system.domain.Attachment;
+import com.liulin.system.service.IAttachmentService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,6 +41,9 @@ public class SysDeptController extends BaseController
 
     @Autowired
     private ISysDeptService deptService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     @RequiresPermissions("system:dept:view")
     @GetMapping()
@@ -76,10 +84,10 @@ public class SysDeptController extends BaseController
     @ResponseBody
     public AjaxResult addSave(@Validated SysDept dept)
     {
-        if (UserConstants.DEPT_NAME_NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept)))
-        {
-            return error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
-        }
+//        if (UserConstants.DEPT_NAME_NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept)))
+//        {
+//            return error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+//        }
         dept.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(deptService.insertDept(dept));
     }
@@ -91,6 +99,17 @@ public class SysDeptController extends BaseController
     public String edit(@PathVariable("deptId") Long deptId, ModelMap mmap)
     {
         SysDept dept = deptService.selectDeptById(deptId);
+        String attachmentIds = dept.getAttachmentIds();
+        if(StringUtils.isNotEmpty(attachmentIds)){
+            String[] attachmentIdStrArray = attachmentIds.split(",");
+            int [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+            if(CollectionUtils.isNotEmpty(attachments)){
+                mmap.put("attachments",attachments);
+            }
+        }
+
         if (StringUtils.isNotNull(dept) && 100L == deptId)
         {
             dept.setParentName("无");
@@ -143,6 +162,19 @@ public class SysDeptController extends BaseController
             return AjaxResult.warn("部门存在用户,不允许删除");
         }
         return toAjax(deptService.deleteDeptById(deptId));
+    }
+
+    /**
+     * 删除附件
+     */
+    @Log(title = "删除building附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("system:dept:remove")
+    @PostMapping("/attachment/remove")
+    @ResponseBody
+    public AjaxResult remove(SysDept dept)
+    {
+
+        return toAjax(deptService.updateDeptAttachment(dept));
     }
 
     /**
@@ -204,4 +236,6 @@ public class SysDeptController extends BaseController
         List<Ztree> ztrees = deptService.roleDeptTreeData(role);
         return ztrees;
     }
+
+
 }

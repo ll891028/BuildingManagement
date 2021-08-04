@@ -743,7 +743,7 @@ var table = {
             alert: function(content, type) {
                 layer.alert(content, {
                     icon: $.modal.icon(type),
-                    title: "系统提示",
+                    title: "System message",
                     btn: ['确认'],
                     btnclass: ['btn btn-primary'],
                 });

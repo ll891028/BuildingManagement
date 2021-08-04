@@ -84,6 +84,8 @@ public interface ISysDeptService
      */
     public int updateDept(SysDept dept);
 
+    public int updateDeptAttachment(SysDept dept);
+
     /**
      * 根据部门ID查询信息
      * 
@@ -107,4 +109,6 @@ public interface ISysDeptService
      * @return 结果
      */
     public String checkDeptNameUnique(SysDept dept);
+
+
 }

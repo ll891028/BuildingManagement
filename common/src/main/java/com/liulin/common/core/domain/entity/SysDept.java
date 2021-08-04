@@ -49,7 +49,7 @@ public class SysDept extends BaseEntity
 
     private String description;
 
-    private String note;
+    private String spn;
 
     private String address;
 
@@ -60,6 +60,56 @@ public class SysDept extends BaseEntity
     private String attachmentIds;
 
     private String attachmentUrls;
+
+    private String originalFileNames;
+
+    private Integer attachmentId;
+
+    private Integer levels;
+
+    private Integer ifGroundFloor;
+
+    private Integer basements;
+
+    public Integer getLevels() {
+        return levels;
+    }
+
+    public void setLevels(Integer levels) {
+        this.levels = levels;
+    }
+
+    public Integer getIfGroundFloor() {
+        return ifGroundFloor;
+    }
+
+    public void setIfGroundFloor(Integer ifGroundFloor) {
+        this.ifGroundFloor = ifGroundFloor;
+    }
+
+    public Integer getBasements() {
+        return basements;
+    }
+
+    public void setBasements(Integer basements) {
+        this.basements = basements;
+    }
+
+    public Integer getAttachmentId() {
+        return attachmentId;
+    }
+
+    public void setAttachmentId(Integer attachmentId) {
+        this.attachmentId = attachmentId;
+    }
+
+    public String getOriginalFileNames() {
+        return originalFileNames;
+    }
+
+    public void setOriginalFileNames(String originalFileNames) {
+        this.originalFileNames = originalFileNames;
+    }
 
     public String getAttachmentUrls() {
         return attachmentUrls;
@@ -77,12 +127,12 @@ public class SysDept extends BaseEntity
         this.description = description;
     }
 
-    public String getNote() {
-        return note;
+    public String getSpn() {
+        return spn;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setSpn(String spn) {
+        this.spn = spn;
     }
 
     public String getAddress() {

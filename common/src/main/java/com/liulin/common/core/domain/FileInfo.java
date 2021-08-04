@@ -20,6 +20,8 @@ public class FileInfo
      */
     private String url;
 
+    private String originalFileName;
+
     public FileInfo()
     {
 
@@ -29,6 +31,21 @@ public class FileInfo
     {
         this.name = name;
         this.url = url;
+    }
+
+    public FileInfo(String name, String url,String originalFileName)
+    {
+        this.name = name;
+        this.url = url;
+        this.originalFileName = originalFileName;
+    }
+
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
     }
 
     public String getName()
