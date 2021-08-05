@@ -110,5 +110,7 @@ public interface ISysDeptService
      */
     public String checkDeptNameUnique(SysDept dept);
 
+    int generateLevel(SysDept dept);
+
 
 }

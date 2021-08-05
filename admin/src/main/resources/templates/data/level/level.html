@@ -1,88 +1,94 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('building_level列表')" />
+    <th:block th:include="include :: header('building_level列表')"/>
 </head>
 <body class="gray-bg">
-     <div class="container-div">
-        <div class="row">
-<!--            <div class="col-sm-12 search-collapse">-->
-<!--                <form id="formId">-->
-<!--                    <div class="select-list">-->
-<!--                        <ul>-->
-<!--                            <li>-->
-<!--                                <label>building_id：</label>-->
-<!--                                <input type="text" name="buildingId"/>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <label>level_name：</label>-->
-<!--                                <input type="text" name="levelName"/>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <label>order：</label>-->
-<!--                                <input type="text" name="seq"/>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>-->
-<!--                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </form>-->
-<!--            </div>-->
+<div class="container-div">
+    <div class="row">
+        <!--            <div class="col-sm-12 search-collapse">-->
+        <!--                <form id="formId">-->
+        <!--                    <input type="hidden" th:value="${buildingId}">-->
+        <!--                </form>-->
+        <!--            </div>-->
 
-            <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="data:level:add">
-                    <i class="fa fa-plus"></i> add
-                </a>
-<!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="data:level:edit">-->
-<!--                    <i class="fa fa-edit"></i> 修改-->
-<!--                </a>-->
-<!--                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="data:level:remove">-->
-<!--                    <i class="fa fa-remove"></i> 删除-->
-<!--                </a>-->
-<!--                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="data:level:export">-->
-<!--                    <i class="fa fa-download"></i> 导出-->
-<!--                </a>-->
-            </div>
-            <div class="col-sm-12 select-table table-striped">
-                <table id="bootstrap-table"></table>
-            </div>
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="add()" shiro:hasPermission="data:level:add">
+                <i class="fa fa-plus"></i> add
+            </a>
+            <a class="btn btn-info" onclick="generateLevelList()" shiro:hasPermission="data:level:add">
+                <i class="fa fa-refresh"></i> generate
+            </a>
+            <!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="data:level:edit">-->
+            <!--                    <i class="fa fa-edit"></i> 修改-->
+            <!--                </a>-->
+            <!--                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="data:level:remove">-->
+            <!--                    <i class="fa fa-remove"></i> 删除-->
+            <!--                </a>-->
+            <!--                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="data:level:export">-->
+            <!--                    <i class="fa fa-download"></i> 导出-->
+            <!--                </a>-->
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
         </div>
     </div>
-    <th:block th:include="include :: footer" />
-    <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('data:level:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('data:level:remove')}]];
-        var buildingId = [[${buildingId}]];
-        var prefix = ctx + "data/level";
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('data:level:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('data:level:remove')}]];
+    var buildingId = [[${buildingId}]];
+    var prefix = ctx + "data/level";
 
-        $(function() {
-            var options = {
-                url: prefix + "/list/"+buildingId,
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
-                exportUrl: prefix + "/export",
-                modalName: "building_level",
-                columns: [
+    $(function () {
+        var options = {
+            url: prefix + "/list/",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: " building level",
+            // dataField:{"buildingId":buildingId},
+            queryParams: {"buildingId": buildingId},
+            pagination: false,
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            columns: [
                 {
                     field: 'levelName',
                     title: 'Level Name'
                 },
+                // {
+                //     field: 'seq',
+                //     title: 'order',
+                //     sortable: true
+                // },
                 {
                     title: 'Action',
                     align: 'center',
-                    formatter: function(value, row, index) {
+                    formatter: function (value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.levelId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.levelId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag +
+                            '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.levelId +
+                            '\')"><i class="fa fa-edit"></i>edit</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag +
+                            '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.levelId +
+                            '\')"><i class="fa fa-remove"></i>remove</a>');
                         return actions.join('');
                     }
                 }]
-            };
-            $.table.init(options);
-        });
-    </script>
+        };
+        $.table.init(options);
+    });
+    function generateLevelList(){
+        $.modal.open("Generate Level List", ctx + "data/level/generate/"+buildingId);
+    }
+    function add(){
+        $.modal.open("add Level", ctx + "data/level/add/"+buildingId)
+    }
+</script>
 </body>
 </html>

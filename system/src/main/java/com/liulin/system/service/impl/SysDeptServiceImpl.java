@@ -296,42 +296,44 @@ public class SysDeptServiceImpl implements ISysDeptService
         }
 
         //更新附件表
-        // TODO: 2021/8/2  更新附件
-        String[] attachmentUrls = dept.getAttachmentUrls().split(",");
-        String[] originalFileNames = dept.getOriginalFileNames().split(",");
-        String attachmentIds=oldDept.getAttachmentIds();
-        if(attachmentUrls!=null && attachmentUrls.length>0) {
-            for (int i = 0; i < attachmentUrls.length; i++) {
-                String attachmentUrl = attachmentUrls[i];
-                if(StringUtils.isEmpty(attachmentUrl)){
-                    continue;
-                }
-                Attachment saver = new Attachment();
-                saver.setExt(FilenameUtils.getExtension(attachmentUrl));
-                saver.setAttachmentUrl(attachmentUrl);
-                String prefix = serverConfig.getUrl() + Constants.RESOURCE_PREFIX + "/upload";
-                File file =
-                        new File(LiulinConfig.getUploadPath() + StringUtils.substringAfter(attachmentUrl, prefix));
-                String md5 = Md5Utils.getMD5ByFile(file);
-                if (md5 != null) {
-                    Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(md5);
-                    if (attachmentByMd5 != null) {
-                        saver.setAttachmentUrl(attachmentByMd5.getAttachmentUrl());
+        if(StringUtils.isNotEmpty(dept.getAttachmentUrls())){
+            String[] attachmentUrls = dept.getAttachmentUrls().split(",");
+            String[] originalFileNames = dept.getOriginalFileNames().split(",");
+            String attachmentIds=oldDept.getAttachmentIds();
+            if(attachmentUrls!=null && attachmentUrls.length>0) {
+                for (int i = 0; i < attachmentUrls.length; i++) {
+                    String attachmentUrl = attachmentUrls[i];
+                    if(StringUtils.isEmpty(attachmentUrl)){
+                        continue;
                     }
-                    saver.setFileName(originalFileNames[i]);
-                    saver.setMd5(md5);
-                    saver.setCreateBy(dept.getUpdateBy());
-                    saver.setType(FileTypeUtils.getFileTypeByExt(saver.getExt()));
-                    attachmentService.insertAttachment(saver);
-                    attachmentIds += saver.getAttachmentId() + ",";
-                } else {
-                    throw new RuntimeException("md5计算错误");
+                    Attachment saver = new Attachment();
+                    saver.setExt(FilenameUtils.getExtension(attachmentUrl));
+                    saver.setAttachmentUrl(attachmentUrl);
+                    String prefix = serverConfig.getUrl() + Constants.RESOURCE_PREFIX + "/upload";
+                    File file =
+                            new File(LiulinConfig.getUploadPath() + StringUtils.substringAfter(attachmentUrl, prefix));
+                    String md5 = Md5Utils.getMD5ByFile(file);
+                    if (md5 != null) {
+                        Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(md5);
+                        if (attachmentByMd5 != null) {
+                            saver.setAttachmentUrl(attachmentByMd5.getAttachmentUrl());
+                        }
+                        saver.setFileName(originalFileNames[i]);
+                        saver.setMd5(md5);
+                        saver.setCreateBy(dept.getUpdateBy());
+                        saver.setType(FileTypeUtils.getFileTypeByExt(saver.getExt()));
+                        attachmentService.insertAttachment(saver);
+                        attachmentIds += saver.getAttachmentId() + ",";
+                    } else {
+                        throw new RuntimeException("md5计算错误");
+
+                    }
 
                 }
-
             }
+            dept.setAttachmentIds(attachmentIds);
         }
-        dept.setAttachmentIds(attachmentIds);
+
         int result = deptMapper.updateDept(dept);
         if (UserConstants.DEPT_NORMAL.equals(dept.getStatus())&&newParentDept!=null)
         {
@@ -430,6 +432,14 @@ public class SysDeptServiceImpl implements ISysDeptService
             return UserConstants.DEPT_NAME_NOT_UNIQUE;
         }
         return UserConstants.DEPT_NAME_UNIQUE;
+    }
+
+    @Override
+    public int generateLevel(SysDept dept) {
+
+        buildingLevelService.generateDefaultLevel(dept.getDeptId(),dept.getLevels(),dept.getIfGroundFloor(),
+                dept.getBasements(),dept.getCreateBy());
+        return deptMapper.updateDept(dept);
     }
 
 }

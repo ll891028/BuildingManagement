@@ -51,6 +51,8 @@ public interface BuildingLevelMapper
      */
     public int deleteBuildingLevelById(Long levelId);
 
+    int deleteBuildingLevelByBuildingId(Long BuildingId);
+
     /**
      * 批量删除building_level
      * 
@@ -58,4 +60,6 @@ public interface BuildingLevelMapper
      * @return 结果
      */
     public int deleteBuildingLevelByIds(String[] levelIds);
+
+    Integer findMaxSeqByBuildingId(Long buildingId);
 }

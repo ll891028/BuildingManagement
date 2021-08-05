@@ -788,8 +788,8 @@ var table = {
             confirm: function (content, callBack) {
                 layer.confirm(content, {
                     icon: 3,
-                    title: "系统提示",
-                    btn: ['确认', '取消']
+                    title: "System message",
+                    btn: ['confirm', 'cancel']
                 }, function (index) {
                     layer.close(index);
                     callBack(true);

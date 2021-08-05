@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="levelName != null  and levelName != ''"> and level_name like concat('%', #{levelName}, '%')</if>
             <if test="seq != null "> and seq = #{seq}</if>
         </where>
+        order by seq desc
     </select>
     
     <select id="selectBuildingLevelById" parameterType="Long" resultMap="BuildingLevelResult">
@@ -73,11 +74,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from building_level where level_id = #{levelId}
     </delete>
 
+    <delete id="deleteBuildingLevelByBuildingId" parameterType="Long">
+        delete from building_level where building_id = #{buildingId}
+    </delete>
+
     <delete id="deleteBuildingLevelByIds" parameterType="String">
         delete from building_level where level_id in 
         <foreach item="levelId" collection="array" open="(" separator="," close=")">
             #{levelId}
         </foreach>
     </delete>
+
+    <select id="findMaxSeqByBuildingId" parameterType="Long" resultType="Integer">
+        select max(seq) from building_level where building_id = #{buildingId}
+    </select>
 
 </mapper>

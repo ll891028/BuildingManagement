@@ -60,4 +60,6 @@ public interface IBuildingLevelService
     public int deleteBuildingLevelById(Long levelId);
 
     void generateDefaultLevel(Long buildingId,Integer levels, Integer ifGroundFloor, Integer basements,String createBy);
+
+    void deleteByBuildingId(Long buildingId);
 }

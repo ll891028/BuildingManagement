@@ -238,7 +238,7 @@
 				return
 			}
 			if(basements==null || basements==''){
-				$.modal.alertWarning("Please enter all level information");
+				$.modal.alertError("Please enter all level information");
 				return;
 			}
 			$.modal.open("Generate Level List", ctx + "data/level/generateBuildingLevel/"+levels+"/"

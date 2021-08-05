@@ -56,6 +56,8 @@ public class BuildingLevelServiceImpl implements IBuildingLevelService {
     @Override
     public int insertBuildingLevel(BuildingLevel buildingLevel) {
         buildingLevel.setCreateTime(DateUtils.getNowDate());
+        Integer maxSeqByBuildingId = buildingLevelMapper.findMaxSeqByBuildingId(buildingLevel.getBuildingId());
+        buildingLevel.setSeq(maxSeqByBuildingId.longValue()+1L);
         return buildingLevelMapper.insertBuildingLevel(buildingLevel);
     }
 
@@ -97,6 +99,8 @@ public class BuildingLevelServiceImpl implements IBuildingLevelService {
     @Transactional
     public void generateDefaultLevel(Long buildingId, Integer levels, Integer ifGroundFloor, Integer basements,
                                      String createBy) {
+        //清空对应building下的所有level数据
+        deleteByBuildingId(buildingId);
         Long levelCount = Long.valueOf(String.valueOf(levels));
 //        List<BuildingLevel> saver = new ArrayList<>();
         if (levels != null && levels != 0) {
@@ -117,12 +121,17 @@ public class BuildingLevelServiceImpl implements IBuildingLevelService {
         Long basementsCount = 0L;
         if (basements != null && basements != 0) {
             for (Integer i = 0; i < basements; i++) {
-                BuildingLevel saver = new BuildingLevel("Basement " + (i + 1), ++basementsCount, buildingId);
+                BuildingLevel saver = new BuildingLevel("Basement " + (i + 1), --basementsCount, buildingId);
                 saver.setCreateBy(createBy);
                 buildingLevelMapper.insertBuildingLevel(saver);
             }
         }
 //        throw new RuntimeException();
 
+    }
+
+    @Override
+    public void deleteByBuildingId(Long buildingId) {
+        buildingLevelMapper.deleteBuildingLevelByBuildingId(buildingId);
     }
 }

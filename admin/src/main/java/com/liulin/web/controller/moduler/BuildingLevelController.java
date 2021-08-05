@@ -3,6 +3,9 @@ package com.liulin.web.controller.moduler;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.liulin.common.core.domain.entity.SysDept;
+import com.liulin.common.utils.ShiroUtils;
+import com.liulin.system.service.ISysDeptService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +37,9 @@ public class BuildingLevelController extends BaseController {
 
     @Autowired
     private IBuildingLevelService buildingLevelService;
+
+    @Autowired
+    private ISysDeptService sysDeptService;
 
     @RequiresPermissions("data:level:view")
     @GetMapping("/{buildingId}")
@@ -96,8 +102,9 @@ public class BuildingLevelController extends BaseController {
     /**
      * 新增building_level
      */
-    @GetMapping("/add")
-    public String add() {
+    @GetMapping("/add/{buildingId}")
+    public String add(@PathVariable Long buildingId,ModelMap mmap) {
+        mmap.put("buildingId",buildingId);
         return prefix + "/add";
     }
 
@@ -109,6 +116,7 @@ public class BuildingLevelController extends BaseController {
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(BuildingLevel buildingLevel) {
+        buildingLevel.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(buildingLevelService.insertBuildingLevel(buildingLevel));
     }
 
@@ -131,6 +139,28 @@ public class BuildingLevelController extends BaseController {
     @ResponseBody
     public AjaxResult editSave(BuildingLevel buildingLevel) {
         return toAjax(buildingLevelService.updateBuildingLevel(buildingLevel));
+    }
+
+    /**
+     * 修改building_level
+     */
+    @GetMapping("/generate/{buildingId}")
+    public String generate(@PathVariable("buildingId") Long buildingId, ModelMap mmap) {
+        SysDept sysDept = sysDeptService.selectDeptById(buildingId);
+        mmap.put("building", sysDept);
+        return prefix + "/generate";
+    }
+
+    /**
+     * 修改保存building_level
+     */
+    @RequiresPermissions("data:level:edit")
+    @Log(title = "building_level_generate", businessType = BusinessType.UPDATE)
+    @PostMapping("/generateLevel")
+    @ResponseBody
+    public AjaxResult generateLevel(SysDept sysDept) {
+        sysDept.setCreateBy(ShiroUtils.getLoginName());
+        return toAjax(sysDeptService.generateLevel(sysDept));
     }
 
     /**
