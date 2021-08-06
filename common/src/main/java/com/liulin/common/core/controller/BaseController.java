@@ -58,6 +58,9 @@ public class BaseController
         Integer pageSize = pageDomain.getPageSize();
         if (StringUtils.isNotNull(pageNum) && StringUtils.isNotNull(pageSize))
         {
+            if(pageDomain!=null&& StringUtils.isNotEmpty(pageDomain.getOrderByColumn())&&pageDomain.getOrderByColumn().equals("levelName")){
+                pageDomain.setOrderByColumn("t2.seq");
+            }
             String orderBy = SqlUtil.escapeOrderBySql(pageDomain.getOrderBy());
             PageHelper.startPage(pageNum, pageSize, orderBy);
         }

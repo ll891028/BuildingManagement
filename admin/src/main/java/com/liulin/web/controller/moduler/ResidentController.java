@@ -114,6 +114,8 @@ public class ResidentController extends BaseController
     @GetMapping("/edit/{residentId}")
     public String edit(@PathVariable("residentId") Long residentId, ModelMap mmap)
     {
+        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        mmap.put("buildingLevels",buildingLevels);
         Resident resident = residentService.selectResidentById(residentId);
         mmap.put("resident", resident);
         return prefix + "/edit";

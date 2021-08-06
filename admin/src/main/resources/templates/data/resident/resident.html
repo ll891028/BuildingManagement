@@ -115,7 +115,8 @@
         var editFlag = [[${@permission.hasPermi('data:resident:edit')}]];
         var removeFlag = [[${@permission.hasPermi('data:resident:remove')}]];
         var statusDatas = [[${@dict.getType('resident_status')}]];
-        var currentResidentDatas = [[${@dict.getType('resident_type')}]];
+        var currentResidentDatas = [[${@dict.getType('current_resident')}]];
+        var residentTypeDatas = [[${@dict.getType('resident_type')}]];
         var committeeMemberDatas = [[${@dict.getType('committee_member')}]];
         var prefix = ctx + "data/resident";
         var data = [{"s":[{"s":null,"v":"tm","n":"\u5929\u732B"},{"s":null,"v":"jhs","n":"\u805A\u5212\u7B97"}],"v":"taobao","n":"\u6DD8\u5B9D"},{"s":[{"s":null,"v":"jdcs","n":"\u4EAC\u4E1C\u8D85\u5E02"},{"s":null,"v":"jdsx","n":"\u4EAC\u4E1C\u751F\u9C9C"}],"v":"jd","n":"\u4EAC\u4E1C"}];
@@ -170,15 +171,18 @@
                     title: 'Current Resident',
                     formatter: function(value, row, index) {
                        return $.table.selectDictLabel(currentResidentDatas, value);
-                    }
+                    },
+                    sortable:true
                 },
                 {
                     field: 'unitNumber',
-                    title: 'Unit Number'
+                    title: 'Unit Number',
+                    sortable:true
                 },
                 {
-                    field: 'levelId',
-                    title: 'Level'
+                    field: 'levelName',
+                    title: 'Level',
+                    sortable:true
                 },
                 // {
                 //     field: 'committeeMember',
@@ -189,11 +193,16 @@
                 // },
                 {
                     field: 'carparkSpaceAmount',
-                    title: 'Carpark Space Amount'
+                    title: 'Carpark Space Amount',
+                    sortable:true
                 },
                 {
                     field: 'residentType',
-                    title: 'Resident Type'
+                    title: 'Resident Type',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(residentTypeDatas, value);
+                    },
+                    sortable:true
                 },
                 {
                     title: 'Action',

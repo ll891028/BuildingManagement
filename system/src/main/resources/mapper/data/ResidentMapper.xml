@@ -24,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="levelName"    column="level_name"    />
     </resultMap>
 
     <sql id="selectResidentVo">
@@ -31,21 +32,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectResidentList" parameterType="Resident" resultMap="ResidentResult">
-        <include refid="selectResidentVo"/>
+        select t1.*,t2.level_name
+        from resident t1 left join building_level t2 on t1.level_id=t2.level_id
         <where>  
-            <if test="firstName != null  and firstName != ''"> and first_name like concat('%', #{firstName}, '%')</if>
-            <if test="lastName != null  and lastName != ''"> and last_name like concat('%', #{lastName}, '%')</if>
-            <if test="contactNumber != null  and contactNumber != ''"> and contact_number like concat('%',#{contactNumber},'%')</if>
-            <if test="email != null  and email != ''"> and email like concat('%',#{email},'%') </if>
-            <if test="description != null  and description != ''"> and description = #{description}</if>
-            <if test="status != null "> and status = #{status}</if>
-            <if test="currentResident != null "> and current_resident = #{currentResident}</if>
-            <if test="unitNumber != null  and unitNumber != ''"> and unit_number like concat('%',#{unitNumber},'%') </if>
-            <if test="levelId != null "> and level_id = #{levelId}</if>
-            <if test="committeeMember != null "> and committee_member = #{committeeMember}</if>
-            <if test="carparkSpaceAmount != null "> and carpark_space_amount = #{carparkSpaceAmount}</if>
-            <if test="residentType != null "> and resident_type = #{residentType}</if>
-            <if test="attachmentIds != null  and attachmentIds != ''"> and attachment_ids = #{attachmentIds}</if>
+            <if test="firstName != null  and firstName != ''"> and t1.first_name like concat('%', #{firstName}, '%')</if>
+            <if test="lastName != null  and lastName != ''"> and t1.last_name like concat('%', #{lastName}, '%')</if>
+            <if test="contactNumber != null  and contactNumber != ''"> and t1.contact_number like concat('%',#{contactNumber},'%')</if>
+            <if test="email != null  and email != ''"> and t1.email like concat('%',#{email},'%') </if>
+            <if test="description != null  and description != ''"> and t1.description = #{description}</if>
+            <if test="status != null "> and t1.status = #{status}</if>
+            <if test="currentResident != null "> and t1.current_resident = #{currentResident}</if>
+            <if test="unitNumber != null  and unitNumber != ''"> and t1.unit_number like concat('%',#{unitNumber},'%') </if>
+            <if test="levelId != null "> and t1.level_id = #{levelId}</if>
+            <if test="committeeMember != null "> and t1.committee_member = #{committeeMember}</if>
+            <if test="carparkSpaceAmount != null "> and t1.carpark_space_amount = #{carparkSpaceAmount}</if>
+            <if test="residentType != null "> and t1.resident_type = #{residentType}</if>
+            <if test="attachmentIds != null  and attachmentIds != ''"> and t1.attachment_ids = #{attachmentIds}</if>
         </where>
     </select>
     

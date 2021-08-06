@@ -73,7 +73,18 @@ public class Resident extends BaseEntity
     /** User Id */
     private Long userId;
 
-    public void setResidentId(Long residentId) 
+    @Excel(name = "Level")
+    private String levelName;
+
+    public String getLevelName() {
+        return levelName;
+    }
+
+    public void setLevelName(String levelName) {
+        this.levelName = levelName;
+    }
+
+    public void setResidentId(Long residentId)
     {
         this.residentId = residentId;
     }
