@@ -107,6 +107,8 @@ public interface SysDeptMapper
      */
     public List<SysDept> selectChildrenDeptById(Long deptId);
 
+    public List<SysDept> selectChildrenDeptByIdAndType(SysDept sysDept);
+
     /**
      * 根据ID查询所有子部门（正常状态）
      * 

@@ -55,10 +55,12 @@
     
     <!-- 系统缓存 -->
     <cache name="sys-cache"
-           maxEntriesLocalHeap="1000"
+           maxEntriesLocalHeap="0"
            eternal="true"
            overflowToDisk="true"
-           statistics="false">
+           statistics="false"
+           diskPersistent="true"
+    >
     </cache>
     
     <!-- 系统参数缓存 -->
@@ -86,6 +88,7 @@
            timeToLiveSeconds="0"
            timeToIdleSeconds="0"
            statistics="false"/>
+
     
 </ehcache>
 	

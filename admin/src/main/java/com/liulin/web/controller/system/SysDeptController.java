@@ -3,6 +3,8 @@ package com.liulin.web.controller.system;
 import java.util.Arrays;
 import java.util.List;
 
+import com.liulin.common.core.domain.entity.SysUser;
+import com.liulin.common.utils.CacheUtils;
 import com.liulin.system.domain.Attachment;
 import com.liulin.system.service.IAttachmentService;
 import org.apache.commons.collections.CollectionUtils;
@@ -44,6 +46,7 @@ public class SysDeptController extends BaseController
 
     @Autowired
     private IAttachmentService attachmentService;
+
 
     @RequiresPermissions("system:dept:view")
     @GetMapping()
@@ -235,6 +238,17 @@ public class SysDeptController extends BaseController
     {
         List<Ztree> ztrees = deptService.roleDeptTreeData(role);
         return ztrees;
+    }
+
+    @GetMapping("/changeUserBuilding/{buildingId}")
+    @ResponseBody
+    public AjaxResult changeUserBuilding(@PathVariable Long buildingId){
+        SysDept sysDept = deptService.selectDeptById(buildingId);
+        SysUser sysUser = ShiroUtils.getSysUser();
+        sysUser.setBuilding(sysDept);
+        ShiroUtils.setSysUser(sysUser);
+        CacheUtils.put("user:building:"+sysUser.getUserId(),sysUser.getBuilding());
+        return toAjax(1);
     }
 
 

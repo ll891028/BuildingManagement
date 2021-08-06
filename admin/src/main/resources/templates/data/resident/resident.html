@@ -8,8 +8,47 @@
         <div class="row">
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
-                    <div class="select-list">
+                    <div class="select-list" id="element">
                         <ul>
+                            <li>
+                                Levels：
+                                <select name="levelId" class="levels">
+                                    <option value="">All</option>
+                                    <option th:each="level:${buildingLevels}" th:value="${level.levelId}"
+                                            th:text="${level.levelName}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                Status：
+                                <select name="status" th:with="type=${@dict.getType('resident_status')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                Current Resident：
+                                <select name="currentResident" th:with="type=${@dict.getType('current_resident')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                Carpark Space Amount：
+                                <select name="carparkSpaceAmount">
+                                    <option value="">All</option>
+                                    <option value="0">0</option>
+                                    <option value="0">1</option>
+                                    <option value="0">2</option>
+                                    <option value="0">3</option>
+                                </select>
+                            </li>
+                            <li>
+                                Resident Type：
+                                <select name="residentType" th:with="type=${@dict.getType('resident_type')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
                             <li>
                                 First Name：
                                 <input type="text" name="firstName"/>
@@ -26,45 +65,23 @@
                                 Email：
                                 <input type="text" name="email"/>
                             </li>
-                            <li>
-                                Status：
-                                <select name="status" th:with="type=${@dict.getType('resident_status')}">
-                                    <option value="">All</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
-                            </li>
-                            <li>
-                                Current Resident：
-                                <input type="text" name="currentResident"/>
-                            </li>
+
                             <li>
                                 Unit Number：
                                 <input type="text" name="unitNumber"/>
                             </li>
-                            <li>
-                                Level：
-                                <select name="levelId">
-                                    <option value="">All</option>
-                                    <option value="-1">代码生成请选择字典属性</option>
-                                </select>
-                            </li>
-                            <li>
-                                Resident Type：
-                                <select name="residentType" th:with="type=${@dict.getType('resident_type')}">
-                                    <option value="">All</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
-                            </li>
-                            <li>
-                                Carpark Space Amount：
-                                <select name="carparkSpaceAmount">
-                                    <option value="">All</option>
-                                    <option value="-1">代码生成请选择字典属性</option>
-                                </select>
-                            </li>
+
+<!--                            <li>-->
+<!--                                Committee Member：-->
+<!--                                <select name="committeeMember" th:with="type=${@dict.getType('committee_member')}">-->
+<!--                                    <option value="">All</option>-->
+<!--                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                                </select>-->
+<!--                            </li>-->
+
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
-                                        class="fa fa-search"></i>&nbsp;research</a>
+                                        class="fa fa-search"></i>&nbsp;search</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
                                         class="fa fa-refresh"></i>&nbsp;reset</a>
                             </li>
@@ -93,12 +110,21 @@
         </div>
     </div>
     <th:block th:include="include :: footer" />
+    <th:block th:include="include :: jquery-cxselect-js" />
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('data:resident:edit')}]];
         var removeFlag = [[${@permission.hasPermi('data:resident:remove')}]];
         var statusDatas = [[${@dict.getType('resident_status')}]];
-        var residentTypeDatas = [[${@dict.getType('resident_type')}]];
+        var currentResidentDatas = [[${@dict.getType('resident_type')}]];
+        var committeeMemberDatas = [[${@dict.getType('committee_member')}]];
         var prefix = ctx + "data/resident";
+        var data = [{"s":[{"s":null,"v":"tm","n":"\u5929\u732B"},{"s":null,"v":"jhs","n":"\u805A\u5212\u7B97"}],"v":"taobao","n":"\u6DD8\u5B9D"},{"s":[{"s":null,"v":"jdcs","n":"\u4EAC\u4E1C\u8D85\u5E02"},{"s":null,"v":"jdsx","n":"\u4EAC\u4E1C\u751F\u9C9C"}],"v":"jd","n":"\u4EAC\u4E1C"}];
+
+        $('#element').cxSelect({
+            selects: ['buildings', 'levels'],
+            jsonValue: 'v',
+            data: data
+        });
 
         $(function() {
             var options = {
@@ -133,10 +159,6 @@
                     title: 'Email'
                 },
                 {
-                    field: 'description',
-                    title: 'description'
-                },
-                {
                     field: 'status',
                     title: 'Status',
                     formatter: function(value, row, index) {
@@ -146,33 +168,32 @@
                 {
                     field: 'currentResident',
                     title: 'Current Resident',
-                    sortable:true
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(currentResidentDatas, value);
+                    }
                 },
                 {
                     field: 'unitNumber',
-                    title: 'Unit Number',
-                    sortable:true
+                    title: 'Unit Number'
                 },
                 {
                     field: 'levelId',
-                    title: 'Level',
-                    sortable:true
+                    title: 'Level'
                 },
-                {
-                    field: 'residentType',
-                    title: 'Resident Type',
-                    formatter: function(value, row, index) {
-                       return $.table.selectDictLabel(residentTypeDatas, value);
-                    },
-                    sortable:true
-                },
+                // {
+                //     field: 'committeeMember',
+                //     title: 'Committee Member',
+                //     formatter: function(value, row, index) {
+                //        return $.table.selectDictLabel(committeeMemberDatas, value);
+                //     }
+                // },
                 {
                     field: 'carparkSpaceAmount',
                     title: 'Carpark Space Amount'
                 },
                 {
-                    field: 'attachmentIds',
-                    title: 'Attachments'
+                    field: 'residentType',
+                    title: 'Resident Type'
                 },
                 {
                     title: 'Action',

@@ -1,8 +1,6 @@
 package com.liulin.system.service.impl;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,13 +10,10 @@ import com.liulin.common.config.ServerConfig;
 import com.liulin.common.constant.Constants;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.file.FileTypeUtils;
-import com.liulin.common.utils.file.FileUploadUtils;
 import com.liulin.common.utils.security.Md5Utils;
 import com.liulin.system.domain.Attachment;
-import com.liulin.system.mapper.AttachmentMapper;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.IBuildingLevelService;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -414,6 +409,11 @@ public class SysDeptServiceImpl implements ISysDeptService
     public int selectNormalChildrenDeptById(Long deptId)
     {
         return deptMapper.selectNormalChildrenDeptById(deptId);
+    }
+
+    @Override
+    public List<SysDept> selectChildrenDeptByIdAndType(SysDept sysDept) {
+        return deptMapper.selectChildrenDeptByIdAndType(sysDept);
     }
 
     /**

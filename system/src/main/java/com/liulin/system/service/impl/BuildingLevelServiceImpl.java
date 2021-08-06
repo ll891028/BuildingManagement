@@ -47,6 +47,13 @@ public class BuildingLevelServiceImpl implements IBuildingLevelService {
         return buildingLevelMapper.selectBuildingLevelList(buildingLevel);
     }
 
+    @Override
+    public List<BuildingLevel> selectBuildingLevelListByBuildingId(Long buildingId) {
+        BuildingLevel query = new BuildingLevel();
+        query.setBuildingId(buildingId);
+        return buildingLevelMapper.selectBuildingLevelList(query);
+    }
+
     /**
      * 新增building_level
      *

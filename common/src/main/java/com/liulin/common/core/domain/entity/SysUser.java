@@ -11,6 +11,7 @@ import com.liulin.common.annotation.Excel.ColumnType;
 import com.liulin.common.annotation.Excel.Type;
 import com.liulin.common.annotation.Excels;
 import com.liulin.common.core.domain.BaseEntity;
+import org.springframework.cache.annotation.Cacheable;
 
 /**
  * 用户对象 sys_user
@@ -92,7 +93,11 @@ public class SysUser extends BaseEntity
     })
     private SysDept dept;
 
+    private SysDept building;
+
     private List<SysRole> roles;
+
+    private List<SysDept> buildingsList;
 
     /** 角色组 */
     private Long[] roleIds;
@@ -108,6 +113,22 @@ public class SysUser extends BaseEntity
     public SysUser(Long userId)
     {
         this.userId = userId;
+    }
+
+    public List<SysDept> getBuildingsList() {
+        return buildingsList;
+    }
+
+    public void setBuildingsList(List<SysDept> buildingsList) {
+        this.buildingsList = buildingsList;
+    }
+
+    public SysDept getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(SysDept building) {
+        this.building = building;
     }
 
     public Long getUserId()

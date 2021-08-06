@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 部门表 sys_dept
  * 
@@ -70,6 +72,16 @@ public class SysDept extends BaseEntity
     private Integer ifGroundFloor;
 
     private Integer basements;
+
+    private List<Long> typeList;
+
+    public List<Long> getTypeList() {
+        return typeList;
+    }
+
+    public void setTypeList(List<Long> typeList) {
+        this.typeList = typeList;
+    }
 
     public Integer getLevels() {
         return levels;

@@ -7,7 +7,7 @@ import com.liulin.system.domain.Resident;
  * residentMapper接口
  * 
  * @author liulin
- * @date 2021-08-05
+ * @date 2021-08-06
  */
 public interface ResidentMapper 
 {

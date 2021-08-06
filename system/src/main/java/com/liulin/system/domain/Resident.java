@@ -9,7 +9,7 @@ import com.liulin.common.core.domain.BaseEntity;
  * resident对象 resident
  * 
  * @author liulin
- * @date 2021-08-05
+ * @date 2021-08-06
  */
 public class Resident extends BaseEntity
 {
@@ -54,13 +54,17 @@ public class Resident extends BaseEntity
     @Excel(name = "Level")
     private Long levelId;
 
-    /** Resident Type */
-    @Excel(name = "Resident Type")
-    private Integer residentType;
+    /** Committee Member */
+    @Excel(name = "Committee Member")
+    private Integer committeeMember;
 
     /** Carpark Space Amount */
     @Excel(name = "Carpark Space Amount")
     private Integer carparkSpaceAmount;
+
+    /** Resident Type */
+    @Excel(name = "Resident Type")
+    private Integer residentType;
 
     /** Attachments */
     @Excel(name = "Attachments")
@@ -159,14 +163,14 @@ public class Resident extends BaseEntity
     {
         return levelId;
     }
-    public void setResidentType(Integer residentType) 
+    public void setCommitteeMember(Integer committeeMember) 
     {
-        this.residentType = residentType;
+        this.committeeMember = committeeMember;
     }
 
-    public Integer getResidentType() 
+    public Integer getCommitteeMember() 
     {
-        return residentType;
+        return committeeMember;
     }
     public void setCarparkSpaceAmount(Integer carparkSpaceAmount) 
     {
@@ -176,6 +180,15 @@ public class Resident extends BaseEntity
     public Integer getCarparkSpaceAmount() 
     {
         return carparkSpaceAmount;
+    }
+    public void setResidentType(Integer residentType) 
+    {
+        this.residentType = residentType;
+    }
+
+    public Integer getResidentType() 
+    {
+        return residentType;
     }
     public void setAttachmentIds(String attachmentIds) 
     {
@@ -209,8 +222,9 @@ public class Resident extends BaseEntity
             .append("currentResident", getCurrentResident())
             .append("unitNumber", getUnitNumber())
             .append("levelId", getLevelId())
-            .append("residentType", getResidentType())
+            .append("committeeMember", getCommitteeMember())
             .append("carparkSpaceAmount", getCarparkSpaceAmount())
+            .append("residentType", getResidentType())
             .append("attachmentIds", getAttachmentIds())
             .append("userId", getUserId())
             .append("createBy", getCreateBy())

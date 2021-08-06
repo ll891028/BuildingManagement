@@ -1,7 +1,17 @@
 package com.liulin.system.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
+
+import com.liulin.common.constant.Constants;
+import com.liulin.common.constant.UserConstants;
+import com.liulin.common.core.domain.entity.SysUser;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.common.utils.security.Md5Utils;
+import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.service.IBuildingLevelService;
+import com.liulin.system.service.ISysConfigService;
+import com.liulin.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.ResidentMapper;
@@ -13,13 +23,23 @@ import com.liulin.common.core.text.Convert;
  * residentService业务层处理
  * 
  * @author liulin
- * @date 2021-08-05
+ * @date 2021-08-06
  */
 @Service
 public class ResidentServiceImpl implements IResidentService 
 {
     @Autowired
     private ResidentMapper residentMapper;
+
+    @Autowired
+    private ISysUserService sysUserService;
+
+    @Autowired
+    private ISysConfigService configService;
+
+    @Autowired
+    private IBuildingLevelService buildingLevelService;
+
 
     /**
      * 查询resident
@@ -54,6 +74,31 @@ public class ResidentServiceImpl implements IResidentService
     @Override
     public int insertResident(Resident resident)
     {
+        //通过email查询用户是否存在
+        SysUser query = new SysUser();
+        query.setEmail(resident.getEmail());
+        String result = sysUserService.checkEmailUnique(query);
+        if(UserConstants.USER_EMAIL_UNIQUE.equals(result)){
+            BuildingLevel buildingLevel = buildingLevelService.selectBuildingLevelById(resident.getLevelId());
+
+            //生成user数据
+            SysUser saver = new SysUser();
+            saver.setEmail(resident.getEmail());
+            //登录账号为邮箱地址
+            saver.setLoginName(resident.getEmail());
+            saver.setUserName(resident.getFirstName()+" "+resident.getLastName());
+            String password = configService.selectConfigByKey("sys.user.initPassword");
+            saver.setPassword(Md5Utils.hash(saver.getLoginName() + password));
+            saver.setCreateBy(resident.getCreateBy());
+            //resident角色
+            saver.setRoleIds(new Long[]{Constants.RESIDENT});
+            saver.setDeptId(buildingLevel.getBuildingId());
+            sysUserService.insertUser(saver);
+            resident.setUserId(saver.getUserId());
+        }else{
+            SysUser sysUser = sysUserService.selectUserByEmail(resident.getEmail());
+            resident.setUserId(sysUser.getUserId());
+        }
         resident.setCreateTime(DateUtils.getNowDate());
         return residentMapper.insertResident(resident);
     }

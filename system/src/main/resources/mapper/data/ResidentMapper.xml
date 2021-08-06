@@ -15,8 +15,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="currentResident"    column="current_resident"    />
         <result property="unitNumber"    column="unit_number"    />
         <result property="levelId"    column="level_id"    />
-        <result property="residentType"    column="Resident_type"    />
+        <result property="committeeMember"    column="committee_member"    />
         <result property="carparkSpaceAmount"    column="carpark_space_amount"    />
+        <result property="residentType"    column="resident_type"    />
         <result property="attachmentIds"    column="attachment_ids"    />
         <result property="userId"    column="user_id"    />
         <result property="createBy"    column="create_by"    />
@@ -26,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectResidentVo">
-        select resident_id, first_name, last_name, contact_number, email, description, status, current_resident, unit_number, level_id, Resident_type, carpark_space_amount, attachment_ids, user_id, create_by, create_time, update_by, update_time from resident
+        select resident_id, first_name, last_name, contact_number, email, description, status, current_resident, unit_number, level_id, committee_member, carpark_space_amount, resident_type, attachment_ids, user_id, create_by, create_time, update_by, update_time from resident
     </sql>
 
     <select id="selectResidentList" parameterType="Resident" resultMap="ResidentResult">
@@ -34,15 +35,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="firstName != null  and firstName != ''"> and first_name like concat('%', #{firstName}, '%')</if>
             <if test="lastName != null  and lastName != ''"> and last_name like concat('%', #{lastName}, '%')</if>
-            <if test="contactNumber != null  and contactNumber != ''"> and contact_number = #{contactNumber}</if>
-            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="contactNumber != null  and contactNumber != ''"> and contact_number like concat('%',#{contactNumber},'%')</if>
+            <if test="email != null  and email != ''"> and email like concat('%',#{email},'%') </if>
             <if test="description != null  and description != ''"> and description = #{description}</if>
             <if test="status != null "> and status = #{status}</if>
             <if test="currentResident != null "> and current_resident = #{currentResident}</if>
-            <if test="unitNumber != null  and unitNumber != ''"> and unit_number = #{unitNumber}</if>
+            <if test="unitNumber != null  and unitNumber != ''"> and unit_number like concat('%',#{unitNumber},'%') </if>
             <if test="levelId != null "> and level_id = #{levelId}</if>
-            <if test="residentType != null "> and Resident_type = #{residentType}</if>
+            <if test="committeeMember != null "> and committee_member = #{committeeMember}</if>
             <if test="carparkSpaceAmount != null "> and carpark_space_amount = #{carparkSpaceAmount}</if>
+            <if test="residentType != null "> and resident_type = #{residentType}</if>
             <if test="attachmentIds != null  and attachmentIds != ''"> and attachment_ids = #{attachmentIds}</if>
         </where>
     </select>
@@ -64,8 +66,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="currentResident != null">current_resident,</if>
             <if test="unitNumber != null and unitNumber != ''">unit_number,</if>
             <if test="levelId != null">level_id,</if>
-            <if test="residentType != null">Resident_type,</if>
+            <if test="committeeMember != null">committee_member,</if>
             <if test="carparkSpaceAmount != null">carpark_space_amount,</if>
+            <if test="residentType != null">resident_type,</if>
             <if test="attachmentIds != null">attachment_ids,</if>
             <if test="userId != null">user_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
@@ -83,8 +86,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="currentResident != null">#{currentResident},</if>
             <if test="unitNumber != null and unitNumber != ''">#{unitNumber},</if>
             <if test="levelId != null">#{levelId},</if>
-            <if test="residentType != null">#{residentType},</if>
+            <if test="committeeMember != null">#{committeeMember},</if>
             <if test="carparkSpaceAmount != null">#{carparkSpaceAmount},</if>
+            <if test="residentType != null">#{residentType},</if>
             <if test="attachmentIds != null">#{attachmentIds},</if>
             <if test="userId != null">#{userId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
@@ -106,8 +110,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="currentResident != null">current_resident = #{currentResident},</if>
             <if test="unitNumber != null and unitNumber != ''">unit_number = #{unitNumber},</if>
             <if test="levelId != null">level_id = #{levelId},</if>
-            <if test="residentType != null">Resident_type = #{residentType},</if>
+            <if test="committeeMember != null">committee_member = #{committeeMember},</if>
             <if test="carparkSpaceAmount != null">carpark_space_amount = #{carparkSpaceAmount},</if>
+            <if test="residentType != null">resident_type = #{residentType},</if>
             <if test="attachmentIds != null">attachment_ids = #{attachmentIds},</if>
             <if test="userId != null">user_id = #{userId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>

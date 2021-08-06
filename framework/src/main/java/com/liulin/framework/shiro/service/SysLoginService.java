@@ -1,5 +1,8 @@
 package com.liulin.framework.shiro.service;
 
+import com.liulin.common.core.domain.entity.SysDept;
+import com.liulin.common.utils.*;
+import com.liulin.system.service.ISysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -13,13 +16,13 @@ import com.liulin.common.exception.user.UserBlockedException;
 import com.liulin.common.exception.user.UserDeleteException;
 import com.liulin.common.exception.user.UserNotExistsException;
 import com.liulin.common.exception.user.UserPasswordNotMatchException;
-import com.liulin.common.utils.DateUtils;
-import com.liulin.common.utils.MessageUtils;
-import com.liulin.common.utils.ServletUtils;
-import com.liulin.common.utils.ShiroUtils;
 import com.liulin.framework.manager.AsyncManager;
 import com.liulin.framework.manager.factory.AsyncFactory;
 import com.liulin.system.service.ISysUserService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 登录校验方法
@@ -34,6 +37,11 @@ public class SysLoginService
 
     @Autowired
     private ISysUserService userService;
+
+
+
+    @Autowired
+    private ISysDeptService sysDeptService;
 
     /**
      * 登录
@@ -70,6 +78,35 @@ public class SysLoginService
 
         // 查询用户信息
         SysUser user = userService.selectUserByLoginName(username);
+
+        //查询用户buildings信息
+        SysDept query = new SysDept();
+        query.setTypeList(new ArrayList<>(Arrays.asList(2L,3L,4L,5L)));
+        List<SysDept> buildings = null;
+        if(!user.isAdmin()){
+            query.setDeptId(user.getDeptId());
+            buildings = sysDeptService.selectChildrenDeptByIdAndType(query);
+        }else{
+            buildings = sysDeptService.selectDeptList(query);
+        }
+
+        user.setBuildingsList(buildings);
+        SysDept building = (SysDept) CacheUtils.get("user:building:" + user.getUserId());
+        if(building==null){
+            user.setBuilding(buildings.get(0));
+            CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
+        }else{
+            //查询是否该building被系统移除
+            SysDept sysDept = buildings.stream().filter(b -> b.getDeptId().equals(building.getDeptId())).findAny().orElse(null);
+            if(sysDept==null){
+                //已被移除
+                user.setBuilding(buildings.get(0));
+                CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
+            }else{
+                user.setBuilding(building);
+            }
+        }
+
 
         /**
         if (user == null && maybeMobilePhoneNumber(username))

@@ -27,6 +27,8 @@ public interface IBuildingLevelService
      */
     public List<BuildingLevel> selectBuildingLevelList(BuildingLevel buildingLevel);
 
+    public List<BuildingLevel> selectBuildingLevelListByBuildingId(Long buildingId);
+
     /**
      * 新增building_level
      * 

@@ -1,6 +1,14 @@
 package com.liulin.web.controller.moduler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.liulin.common.core.domain.entity.SysDept;
+import com.liulin.common.utils.ShiroUtils;
+import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.service.IBuildingLevelService;
+import com.liulin.system.service.ISysDeptService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +31,7 @@ import com.liulin.common.core.page.TableDataInfo;
  * residentController
  * 
  * @author liulin
- * @date 2021-08-05
+ * @date 2021-08-06
  */
 @Controller
 @RequestMapping("/data/resident")
@@ -34,10 +42,18 @@ public class ResidentController extends BaseController
     @Autowired
     private IResidentService residentService;
 
+
+
+    @Autowired
+    private IBuildingLevelService buildingLevelService;
+
     @RequiresPermissions("data:resident:view")
     @GetMapping()
-    public String resident()
+    public String resident(ModelMap mp)
     {
+
+        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        mp.put("buildingLevels",buildingLevels);
         return prefix + "/resident";
     }
 
@@ -72,8 +88,10 @@ public class ResidentController extends BaseController
      * 新增resident
      */
     @GetMapping("/add")
-    public String add()
+    public String add(ModelMap mp)
     {
+        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        mp.put("buildingLevels",buildingLevels);
         return prefix + "/add";
     }
 
@@ -86,6 +104,7 @@ public class ResidentController extends BaseController
     @ResponseBody
     public AjaxResult addSave(Resident resident)
     {
+        resident.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(residentService.insertResident(resident));
     }
 

@@ -58,6 +58,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="status != null and status != ''">
 			AND status = #{status}
 		</if>
+		<if test="typeList != null ">
+			AND `type` in
+			<foreach collection="typeList" item="item" separator="," open="(" close=")" >
+				#{item}
+			</foreach>
+		</if>
 		<!-- 数据范围过滤 -->
 		${params.dataScope}
 		order by d.parent_id, d.order_num
@@ -94,6 +100,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectNormalChildrenDeptById" parameterType="Long" resultType="int">
 		select count(*) from sys_dept where status = 0 and del_flag = '0' and find_in_set(#{deptId}, ancestors)
+	</select>
+
+	<select id="selectChildrenDeptByIdAndType" parameterType="SysDept" resultMap="SysDeptResult">
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader,
+		d.phone, d.email, d.status, d.del_flag, d.create_by, d.create_time,d.description,d.spn,d.address,d.suburb,d.type,d.attachment_ids,
+		levels,if_ground_floor,basements from sys_dept d where d.del_flag = '0'
+		AND (d.dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} or find_in_set( #{deptId} , ancestors ) ))
+		and d.type in
+		<foreach collection="typeList" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		order by d.parent_id, d.order_num
 	</select>
 	
 	<insert id="insertDept" parameterType="SysDept" useGeneratedKeys="true" keyProperty="deptId">
