@@ -1,14 +1,10 @@
 package com.liulin.web.controller.moduler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.system.domain.BuildingLevel;
 import com.liulin.system.service.IBuildingLevelService;
-import com.liulin.system.service.ISysDeptService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,70 +16,69 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.liulin.common.annotation.Log;
 import com.liulin.common.enums.BusinessType;
-import com.liulin.system.domain.Resident;
-import com.liulin.system.service.IResidentService;
+import com.liulin.system.domain.Asset;
+import com.liulin.system.service.IAssetService;
 import com.liulin.common.core.controller.BaseController;
 import com.liulin.common.core.domain.AjaxResult;
 import com.liulin.common.utils.poi.ExcelUtil;
 import com.liulin.common.core.page.TableDataInfo;
 
 /**
- * residentController
+ * AssetController
  * 
  * @author liulin
- * @date 2021-08-06
+ * @date 2021-08-07
  */
 @Controller
-@RequestMapping("/data/resident")
-public class ResidentController extends BaseController
+@RequestMapping("/data/asset")
+public class AssetController extends BaseController
 {
-    private String prefix = "data/resident";
+    private String prefix = "data/asset";
 
     @Autowired
-    private IResidentService residentService;
+    private IAssetService assetService;
 
     @Autowired
     private IBuildingLevelService buildingLevelService;
 
-    @RequiresPermissions("data:resident:view")
+    @RequiresPermissions("data:asset:view")
     @GetMapping()
-    public String resident(ModelMap mp)
+    public String asset(ModelMap mp)
     {
-
         List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         mp.put("buildingLevels",buildingLevels);
-        return prefix + "/resident";
+        return prefix + "/asset";
     }
 
     /**
-     * 查询resident列表
+     * 查询Asset列表
      */
-    @RequiresPermissions("data:resident:list")
+    @RequiresPermissions("data:asset:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(Resident resident)
+    public TableDataInfo list(Asset asset)
     {
         startPage();
-        List<Resident> list = residentService.selectResidentList(resident);
+        List<Asset> list = assetService.selectAssetList(asset);
         return getDataTable(list);
     }
 
     /**
-     * 导出resident列表
+     * 导出Asset列表
      */
-    @RequiresPermissions("data:resident:export")
-    @Log(title = "resident", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("data:asset:export")
+    @Log(title = "Asset", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(Resident resident)
+    public AjaxResult export(Asset asset)
     {
-        List<Resident> list = residentService.selectResidentList(resident);
-        ExcelUtil<Resident> util = new ExcelUtil<Resident>(Resident.class);
-        return util.exportExcel(list, "resident数据");
+        List<Asset> list = assetService.selectAssetList(asset);
+        ExcelUtil<Asset> util = new ExcelUtil<Asset>(Asset.class);
+        return util.exportExcel(list, "Asset数据");
     }
 
     /**
-     * 新增resident
+     * 新增Asset
      */
     @GetMapping("/add")
     public String add(ModelMap mp)
@@ -94,52 +89,52 @@ public class ResidentController extends BaseController
     }
 
     /**
-     * 新增保存resident
+     * 新增保存Asset
      */
-    @RequiresPermissions("data:resident:add")
-    @Log(title = "resident", businessType = BusinessType.INSERT)
+    @RequiresPermissions("data:asset:add")
+    @Log(title = "Asset", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Resident resident)
+    public AjaxResult addSave(Asset asset)
     {
-        resident.setCreateBy(ShiroUtils.getLoginName());
-        return toAjax(residentService.insertResident(resident));
+        asset.setCreateBy(ShiroUtils.getLoginName());
+        return toAjax(assetService.insertAsset(asset));
     }
 
     /**
-     * 修改resident
+     * 修改Asset
      */
-    @GetMapping("/edit/{residentId}")
-    public String edit(@PathVariable("residentId") Long residentId, ModelMap mmap)
+    @GetMapping("/edit/{assetId}")
+    public String edit(@PathVariable("assetId") Long assetId, ModelMap mmap)
     {
         List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         mmap.put("buildingLevels",buildingLevels);
-        Resident resident = residentService.selectResidentById(residentId);
-        mmap.put("resident", resident);
+        Asset asset = assetService.selectAssetById(assetId);
+        mmap.put("asset", asset);
         return prefix + "/edit";
     }
 
     /**
-     * 修改保存resident
+     * 修改保存Asset
      */
-    @RequiresPermissions("data:resident:edit")
-    @Log(title = "resident", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("data:asset:edit")
+    @Log(title = "Asset", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(Resident resident)
+    public AjaxResult editSave(Asset asset)
     {
-        return toAjax(residentService.updateResident(resident));
+        return toAjax(assetService.updateAsset(asset));
     }
 
     /**
-     * 删除resident
+     * 删除Asset
      */
-    @RequiresPermissions("data:resident:remove")
-    @Log(title = "resident", businessType = BusinessType.DELETE)
+    @RequiresPermissions("data:asset:remove")
+    @Log(title = "Asset", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        return toAjax(residentService.deleteResidentByIds(ids));
+        return toAjax(assetService.deleteAssetByIds(ids));
     }
 }

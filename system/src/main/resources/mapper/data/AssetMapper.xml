@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.AssetMapper">
+    
+    <resultMap type="Asset" id="AssetResult">
+        <result property="assetId"    column="asset_id"    />
+        <result property="assetName"    column="asset_name"    />
+        <result property="levelId"    column="level_id"    />
+        <result property="brand"    column="brand"    />
+        <result property="needSaftyCheck"    column="need_safty_check"    />
+        <result property="canBeBooked"    column="can_be_booked"    />
+        <result property="status"    column="status"    />
+        <result property="installedDate"    column="installed_date"    />
+        <result property="description"    column="description"    />
+        <result property="attachmentIds"    column="attachment_ids"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectAssetVo">
+        select asset_id, asset_name, level_id, brand, need_safty_check, can_be_booked, status, installed_date, description, attachment_ids, create_by, create_time, update_by, update_time from asset
+    </sql>
+
+    <select id="selectAssetList" parameterType="Asset" resultMap="AssetResult">
+        <include refid="selectAssetVo"/>
+        <where>  
+            <if test="assetName != null  and assetName != ''"> and asset_name like concat('%', #{assetName}, '%')</if>
+            <if test="levelId != null "> and level_id = #{levelId}</if>
+            <if test="brand != null  and brand != ''"> and brand like concat('%', #{brand}, '%')</if>
+            <if test="needSaftyCheck != null "> and need_safty_check = #{needSaftyCheck}</if>
+            <if test="canBeBooked != null  and canBeBooked != ''"> and can_be_booked = #{canBeBooked}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="installedDate != null "> and installed_date = #{installedDate}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="attachmentIds != null  and attachmentIds != ''"> and attachment_ids = #{attachmentIds}</if>
+        </where>
+    </select>
+    
+    <select id="selectAssetById" parameterType="Long" resultMap="AssetResult">
+        <include refid="selectAssetVo"/>
+        where asset_id = #{assetId}
+    </select>
+        
+    <insert id="insertAsset" parameterType="Asset">
+        insert into asset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="assetId != null">asset_id,</if>
+            <if test="assetName != null and assetName != ''">asset_name,</if>
+            <if test="levelId != null">level_id,</if>
+            <if test="brand != null and brand != ''">brand,</if>
+            <if test="needSaftyCheck != null">need_safty_check,</if>
+            <if test="canBeBooked != null and canBeBooked != ''">can_be_booked,</if>
+            <if test="status != null">status,</if>
+            <if test="installedDate != null">installed_date,</if>
+            <if test="description != null">description,</if>
+            <if test="attachmentIds != null">attachment_ids,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="assetId != null">#{assetId},</if>
+            <if test="assetName != null and assetName != ''">#{assetName},</if>
+            <if test="levelId != null">#{levelId},</if>
+            <if test="brand != null and brand != ''">#{brand},</if>
+            <if test="needSaftyCheck != null">#{needSaftyCheck},</if>
+            <if test="canBeBooked != null and canBeBooked != ''">#{canBeBooked},</if>
+            <if test="status != null">#{status},</if>
+            <if test="installedDate != null">#{installedDate},</if>
+            <if test="description != null">#{description},</if>
+            <if test="attachmentIds != null">#{attachmentIds},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAsset" parameterType="Asset">
+        update asset
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="assetName != null and assetName != ''">asset_name = #{assetName},</if>
+            <if test="levelId != null">level_id = #{levelId},</if>
+            <if test="brand != null and brand != ''">brand = #{brand},</if>
+            <if test="needSaftyCheck != null">need_safty_check = #{needSaftyCheck},</if>
+            <if test="canBeBooked != null and canBeBooked != ''">can_be_booked = #{canBeBooked},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="installedDate != null">installed_date = #{installedDate},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="attachmentIds != null">attachment_ids = #{attachmentIds},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where asset_id = #{assetId}
+    </update>
+
+    <delete id="deleteAssetById" parameterType="Long">
+        delete from asset where asset_id = #{assetId}
+    </delete>
+
+    <delete id="deleteAssetByIds" parameterType="String">
+        delete from asset where asset_id in 
+        <foreach item="assetId" collection="array" open="(" separator="," close=")">
+            #{assetId}
+        </foreach>
+    </delete>
+
+</mapper>

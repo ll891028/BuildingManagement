@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('Asset列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                Asset Name：
+                                <input type="text" name="assetName"/>
+                            </li>
+                            <li>
+                                Level：
+                                <select name="levelId">
+                                    <option value="">All</option>
+                                    <option th:each="level:${buildingLevels}" th:value="${level.levelId}"
+                                            th:text="${level.levelName}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                Brand：
+                                <input type="text" name="brand"/>
+                            </li>
+                            <li>
+                                Need Safty Check：
+                                <select name="needSaftyCheck" th:with="type=${@dict.getType('current_resident')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                Can be booked：
+                                <select name="canBeBooked" th:with="type=${@dict.getType('current_resident')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                Status：
+                                <select name="status" th:with="type=${@dict.getType('resident_status')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                Installed Date：
+                                <input type="text" class="time-input" placeholder="请选择Installed Date" name="installedDate"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="data:asset:add">
+                    <i class="fa fa-plus"></i> add
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="data:asset:edit">
+                    <i class="fa fa-edit"></i> edit
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="data:asset:remove">
+                    <i class="fa fa-remove"></i> remove
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="data:asset:export">
+                    <i class="fa fa-download"></i> export
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('data:asset:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('data:asset:remove')}]];
+        var needSaftyCheckDatas = [[${@dict.getType('current_resident')}]];
+        var canBeBookedDatas = [[${@dict.getType('current_resident')}]];
+        var statusDatas = [[${@dict.getType('resident_status')}]];
+        var prefix = ctx + "data/asset";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "Asset",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'assetId',
+                    title: 'Asset Id',
+                    visible: false
+                },
+                {
+                    field: 'assetName',
+                    title: 'Asset Name'
+                },
+                {
+                    field: 'levelId',
+                    title: 'Level'
+                },
+                {
+                    field: 'brand',
+                    title: 'Brand'
+                },
+                {
+                    field: 'needSaftyCheck',
+                    title: 'Need Safty Check',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(needSaftyCheckDatas, value);
+                    }
+                },
+                {
+                    field: 'canBeBooked',
+                    title: 'Can be booked',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(canBeBookedDatas, value);
+                    }
+                },
+                {
+                    field: 'status',
+                    title: 'Status',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+                {
+                    field: 'installedDate',
+                    title: 'Installed Date'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.assetId + '\')"><i class="fa fa-edit"></i>edit</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.assetId + '\')"><i class="fa fa-remove"></i>remove</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>
