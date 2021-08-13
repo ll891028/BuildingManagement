@@ -58,4 +58,7 @@ public interface IAssetService
      * @return 结果
      */
     public int deleteAssetById(Long assetId);
+
+
+    String checkAssetNameUnique(Asset asset);
 }

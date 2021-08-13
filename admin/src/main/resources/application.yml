@@ -9,7 +9,7 @@ liulin:
   # 实例演示开关
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/liulin/uploadPath，Linux配置 /home/liulin/uploadPath）
-  profile: /Users/liulin/upload
+  profile: /opt/upload/upload
   # 获取ip地址开关
   addressEnabled: false
 

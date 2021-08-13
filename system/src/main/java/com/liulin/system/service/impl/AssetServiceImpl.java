@@ -1,7 +1,10 @@
 package com.liulin.system.service.impl;
 
 import java.util.List;
+
+import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.AssetMapper;
@@ -93,5 +96,14 @@ public class AssetServiceImpl implements IAssetService
     public int deleteAssetById(Long assetId)
     {
         return assetMapper.deleteAssetById(assetId);
+    }
+
+    @Override
+    public String checkAssetNameUnique(Asset asset) {
+        Asset assetTemp = assetMapper.checkAssetNameUnique(asset.getAssetName(),asset.getBuildingId());
+        if(StringUtils.isNotNull(assetTemp)){
+            return UserConstants.ASSET_NAME_UNIQUE;
+        }
+        return UserConstants.ASSET_NAME_NOT_UNIQUE;
     }
 }

@@ -25,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="levelName"    column="level_name"    />
+        <result property="buildingId"    column="building_id"    />
     </resultMap>
 
     <sql id="selectResidentVo">
@@ -48,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="carparkSpaceAmount != null "> and t1.carpark_space_amount = #{carparkSpaceAmount}</if>
             <if test="residentType != null "> and t1.resident_type = #{residentType}</if>
             <if test="attachmentIds != null  and attachmentIds != ''"> and t1.attachment_ids = #{attachmentIds}</if>
+            <if test="buildingId != null"> and t2.building_id = #{buildingId}</if>
         </where>
     </select>
     

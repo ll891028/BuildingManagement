@@ -2,6 +2,7 @@ package com.liulin.system.mapper;
 
 import java.util.List;
 import com.liulin.system.domain.Asset;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * AssetMapper接口
@@ -58,4 +59,6 @@ public interface AssetMapper
      * @return 结果
      */
     public int deleteAssetByIds(String[] assetIds);
+
+    Asset checkAssetNameUnique(@Param("assetName") String assetName, @Param("buildingId")Long buildingId);
 }

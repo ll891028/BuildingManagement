@@ -402,11 +402,24 @@ $(function() {
 			success: function(result) {
 				if (result.code == web_status.SUCCESS) {
 					$("#userBuilding").text(buildingName);
+					tabCloseAll();
 				} else {
 					console.log(result.msg);
 				}
 			}
 		})
+	}
+	function tabCloseAll() {
+		$('.page-tabs-content').children("[data-id]").not(":first").each(function() {
+			$('.liulin_iframe[data-id="' + $(this).data('id') + '"]').remove();
+			$(this).remove();
+		});
+		$('.page-tabs-content').children("[data-id]:first").each(function() {
+			$('.liulin_iframe[data-id="' + $(this).data('id') + '"]').show();
+			$(this).addClass("active");
+		});
+		$('.page-tabs-content').css("margin-left", "0");
+		syncMenuTab($('.page-tabs-content').find('.active').attr('data-id'));
 	}
 </script>
 </body>

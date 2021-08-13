@@ -114,7 +114,8 @@ public class CommonController {
             for (MultipartFile file : files) {
                 String fileName = "";
                 String url = "";
-                Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(Md5Utils.getMD5ByFile(FileUtils.multipartFileToFile(file)));
+                File tempFile = FileUtils.multipartFileToFile(file);
+                Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(Md5Utils.getMD5ByFile(tempFile));
                 if (attachmentByMd5 != null) {
                     //MD5重复 不再保存文件直接使用上次的地址
                     url = attachmentByMd5.getAttachmentUrl();
@@ -124,7 +125,7 @@ public class CommonController {
                     fileName = FileUploadUtils.upload(filePath, file);
                     url = serverConfig.getUrl() + fileName;
                 }
-
+                tempFile.delete();
                 fileInfos.add(new FileInfo(fileName, url, file.getOriginalFilename()));
             }
             return AjaxResult.success(fileInfos);

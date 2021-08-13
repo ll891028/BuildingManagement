@@ -2,6 +2,7 @@ package com.liulin.web.controller.moduler;
 
 import java.util.List;
 
+import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.system.domain.BuildingLevel;
 import com.liulin.system.service.IBuildingLevelService;
@@ -58,6 +59,7 @@ public class AssetController extends BaseController
     @ResponseBody
     public TableDataInfo list(Asset asset)
     {
+        asset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         startPage();
         List<Asset> list = assetService.selectAssetList(asset);
         return getDataTable(list);
@@ -136,5 +138,17 @@ public class AssetController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(assetService.deleteAssetByIds(ids));
+    }
+
+
+    /**
+     * 校验部门名称
+     */
+    @PostMapping("/checkAssetNameUnique")
+    @ResponseBody
+    public String checkAssetNameUnique(Asset asset)
+    {
+        asset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        return assetService.checkAssetNameUnique(asset);
     }
 }

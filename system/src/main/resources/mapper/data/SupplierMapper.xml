@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.SupplierMapper">
+    
+    <resultMap type="Supplier" id="SupplierResult">
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="contactNumber"    column="contact_number"    />
+        <result property="email"    column="email"    />
+        <result property="status"    column="status"    />
+        <result property="licenseNumber"    column="license_number"    />
+        <result property="insuraceExpiredDate"    column="insurace_expired_date"    />
+        <result property="description"    column="description"    />
+        <result property="attachmentIds"    column="attachment_ids"    />
+        <result property="contactPerson"    column="contact_person"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSupplierVo">
+        select supplier_id, company_name, service_id, contact_number, email, status, license_number, insurace_expired_date, description, attachment_ids, contact_person, create_by, create_time, update_by, update_time from supplier
+    </sql>
+
+    <select id="selectSupplierList" parameterType="Supplier" resultMap="SupplierResult">
+        <include refid="selectSupplierVo"/>
+        <where>  
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="serviceId != null "> and service_id = #{serviceId}</if>
+            <if test="contactNumber != null  and contactNumber != ''"> and contact_number like concat('%', #{contactNumber}, '%')</if>
+            <if test="email != null  and email != ''"> and email like concat('%', #{email}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="licenseNumber != null  and licenseNumber != ''"> and license_number like concat('%', #{licenseNumber}, '%')</if>
+            <if test="insuraceExpiredDate != null "> and insurace_expired_date = #{insuraceExpiredDate}</if>
+            <if test="attachmentIds != null  and attachmentIds != ''"> and attachment_ids = #{attachmentIds}</if>
+        </where>
+    </select>
+    
+    <select id="selectSupplierById" parameterType="Long" resultMap="SupplierResult">
+        <include refid="selectSupplierVo"/>
+        where supplier_id = #{supplierId}
+    </select>
+        
+    <insert id="insertSupplier" parameterType="Supplier" useGeneratedKeys="true" keyProperty="supplierId">
+        insert into supplier
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="companyName != null and companyName != ''">company_name,</if>
+            <if test="serviceId != null">service_id,</if>
+            <if test="contactNumber != null and contactNumber != ''">contact_number,</if>
+            <if test="email != null and email != ''">email,</if>
+            <if test="status != null">status,</if>
+            <if test="licenseNumber != null and licenseNumber != ''">license_number,</if>
+            <if test="insuraceExpiredDate != null">insurace_expired_date,</if>
+            <if test="description != null">description,</if>
+            <if test="attachmentIds != null">attachment_ids,</if>
+            <if test="contactPerson != null">contact_person,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyName != null and companyName != ''">#{companyName},</if>
+            <if test="serviceId != null">#{serviceId},</if>
+            <if test="contactNumber != null and contactNumber != ''">#{contactNumber},</if>
+            <if test="email != null and email != ''">#{email},</if>
+            <if test="status != null">#{status},</if>
+            <if test="licenseNumber != null and licenseNumber != ''">#{licenseNumber},</if>
+            <if test="insuraceExpiredDate != null">#{insuraceExpiredDate},</if>
+            <if test="description != null">#{description},</if>
+            <if test="attachmentIds != null">#{attachmentIds},</if>
+            <if test="contactPerson != null">#{contactPerson},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSupplier" parameterType="Supplier">
+        update supplier
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyName != null and companyName != ''">company_name = #{companyName},</if>
+            <if test="serviceId != null">service_id = #{serviceId},</if>
+            <if test="contactNumber != null and contactNumber != ''">contact_number = #{contactNumber},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="licenseNumber != null and licenseNumber != ''">license_number = #{licenseNumber},</if>
+            <if test="insuraceExpiredDate != null">insurace_expired_date = #{insuraceExpiredDate},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="attachmentIds != null">attachment_ids = #{attachmentIds},</if>
+            <if test="contactPerson != null">contact_person = #{contactPerson},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where supplier_id = #{supplierId}
+    </update>
+
+    <delete id="deleteSupplierById" parameterType="Long">
+        delete from supplier where supplier_id = #{supplierId}
+    </delete>
+
+    <delete id="deleteSupplierByIds" parameterType="String">
+        delete from supplier where supplier_id in 
+        <foreach item="supplierId" collection="array" open="(" separator="," close=")">
+            #{supplierId}
+        </foreach>
+    </delete>
+
+</mapper>

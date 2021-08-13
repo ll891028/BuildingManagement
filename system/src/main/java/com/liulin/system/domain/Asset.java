@@ -57,7 +57,17 @@ public class Asset extends BaseEntity
     @Excel(name = "Attachment")
     private String attachmentIds;
 
-    public void setAssetId(Long assetId) 
+    private Long buildingId;
+
+    public Long getBuildingId() {
+        return buildingId;
+    }
+
+    public void setBuildingId(Long buildingId) {
+        this.buildingId = buildingId;
+    }
+
+    public void setAssetId(Long assetId)
     {
         this.assetId = assetId;
     }

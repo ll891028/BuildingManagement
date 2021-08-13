@@ -76,13 +76,42 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Carpark Space Amount：</label>
                 <div class="col-sm-8">
-                    <select name="carparkSpaceAmount" class="form-control m-b" required>
-                        <option value="">All</option>
+                    <select name="carparkSpaceAmount" class="form-control m-b" required onchange="selectCarSpace(this)">
                         <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
                     </select>
+                </div>
+            </div>
+            <div class="form-group" id="car1" style="display: none">
+                <label class="col-sm-3 control-label is-required">#1 Car Plate Number：</label>
+                <div class="col-sm-2">
+                    <input name="carPlatNumber" class="form-control" type="text" required>
+                </div>
+                <label class="col-sm-3 control-label is-required">Car Space Number：</label>
+                <div class="col-sm-2">
+                    <input name="carSpaceNumber" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group" id="car2" style="display: none">
+                <label class="col-sm-3 control-label is-required">#2 Car Plate Number：</label>
+                <div class="col-sm-2">
+                    <input name="carPlatNumber" class="form-control" type="text" required>
+                </div>
+                <label class="col-sm-3 control-label is-required">Car Space Number：</label>
+                <div class="col-sm-2">
+                    <input name="carSpaceNumber" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group" id="car3" style="display: none">
+                <label class="col-sm-3 control-label is-required">#3 Car Plate Number：</label>
+                <div class="col-sm-2">
+                    <input name="carPlatNumber" class="form-control" type="text" required>
+                </div>
+                <label class="col-sm-3 control-label is-required">Car Space Number：</label>
+                <div class="col-sm-2">
+                    <input name="carSpaceNumber" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">    
@@ -137,6 +166,27 @@
         function submitHandler() {
             if ($.validate.form()) {
                 $.operate.save(prefix + "/add", $('#form-resident-add').serialize());
+            }
+        }
+
+        function selectCarSpace(obj){
+            var carSpace = $(obj).val();
+            if(carSpace==0){
+                $("#car1").hide();
+                $("#car2").hide();
+                $("#car3").hide();
+            }else if(carSpace==1){
+                $("#car1").show();
+                $("#car2").hide();
+                $("#car3").hide();
+            }else if(carSpace==2){
+                $("#car1").show();
+                $("#car2").show();
+                $("#car3").hide();
+            }else if(carSpace==3){
+                $("#car1").show();
+                $("#car2").show();
+                $("#car3").show();
             }
         }
     </script>

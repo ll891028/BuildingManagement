@@ -63,6 +63,7 @@ public class ResidentController extends BaseController
     @ResponseBody
     public TableDataInfo list(Resident resident)
     {
+        resident.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         startPage();
         List<Resident> list = residentService.selectResidentList(resident);
         return getDataTable(list);
