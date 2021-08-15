@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.CompanyServiceMapper">
+    
+    <resultMap type="CompanyService" id="CompanyServiceResult">
+        <result property="companyServiceId"    column="company_service_id"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="companyId"    column="company_id"    />
+
+    </resultMap>
+
+    <insert id="insertBatch" >
+        insert into companyService (company_service_id,service_id,company_id)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+             #{item.companyServiceId},   #{serviceId}, #{companyId}
+            )
+        </foreach>
+    </insert>
+
+
+</mapper>
