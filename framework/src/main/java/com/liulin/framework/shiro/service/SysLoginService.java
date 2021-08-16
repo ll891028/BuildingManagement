@@ -106,7 +106,10 @@ public class SysLoginService
                 user.setBuilding(building);
             }
         }
-
+        if(building!=null){
+            SysDept company = sysDeptService.selectCompanyByBuildingId(building.getParentId());
+            user.setCompany(company);
+        }
 
         /**
         if (user == null && maybeMobilePhoneNumber(username))

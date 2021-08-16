@@ -209,4 +209,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
 	</update>
 
+	<select id="selectParentDept" parameterType="Long" resultMap="SysDeptResult">
+		select * from sys_dept where dept_id=#{buildingId}
+	</select>
 </mapper> 

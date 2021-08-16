@@ -1,6 +1,8 @@
 package com.liulin.system.domain;
 
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -20,13 +22,12 @@ public class Supplier extends BaseEntity
     /** Supplier Id */
     private Long supplierId;
 
-    /** Company Name */
+    /** Supplier Company Name */
     @Excel(name = "Company Name")
     private String companyName;
 
-    /** Service */
-    @Excel(name = "Service")
-    private Long serviceId;
+    /** Company Id */
+    private Long companyId;
 
     /** Contact Number */
     @Excel(name = "Contact Number")
@@ -59,7 +60,55 @@ public class Supplier extends BaseEntity
     /** Contact Person */
     private String contactPerson;
 
-    public void setSupplierId(Long supplierId) 
+    private List<Long> serviceIds;
+
+    private String serviceNames;
+
+    private Long serviceId;
+
+    private String state;
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    public String getServiceNames() {
+        return serviceNames;
+    }
+
+    public void setServiceNames(String serviceNames) {
+        this.serviceNames = serviceNames;
+    }
+
+    public List<Long> getServiceIds() {
+        return serviceIds;
+    }
+
+    public void setServiceIds(List<Long> serviceIds) {
+        this.serviceIds = serviceIds;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    public void setSupplierId(Long supplierId)
     {
         this.supplierId = supplierId;
     }
@@ -76,15 +125,6 @@ public class Supplier extends BaseEntity
     public String getCompanyName() 
     {
         return companyName;
-    }
-    public void setServiceId(Long serviceId) 
-    {
-        this.serviceId = serviceId;
-    }
-
-    public Long getServiceId() 
-    {
-        return serviceId;
     }
     public void setContactNumber(String contactNumber) 
     {
@@ -164,7 +204,7 @@ public class Supplier extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("supplierId", getSupplierId())
             .append("companyName", getCompanyName())
-            .append("serviceId", getServiceId())
+            .append("companyId", getCompanyId())
             .append("contactNumber", getContactNumber())
             .append("email", getEmail())
             .append("status", getStatus())

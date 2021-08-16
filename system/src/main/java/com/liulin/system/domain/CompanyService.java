@@ -10,7 +10,17 @@ public class CompanyService {
 
     private Long serviceId;
 
-    private Long companyId;
+    private Long supplierId;
+
+    private String serviceName;
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
     public Long getCompanyServiceId() {
         return companyServiceId;
@@ -28,11 +38,11 @@ public class CompanyService {
         this.serviceId = serviceId;
     }
 
-    public Long getCompanyId() {
-        return companyId;
+    public Long getSupplierId() {
+        return supplierId;
     }
 
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
+    public void setSupplierId(Long supplierId) {
+        this.supplierId = supplierId;
     }
 }

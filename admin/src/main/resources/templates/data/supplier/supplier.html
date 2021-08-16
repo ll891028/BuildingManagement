@@ -18,7 +18,8 @@
                                 Service：
                                 <select name="serviceId">
                                     <option value="">All</option>
-                                    <option value="-1">代码生成请选择字典属性</option>
+                                    <option th:each="servize :${serviceList}" th:text="${servize.serviceName}"
+                                            th:value="${servize.serviceId}"></option>
                                 </select>
                             </li>
                             <li>
@@ -102,7 +103,7 @@
                     title: 'Company Name'
                 },
                 {
-                    field: 'serviceId',
+                    field: 'serviceNames',
                     title: 'Service'
                 },
                 {

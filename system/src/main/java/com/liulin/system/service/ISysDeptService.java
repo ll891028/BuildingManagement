@@ -114,5 +114,5 @@ public interface ISysDeptService
 
     int generateLevel(SysDept dept);
 
-
+    SysDept selectCompanyByBuildingId(Long buildingId);
 }

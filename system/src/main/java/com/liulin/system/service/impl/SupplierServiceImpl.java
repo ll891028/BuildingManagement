@@ -2,12 +2,16 @@ package com.liulin.system.service.impl;
 
 import java.util.List;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.system.service.ICompanyServiceService;
+import com.liulin.system.service.IServizeService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.SupplierMapper;
 import com.liulin.system.domain.Supplier;
 import com.liulin.system.service.ISupplierService;
 import com.liulin.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * supplierService业务层处理
@@ -20,6 +24,9 @@ public class SupplierServiceImpl implements ISupplierService
 {
     @Autowired
     private SupplierMapper supplierMapper;
+
+    @Autowired
+    private ICompanyServiceService companyServiceService;
 
     /**
      * 查询supplier
@@ -52,10 +59,15 @@ public class SupplierServiceImpl implements ISupplierService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertSupplier(Supplier supplier)
     {
         supplier.setCreateTime(DateUtils.getNowDate());
-        return supplierMapper.insertSupplier(supplier);
+        int result = supplierMapper.insertSupplier(supplier);
+        if(CollectionUtils.isNotEmpty(supplier.getServiceIds())){
+            companyServiceService.insertBatch(supplier.getServiceIds(),supplier.getSupplierId());
+        }
+        return result;
     }
 
     /**
@@ -68,6 +80,7 @@ public class SupplierServiceImpl implements ISupplierService
     public int updateSupplier(Supplier supplier)
     {
         supplier.setUpdateTime(DateUtils.getNowDate());
+        companyServiceService.insertBatch(supplier.getServiceIds(),supplier.getSupplierId());
         return supplierMapper.updateSupplier(supplier);
     }
 

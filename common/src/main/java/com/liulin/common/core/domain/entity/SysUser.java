@@ -95,6 +95,10 @@ public class SysUser extends BaseEntity
 
     private SysDept building;
 
+
+
+    private SysDept company;
+
     private List<SysRole> roles;
 
     private List<SysDept> buildingsList;
@@ -110,6 +114,13 @@ public class SysUser extends BaseEntity
 
     }
 
+    public SysDept getCompany() {
+        return company;
+    }
+
+    public void setCompany(SysDept company) {
+        this.company = company;
+    }
     public SysUser(Long userId)
     {
         this.userId = userId;

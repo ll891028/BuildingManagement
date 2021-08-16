@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="Supplier" id="SupplierResult">
         <result property="supplierId"    column="supplier_id"    />
         <result property="companyName"    column="company_name"    />
-        <result property="serviceId"    column="service_id"    />
+        <result property="companyId"    column="company_id"    />
         <result property="contactNumber"    column="contact_number"    />
         <result property="email"    column="email"    />
         <result property="status"    column="status"    />
@@ -20,24 +20,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="serviceNames"    column="service_names"    />
+        <result property="state"    column="state"    />
     </resultMap>
 
     <sql id="selectSupplierVo">
-        select supplier_id, company_name, service_id, contact_number, email, status, license_number, insurace_expired_date, description, attachment_ids, contact_person, create_by, create_time, update_by, update_time from supplier
+        select supplier_id, company_name, company_id, contact_number, email, status, license_number,
+               insurace_expired_date, description, attachment_ids, contact_person, create_by, create_time, update_by,
+               update_time,state from supplier
     </sql>
 
     <select id="selectSupplierList" parameterType="Supplier" resultMap="SupplierResult">
-        <include refid="selectSupplierVo"/>
+        SELECT
+        t1.*,GROUP_CONCAT(t3.service_name) service_names
+        FROM
+        supplier t1 left join company_service t2 on t1.supplier_id= t2.supplier_id
+        left join service t3 on t2.service_id=t3.service_id
         <where>  
-            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
-            <if test="serviceId != null "> and service_id = #{serviceId}</if>
-            <if test="contactNumber != null  and contactNumber != ''"> and contact_number like concat('%', #{contactNumber}, '%')</if>
-            <if test="email != null  and email != ''"> and email like concat('%', #{email}, '%')</if>
-            <if test="status != null "> and status = #{status}</if>
-            <if test="licenseNumber != null  and licenseNumber != ''"> and license_number like concat('%', #{licenseNumber}, '%')</if>
-            <if test="insuraceExpiredDate != null "> and insurace_expired_date = #{insuraceExpiredDate}</if>
-            <if test="attachmentIds != null  and attachmentIds != ''"> and attachment_ids = #{attachmentIds}</if>
+            <if test="companyName != null  and companyName != ''"> and t1.company_name like concat('%', #{companyName}, '%')</if>
+            <if test="companyId != null "> and t1.company_id = #{companyId}</if>
+            <if test="serviceId != null "> and t2.service_id = #{serviceId}</if>
+            <if test="contactNumber != null  and contactNumber != ''"> and t1.contact_number like concat('%', #{contactNumber}, '%')</if>
+            <if test="email != null  and email != ''"> and t1.email like concat('%', #{email}, '%')</if>
+            <if test="status != null "> and t1.status = #{status}</if>
+            <if test="licenseNumber != null  and licenseNumber != ''"> and t1.license_number like concat('%', #{licenseNumber}, '%')</if>
+            <if test="insuraceExpiredDate != null "> and t1.insurace_expired_date = #{insuraceExpiredDate}</if>
         </where>
+        group by t1.supplier_id
     </select>
     
     <select id="selectSupplierById" parameterType="Long" resultMap="SupplierResult">
@@ -49,7 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into supplier
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="companyName != null and companyName != ''">company_name,</if>
-            <if test="serviceId != null">service_id,</if>
+            <if test="companyId != null">company_id,</if>
             <if test="contactNumber != null and contactNumber != ''">contact_number,</if>
             <if test="email != null and email != ''">email,</if>
             <if test="status != null">status,</if>
@@ -62,10 +71,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="state != null and state!=''">`state`,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="companyName != null and companyName != ''">#{companyName},</if>
-            <if test="serviceId != null">#{serviceId},</if>
+            <if test="companyId != null">#{companyId},</if>
             <if test="contactNumber != null and contactNumber != ''">#{contactNumber},</if>
             <if test="email != null and email != ''">#{email},</if>
             <if test="status != null">#{status},</if>
@@ -78,6 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="state != null and state!=''">#{state},</if>
          </trim>
     </insert>
 
@@ -85,7 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update supplier
         <trim prefix="SET" suffixOverrides=",">
             <if test="companyName != null and companyName != ''">company_name = #{companyName},</if>
-            <if test="serviceId != null">service_id = #{serviceId},</if>
+            <if test="companyId != null">company_id = #{companyId},</if>
             <if test="contactNumber != null and contactNumber != ''">contact_number = #{contactNumber},</if>
             <if test="email != null and email != ''">email = #{email},</if>
             <if test="status != null">status = #{status},</if>
@@ -98,6 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="state != null and state!=''">state = #{state},</if>
         </trim>
         where supplier_id = #{supplierId}
     </update>

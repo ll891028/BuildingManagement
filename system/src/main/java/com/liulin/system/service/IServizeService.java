@@ -58,4 +58,6 @@ public interface IServizeService
      * @return 结果
      */
     public int deleteServizeById(Long serviceId);
+
+    int generateDefaultService(Long companyId,String createBy);
 }

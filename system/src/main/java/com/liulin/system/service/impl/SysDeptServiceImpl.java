@@ -14,6 +14,7 @@ import com.liulin.common.utils.security.Md5Utils;
 import com.liulin.system.domain.Attachment;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.IBuildingLevelService;
+import com.liulin.system.service.IServizeService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,9 @@ public class SysDeptServiceImpl implements ISysDeptService
 
     @Autowired
     private ServerConfig serverConfig;
+
+    @Autowired
+    private IServizeService servizeService;
 
     /**
      * 查询部门管理数据
@@ -267,6 +271,10 @@ public class SysDeptServiceImpl implements ISysDeptService
             buildingLevelService.generateDefaultLevel(dept.getDeptId(),dept.getLevels().intValue(),
                     dept.getIfGroundFloor().intValue(),dept.getBasements(), ShiroUtils.getLoginName());
         }
+        if(dept.getType().equals(SysDept.COMPANY)){
+            //部门为Company
+            servizeService.generateDefaultService(dept.getDeptId(),dept.getCreateBy());
+        }
         return result;
     }
 
@@ -440,6 +448,16 @@ public class SysDeptServiceImpl implements ISysDeptService
         buildingLevelService.generateDefaultLevel(dept.getDeptId(),dept.getLevels(),dept.getIfGroundFloor(),
                 dept.getBasements(),dept.getCreateBy());
         return deptMapper.updateDept(dept);
+    }
+
+    @Override
+    public SysDept selectCompanyByBuildingId(Long buildingId) {
+        SysDept sysDept = new SysDept();
+        sysDept.setParentId(buildingId);
+        while (!sysDept.getParentId().equals(100L)){
+            sysDept = deptMapper.selectParentDept(sysDept.getParentId());
+        }
+        return sysDept;
     }
 
 }

@@ -1,6 +1,8 @@
 package com.liulin.web.controller.moduler;
 
 import java.util.List;
+
+import com.liulin.common.utils.ShiroUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,6 +51,7 @@ public class ServizeController extends BaseController
     @ResponseBody
     public TableDataInfo list(Servize servize)
     {
+        servize.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         startPage();
         List<Servize> list = servizeService.selectServizeList(servize);
         return getDataTable(list);
@@ -86,6 +89,7 @@ public class ServizeController extends BaseController
     @ResponseBody
     public AjaxResult addSave(Servize servize)
     {
+        servize.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(servizeService.insertServize(servize));
     }
 

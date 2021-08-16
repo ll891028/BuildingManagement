@@ -2,6 +2,10 @@ package com.liulin.web.controller.moduler;
 
 import java.util.List;
 
+import com.liulin.common.utils.ShiroUtils;
+import com.liulin.system.domain.CompanyService;
+import com.liulin.system.domain.Servize;
+import com.liulin.system.service.ICompanyServiceService;
 import com.liulin.system.service.IServizeService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +43,17 @@ public class SupplierController extends BaseController
     @Autowired
     private IServizeService servizeService;
 
+    @Autowired
+    private ICompanyServiceService companyServiceService;
+
     @RequiresPermissions("data:supplier:view")
     @GetMapping()
-    public String supplier()
+    public String supplier(ModelMap mmp)
     {
-
-
+        Servize query = new Servize();
+        query.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        List<Servize> serviceList = servizeService.selectServizeList(query);
+        mmp.put("serviceList",serviceList);
         return prefix + "/supplier";
     }
 
@@ -56,6 +65,7 @@ public class SupplierController extends BaseController
     @ResponseBody
     public TableDataInfo list(Supplier supplier)
     {
+        supplier.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         startPage();
         List<Supplier> list = supplierService.selectSupplierList(supplier);
         return getDataTable(list);
@@ -79,8 +89,13 @@ public class SupplierController extends BaseController
      * 新增supplier
      */
     @GetMapping("/add")
-    public String add()
+    public String add(ModelMap mmp)
     {
+
+        Servize query = new Servize();
+        query.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        List<Servize> serviceList = servizeService.selectServizeList(query);
+        mmp.put("serviceList",serviceList);
         return prefix + "/add";
     }
 
@@ -93,6 +108,8 @@ public class SupplierController extends BaseController
     @ResponseBody
     public AjaxResult addSave(Supplier supplier)
     {
+        supplier.setCreateBy(ShiroUtils.getLoginName());
+        supplier.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(supplierService.insertSupplier(supplier));
     }
 
@@ -102,8 +119,22 @@ public class SupplierController extends BaseController
     @GetMapping("/edit/{supplierId}")
     public String edit(@PathVariable("supplierId") Long supplierId, ModelMap mmap)
     {
+        Servize query = new Servize();
+        query.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        List<Servize> serviceList = servizeService.selectServizeList(query);
+
         Supplier supplier = supplierService.selectSupplierById(supplierId);
         mmap.put("supplier", supplier);
+        List<CompanyService> companyServices = companyServiceService.selectCompanyServiceBySupplierId(supplierId);
+        mmap.put("companyServices", companyServices);
+        for (Servize servize : serviceList) {
+            for (CompanyService companyService : companyServices) {
+                if(servize.getServiceId().equals(companyService.getServiceId())){
+                    servize.setSelected(true);
+                }
+            }
+        }
+        mmap.put("serviceList",serviceList);
         return prefix + "/edit";
     }
 
@@ -116,6 +147,7 @@ public class SupplierController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Supplier supplier)
     {
+        supplier.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(supplierService.updateSupplier(supplier));
     }
 

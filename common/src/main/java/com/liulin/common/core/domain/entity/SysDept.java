@@ -16,6 +16,18 @@ public class SysDept extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    public static Integer COMPANY = 0;
+
+    public static Integer BUILDINGS = 1;
+
+    public static Integer RESIDENTIAL = 2;
+
+    public static Integer COMMERCIAL = 3;
+
+    public static Integer RETAIL = 4;
+
+    public static Integer DMC = 5;
+
     /** 部门ID */
     private Long deptId;
 

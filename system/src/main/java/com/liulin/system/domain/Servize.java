@@ -34,7 +34,27 @@ public class Servize extends BaseEntity
     @Excel(name = "Attachment")
     private String attachmentIds;
 
-    public void setServiceId(Long serviceId) 
+    private Long companyId;
+
+    private boolean selected;
+
+    public boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    public void setServiceId(Long serviceId)
     {
         this.serviceId = serviceId;
     }

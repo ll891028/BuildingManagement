@@ -7,19 +7,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="CompanyService" id="CompanyServiceResult">
         <result property="companyServiceId"    column="company_service_id"    />
         <result property="serviceId"    column="service_id"    />
-        <result property="companyId"    column="company_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="serviceName"    column="service_name"    />
 
     </resultMap>
 
     <insert id="insertBatch" >
-        insert into companyService (company_service_id,service_id,company_id)
+        insert into company_service (service_id,supplier_id)
         values
         <foreach collection="list" item="item" separator=",">
             (
-             #{item.companyServiceId},   #{serviceId}, #{companyId}
+             #{item.serviceId}, #{item.supplierId}
             )
         </foreach>
     </insert>
 
+    <delete id="deleteByCompanyId" parameterType="Long">
+        delete from company_service where supplier_id = #{supplierId}
+    </delete>
 
+    <select id="selectCompanyServiceBySupplierId" parameterType="Long" resultMap="CompanyServiceResult">
+
+        select t1.*,t2.service_name from company_service t1 left join service t2 on t1.service_id = t2.service_id
+        where
+                t1.supplier_id = #{supplierId}
+    </select>
 </mapper>

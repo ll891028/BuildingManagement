@@ -246,6 +246,8 @@ public class SysDeptController extends BaseController
         SysDept sysDept = deptService.selectDeptById(buildingId);
         SysUser sysUser = ShiroUtils.getSysUser();
         sysUser.setBuilding(sysDept);
+        SysDept company = deptService.selectCompanyByBuildingId(sysDept.getParentId());
+        sysUser.setCompany(company);
         ShiroUtils.setSysUser(sysUser);
         CacheUtils.put("user:building:"+sysUser.getUserId(),sysUser.getBuilding());
         return toAjax(1);

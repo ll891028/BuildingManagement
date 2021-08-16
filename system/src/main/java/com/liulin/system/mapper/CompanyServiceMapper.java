@@ -15,4 +15,8 @@ import java.util.List;
 public interface CompanyServiceMapper
 {
     int insertBatch(List<CompanyService> list);
+
+    int deleteByCompanyId(Long companyId);
+
+    List<CompanyService> selectCompanyServiceBySupplierId(Long supplierId);
 }

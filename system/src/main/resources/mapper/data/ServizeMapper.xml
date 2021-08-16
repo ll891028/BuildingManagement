@@ -14,10 +14,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="companyId"    column="company_id"    />
     </resultMap>
 
     <sql id="selectServizeVo">
-        select service_id, service_name, status, description, attachment_ids, create_by, create_time, update_by, update_time from service
+        select service_id, service_name, status, description, attachment_ids, create_by, create_time, update_by,
+               update_time,company_id from service
     </sql>
 
     <select id="selectServizeList" parameterType="Servize" resultMap="ServizeResult">
@@ -27,6 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null "> and status = #{status}</if>
             <if test="description != null  and description != ''"> and description = #{description}</if>
             <if test="attachmentIds != null  and attachmentIds != ''"> and attachment_ids = #{attachmentIds}</if>
+            <if test="companyId != null"> and company_id = #{companyId}</if>
         </where>
     </select>
     
@@ -46,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="companyId != null">company_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="serviceName != null and serviceName != ''">#{serviceName},</if>
@@ -56,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="companyId != null">#{companyId},</if>
          </trim>
     </insert>
 
@@ -70,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="companyId != null">company_id = #{companyId},</if>
         </trim>
         where service_id = #{serviceId}
     </update>

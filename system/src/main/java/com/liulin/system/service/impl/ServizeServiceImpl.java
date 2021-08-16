@@ -8,6 +8,7 @@ import com.liulin.system.mapper.ServizeMapper;
 import com.liulin.system.domain.Servize;
 import com.liulin.system.service.IServizeService;
 import com.liulin.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * serviceService业务层处理
@@ -18,6 +19,10 @@ import com.liulin.common.core.text.Convert;
 @Service
 public class ServizeServiceImpl implements IServizeService 
 {
+
+    private static String[] SERVICE_NAMES = {"Electrical","Plumbing","Fire System",
+            "Mechanical","Pest Control","Lift","Cleaning","Swimming Pool","IT/Security","Garbage Chute"};
+
     @Autowired
     private ServizeMapper servizeMapper;
 
@@ -93,5 +98,19 @@ public class ServizeServiceImpl implements IServizeService
     public int deleteServizeById(Long serviceId)
     {
         return servizeMapper.deleteServizeById(serviceId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int generateDefaultService(Long companyId, String createBy) {
+        for (String serviceName : SERVICE_NAMES) {
+            Servize saver = new Servize();
+            saver.setCompanyId(companyId);
+            saver.setServiceName(serviceName);
+            saver.setStatus(1);
+            saver.setCreateBy(createBy);
+            this.insertServize(saver);
+        }
+        return 1;
     }
 }
