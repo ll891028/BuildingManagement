@@ -1,7 +1,10 @@
 package com.liulin.system.service.impl;
 
 import java.util.List;
+
+import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.ServizeMapper;
@@ -112,5 +115,13 @@ public class ServizeServiceImpl implements IServizeService
             this.insertServize(saver);
         }
         return 1;
+    }
+
+    @Override
+    public String checkServiceNameUnique(Long companyId, String serviceName,Long serviceId) {
+        if(StringUtils.isNotNull(servizeMapper.checkServiceNameUnique(companyId,serviceName,serviceId))){
+            return UserConstants.NAME_UNIQUE;
+        }
+        return UserConstants.NAME_NOT_UNIQUE;
     }
 }

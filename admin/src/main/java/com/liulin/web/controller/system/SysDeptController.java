@@ -1,7 +1,9 @@
 package com.liulin.web.controller.system;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.liulin.common.core.domain.entity.SysUser;
 import com.liulin.common.utils.CacheUtils;
@@ -250,7 +252,9 @@ public class SysDeptController extends BaseController
         sysUser.setCompany(company);
         ShiroUtils.setSysUser(sysUser);
         CacheUtils.put("user:building:"+sysUser.getUserId(),sysUser.getBuilding());
-        return toAjax(1);
+        Map data = new HashMap();
+        data.put("company",company);
+        return AjaxResult.success("success",data);
     }
 
 

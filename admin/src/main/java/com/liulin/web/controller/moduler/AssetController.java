@@ -142,7 +142,7 @@ public class AssetController extends BaseController
 
 
     /**
-     * 校验部门名称
+     * 校验AssetName唯一
      */
     @PostMapping("/checkAssetNameUnique")
     @ResponseBody

@@ -60,5 +60,6 @@ public interface AssetMapper
      */
     public int deleteAssetByIds(String[] assetIds);
 
-    Asset checkAssetNameUnique(@Param("assetName") String assetName, @Param("buildingId")Long buildingId);
+    Asset checkAssetNameUnique(@Param("assetName") String assetName, @Param("buildingId")Long buildingId,@Param(
+            "assetId") Long assetId);
 }

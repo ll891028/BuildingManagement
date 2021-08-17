@@ -58,4 +58,6 @@ public interface IResidentService
      * @return 结果
      */
     public int deleteResidentById(Long residentId);
+
+    String checkUnitNumberUnique(Resident resident);
 }

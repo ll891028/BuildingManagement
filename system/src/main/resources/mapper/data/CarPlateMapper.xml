@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.CarPlateMapper">
+    
+    <resultMap type="CarPlate" id="CarPlateResult">
+        <result property="carPlateId"    column="car_plate_id"    />
+        <result property="carPlateNumber"    column="car_plate_number"    />
+        <result property="residentId"    column="resident_id"    />
+        <result property="buildingId"    column="building_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCarPlateVo">
+        select car_plate_id, car_plate_number, resident_id, building_id, create_by, create_time, update_by, update_time from car_plate
+    </sql>
+
+    <select id="selectCarPlateList" parameterType="CarPlate" resultMap="CarPlateResult">
+        <include refid="selectCarPlateVo"/>
+        <where>  
+            <if test="carPlateNumber != null  and carPlateNumber != ''"> and car_plate_number = #{carPlateNumber}</if>
+            <if test="residentId != null "> and resident_id = #{residentId}</if>
+            <if test="buildingId != null "> and building_id = #{buildingId}</if>
+        </where>
+    </select>
+    
+    <select id="selectCarPlateById" parameterType="Long" resultMap="CarPlateResult">
+        <include refid="selectCarPlateVo"/>
+        where car_plate_id = #{carPlateId}
+    </select>
+        
+    <insert id="insertCarPlate" parameterType="CarPlate" useGeneratedKeys="true" keyProperty="carPlateId">
+        insert into car_plate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="carPlateNumber != null and carPlateNumber != ''">car_plate_number,</if>
+            <if test="residentId != null">resident_id,</if>
+            <if test="buildingId != null">building_id,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="carPlateNumber != null and carPlateNumber != ''">#{carPlateNumber},</if>
+            <if test="residentId != null">#{residentId},</if>
+            <if test="buildingId != null">#{buildingId},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCarPlate" parameterType="CarPlate">
+        update car_plate
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="carPlateNumber != null and carPlateNumber != ''">car_plate_number = #{carPlateNumber},</if>
+            <if test="residentId != null">resident_id = #{residentId},</if>
+            <if test="buildingId != null">building_id = #{buildingId},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where car_plate_id = #{carPlateId}
+    </update>
+
+    <delete id="deleteCarPlateById" parameterType="Long">
+        delete from car_plate where car_plate_id = #{carPlateId}
+    </delete>
+
+    <delete id="deleteCarPlateByIds" parameterType="String">
+        delete from car_plate where car_plate_id in 
+        <foreach item="carPlateId" collection="array" open="(" separator="," close=")">
+            #{carPlateId}
+        </foreach>
+    </delete>
+
+</mapper>

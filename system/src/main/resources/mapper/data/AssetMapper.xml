@@ -121,6 +121,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select t1.* from asset t1 left join building_level t2 on t1.level_id=t2.level_id
         where asset_name = #{assetName}
           and t2.building_id = #{buildingId}
+            <if test="assetId!=null">
+                and t1.asset_id != #{assetId}
+            </if>
                 limit 1
     </select>
 

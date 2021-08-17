@@ -99,8 +99,8 @@ public class UserConstants
     public static final String REGISTER_USER_TYPE = "01";
 
     /** assetName是否唯一的返回结果码 */
-    public final static String ASSET_NAME_UNIQUE = "1";
-    public final static String ASSET_NAME_NOT_UNIQUE = "0";
+    public final static String NAME_UNIQUE = "1";
+    public final static String NAME_NOT_UNIQUE = "0";
 
     /**
      * 手机号码格式限制

@@ -91,4 +91,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <select id="checkServiceNameUnique" resultMap="ServizeResult">
+        select * from service
+        where company_id =#{companyId} and service_name =#{serviceName}
+        <if test="serviceId!=null">
+            and service_id != #{serviceId}
+        </if>
+     </select>
+
 </mapper>

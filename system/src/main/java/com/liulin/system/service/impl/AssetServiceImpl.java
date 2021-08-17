@@ -100,10 +100,10 @@ public class AssetServiceImpl implements IAssetService
 
     @Override
     public String checkAssetNameUnique(Asset asset) {
-        Asset assetTemp = assetMapper.checkAssetNameUnique(asset.getAssetName(),asset.getBuildingId());
+        Asset assetTemp = assetMapper.checkAssetNameUnique(asset.getAssetName(),asset.getBuildingId(),asset.getAssetId());
         if(StringUtils.isNotNull(assetTemp)){
-            return UserConstants.ASSET_NAME_UNIQUE;
+            return UserConstants.NAME_UNIQUE;
         }
-        return UserConstants.ASSET_NAME_NOT_UNIQUE;
+        return UserConstants.NAME_NOT_UNIQUE;
     }
 }

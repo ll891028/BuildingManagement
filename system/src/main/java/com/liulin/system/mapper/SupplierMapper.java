@@ -2,6 +2,7 @@ package com.liulin.system.mapper;
 
 import java.util.List;
 import com.liulin.system.domain.Supplier;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * supplierMapper接口
@@ -58,4 +59,7 @@ public interface SupplierMapper
      * @return 结果
      */
     public int deleteSupplierByIds(String[] supplierIds);
+
+    Supplier checkSupplierNameUnique(@Param("companyId") Long companyId,@Param("companyName") String companyName,
+                                     @Param("supplierId") Long supplierId);
 }

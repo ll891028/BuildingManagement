@@ -114,7 +114,47 @@
     <script th:inline="javascript">
         var prefix = ctx + "data/resident";
         $("#form-resident-edit").validate({
-            focusCleanup: true
+            focusCleanup: true,
+            rules:{
+                firstName:{
+                    required:true
+                },
+                lastName:{
+                    required:true
+                },
+                email:{
+                    required:true,
+                    email:true
+                },
+                contactNumber:{
+                    required: true,
+                    number:true
+                },unitNumber:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkUnitNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "unitNumber" : function() {
+                                return $.common.trim($("#unitNumber").val());
+                            },
+                            "residentId" : function() {
+                                return $.common.trim($("#residentId").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                }
+            },
+            messages: {
+                "unitNumber": {
+                    remote: "Existing unit number"
+                }
+            },
         });
 
         function submitHandler() {

@@ -7,6 +7,7 @@ import java.util.List;
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.domain.Supplier;
 import com.liulin.system.service.IBuildingLevelService;
 import com.liulin.system.service.ISysDeptService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -142,5 +143,17 @@ public class ResidentController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(residentService.deleteResidentByIds(ids));
+    }
+
+
+    /**
+     * 校验UnitNumber唯一
+     */
+    @PostMapping("/checkUnitNumberUnique")
+    @ResponseBody
+    public String checkUnitNumberUnique(Resident resident)
+    {
+        resident.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        return residentService.checkUnitNumberUnique(resident);
     }
 }

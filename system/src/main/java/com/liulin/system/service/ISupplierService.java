@@ -58,4 +58,6 @@ public interface ISupplierService
      * @return 结果
      */
     public int deleteSupplierById(Long supplierId);
+
+    String checkSupplierNameUnique(Supplier supplier);
 }

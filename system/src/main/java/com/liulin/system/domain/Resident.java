@@ -76,7 +76,67 @@ public class Resident extends BaseEntity
     @Excel(name = "Level")
     private String levelName;
 
+    private String carSpaceNumber1;
+
+    private String carSpaceNumber2;
+
+    private String carSpaceNumber3;
+
+    private String carPlatNumber1;
+
+    private String carPlatNumber2;
+
+    private String carPlatNumber3;
+
     private Long buildingId;
+
+    public String getCarSpaceNumber1() {
+        return carSpaceNumber1;
+    }
+
+    public void setCarSpaceNumber1(String carSpaceNumber1) {
+        this.carSpaceNumber1 = carSpaceNumber1;
+    }
+
+    public String getCarSpaceNumber2() {
+        return carSpaceNumber2;
+    }
+
+    public void setCarSpaceNumber2(String carSpaceNumber2) {
+        this.carSpaceNumber2 = carSpaceNumber2;
+    }
+
+    public String getCarSpaceNumber3() {
+        return carSpaceNumber3;
+    }
+
+    public void setCarSpaceNumber3(String carSpaceNumber3) {
+        this.carSpaceNumber3 = carSpaceNumber3;
+    }
+
+    public String getCarPlatNumber1() {
+        return carPlatNumber1;
+    }
+
+    public void setCarPlatNumber1(String carPlatNumber1) {
+        this.carPlatNumber1 = carPlatNumber1;
+    }
+
+    public String getCarPlatNumber2() {
+        return carPlatNumber2;
+    }
+
+    public void setCarPlatNumber2(String carPlatNumber2) {
+        this.carPlatNumber2 = carPlatNumber2;
+    }
+
+    public String getCarPlatNumber3() {
+        return carPlatNumber3;
+    }
+
+    public void setCarPlatNumber3(String carPlatNumber3) {
+        this.carPlatNumber3 = carPlatNumber3;
+    }
 
     public Long getBuildingId() {
         return buildingId;

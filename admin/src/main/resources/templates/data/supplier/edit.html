@@ -97,7 +97,32 @@
     <script th:inline="javascript">
         var prefix = ctx + "data/supplier";
         $("#form-supplier-edit").validate({
-            focusCleanup: true
+            focusCleanup: true,
+            rules:{
+                companyName:{
+                    remote: {
+                        url: prefix + "/checkSupplierNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "companyName" : function() {
+                                return $.common.trim($("#companyName").val());
+                            },
+                            "supplierId" : function() {
+                                return $.common.trim($("#supplierId").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                }
+            },
+            messages: {
+                "companyName": {
+                    remote: "Existing company name"
+                }
+            },
         });
 
         function submitHandler() {

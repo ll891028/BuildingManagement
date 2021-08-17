@@ -162,4 +162,15 @@ public class SupplierController extends BaseController
     {
         return toAjax(supplierService.deleteSupplierByIds(ids));
     }
+
+    /**
+     * 校验SupplierName唯一
+     */
+    @PostMapping("/checkSupplierNameUnique")
+    @ResponseBody
+    public String checkSupplierNameUnique(Supplier supplier)
+    {
+        supplier.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        return supplierService.checkSupplierNameUnique(supplier);
+    }
 }

@@ -1,7 +1,11 @@
 package com.liulin.system.service.impl;
 
 import java.util.List;
+
+import com.liulin.common.constant.Constants;
+import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.common.utils.StringUtils;
 import com.liulin.system.service.ICompanyServiceService;
 import com.liulin.system.service.IServizeService;
 import org.apache.commons.collections.CollectionUtils;
@@ -106,5 +110,14 @@ public class SupplierServiceImpl implements ISupplierService
     public int deleteSupplierById(Long supplierId)
     {
         return supplierMapper.deleteSupplierById(supplierId);
+    }
+
+    @Override
+    public String checkSupplierNameUnique(Supplier supplier) {
+        if(StringUtils.isNotNull(supplierMapper.checkSupplierNameUnique(supplier.getCompanyId(),supplier.getCompanyName(),
+                supplier.getSupplierId()))){
+            return UserConstants.NAME_UNIQUE;
+        }
+        return UserConstants.NAME_NOT_UNIQUE;
     }
 }

@@ -2,6 +2,7 @@ package com.liulin.system.mapper;
 
 import java.util.List;
 import com.liulin.system.domain.Servize;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * serviceMapper接口
@@ -58,4 +59,7 @@ public interface ServizeMapper
      * @return 结果
      */
     public int deleteServizeByIds(String[] serviceIds);
+
+    Servize checkServiceNameUnique(@Param("companyId") Long companyId, @Param("serviceName") String serviceName,
+                                   @Param("serviceId") Long serviceId);
 }

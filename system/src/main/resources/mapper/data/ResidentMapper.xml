@@ -138,4 +138,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <select id="checkUnitNumberUnique" resultMap="ResidentResult">
+        select t1.* from resident t1 left join building_level t2 on t1.level_id = t2.level_id where t2.building_id =
+        #{buildingId}
+        and t1.unit_number = #{unitNumber}
+        <if test="residentId!=null">
+            and t1.resident_id != #{residentId}
+        </if>
+    </select>
 </mapper>

@@ -125,4 +125,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <select id="checkSupplierNameUnique" resultMap="SupplierResult">
+        select * from supplier
+        where company_id = #{companyId}
+          and company_name = #{companyName}
+        <if test="supplierId!=null">
+            and supplier_id != #{supplierId}
+        </if>
+    </select>
+
 </mapper>

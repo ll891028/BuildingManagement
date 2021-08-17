@@ -85,7 +85,32 @@
     <script th:inline="javascript">
         var prefix = ctx + "data/asset";
         $("#form-asset-edit").validate({
-            focusCleanup: true
+            focusCleanup: true,
+            rules:{
+                assetName:{
+                    remote: {
+                        url: prefix + "/checkAssetNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "assetName" : function() {
+                                return $.common.trim($("#assetName").val());
+                            },
+                            "assetId" : function() {
+                                return $.common.trim($("#assetId").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                }
+            },
+            messages: {
+                "assetName": {
+                    remote: "Existing asset name"
+                }
+            },
         });
 
         function submitHandler() {

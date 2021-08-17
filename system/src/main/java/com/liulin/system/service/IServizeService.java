@@ -60,4 +60,6 @@ public interface IServizeService
     public int deleteServizeById(Long serviceId);
 
     int generateDefaultService(Long companyId,String createBy);
+
+    String checkServiceNameUnique(Long companyId,String serviceName,Long serviceId);
 }

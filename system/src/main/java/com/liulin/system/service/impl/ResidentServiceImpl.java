@@ -7,17 +7,16 @@ import com.liulin.common.constant.Constants;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.core.domain.entity.SysUser;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.common.utils.StringUtils;
 import com.liulin.common.utils.security.Md5Utils;
 import com.liulin.system.domain.BuildingLevel;
-import com.liulin.system.service.IBuildingLevelService;
-import com.liulin.system.service.ISysConfigService;
-import com.liulin.system.service.ISysUserService;
+import com.liulin.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.ResidentMapper;
 import com.liulin.system.domain.Resident;
-import com.liulin.system.service.IResidentService;
 import com.liulin.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * residentService业务层处理
@@ -39,6 +38,12 @@ public class ResidentServiceImpl implements IResidentService
 
     @Autowired
     private IBuildingLevelService buildingLevelService;
+
+    @Autowired
+    private ICarPlateService carPlateService;
+
+    @Autowired
+    private ICarSpaceService carSpaceService;
 
 
     /**
@@ -72,6 +77,7 @@ public class ResidentServiceImpl implements IResidentService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertResident(Resident resident)
     {
         //通过email查询用户是否存在
@@ -138,5 +144,14 @@ public class ResidentServiceImpl implements IResidentService
     public int deleteResidentById(Long residentId)
     {
         return residentMapper.deleteResidentById(residentId);
+    }
+
+    @Override
+    public String checkUnitNumberUnique(Resident resident) {
+        if(StringUtils.isNotNull(residentMapper.checkUnitNumberUnique(resident.getBuildingId(),resident.getUnitNumber(),
+                resident.getResidentId()))){
+            return UserConstants.NAME_UNIQUE;
+        }
+        return UserConstants.NAME_NOT_UNIQUE;
     }
 }

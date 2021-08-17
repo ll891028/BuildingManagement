@@ -40,7 +40,32 @@
     <script th:inline="javascript">
         var prefix = ctx + "data/service";
         $("#form-service-edit").validate({
-            focusCleanup: true
+            focusCleanup: true ,
+            rules:{
+                serviceName:{
+                    remote: {
+                        url: prefix + "/checkServiceNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "serviceName" : function() {
+                                return $.common.trim($("#serviceName").val());
+                            },
+                            "serviceId" : function() {
+                                return $.common.trim($("#serviceId").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                }
+            },
+            messages: {
+                "serviceName": {
+                    remote: "Existing service name"
+                }
+            },
         });
 
         function submitHandler() {

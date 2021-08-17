@@ -26,7 +26,7 @@
         </div>
         <a th:href="@{/index}">
             <li class="logo hidden-xs">
-                <span class="logo-lg">G-Tech</span>
+                <span class="logo-lg">[[${user.company.deptName}]]</span>
             </li>
          </a>
         <div class="sidebar-collapse">
@@ -402,6 +402,7 @@ $(function() {
 			success: function(result) {
 				if (result.code == web_status.SUCCESS) {
 					$("#userBuilding").text(buildingName);
+					$(".logo-lg").text(result.data.company.deptName);
 					tabCloseAll();
 				} else {
 					console.log(result.msg);

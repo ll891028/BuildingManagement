@@ -3,6 +3,7 @@ package com.liulin.web.controller.moduler;
 import java.util.List;
 
 import com.liulin.common.utils.ShiroUtils;
+import com.liulin.system.domain.Asset;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -126,5 +127,16 @@ public class ServizeController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(servizeService.deleteServizeByIds(ids));
+    }
+
+    /**
+     * 校验ServiceName唯一
+     */
+    @PostMapping("/checkServiceNameUnique")
+    @ResponseBody
+    public String checkServiceNameUnique(Servize servize)
+    {
+        return servizeService.checkServiceNameUnique(ShiroUtils.getSysUser().getCompany().getDeptId(),
+                servize.getServiceName(),servize.getServiceId());
     }
 }
