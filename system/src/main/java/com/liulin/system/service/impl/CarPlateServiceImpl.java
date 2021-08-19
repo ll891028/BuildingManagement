@@ -1,7 +1,10 @@
 package com.liulin.system.service.impl;
 
 import java.util.List;
+
+import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.CarPlateMapper;
@@ -93,5 +96,19 @@ public class CarPlateServiceImpl implements ICarPlateService
     public int deleteCarPlateById(Long carPlateId)
     {
         return carPlateMapper.deleteCarPlateById(carPlateId);
+    }
+
+    @Override
+    public int deleteCarPlateByResidentId(Long residentId) {
+        return carPlateMapper.deleteCarPlateByResidentId(residentId);
+    }
+
+    @Override
+    public String checkCarPlateNumberUnique(CarPlate carPlate) {
+        if(StringUtils.isNotNull(carPlateMapper.checkCarPlateNumberUnique(carPlate.getBuildingId(),carPlate.getCarPlateNumber(),
+                carPlate.getCarPlateId()))){
+            return UserConstants.NAME_UNIQUE;
+        }
+        return UserConstants.NAME_NOT_UNIQUE;
     }
 }

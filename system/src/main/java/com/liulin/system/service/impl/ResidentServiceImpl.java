@@ -1,6 +1,5 @@
 package com.liulin.system.service.impl;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.liulin.common.constant.Constants;
@@ -10,6 +9,8 @@ import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.common.utils.security.Md5Utils;
 import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.domain.CarPlate;
+import com.liulin.system.domain.CarSpace;
 import com.liulin.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,8 +85,9 @@ public class ResidentServiceImpl implements IResidentService
         SysUser query = new SysUser();
         query.setEmail(resident.getEmail());
         String result = sysUserService.checkEmailUnique(query);
+        BuildingLevel buildingLevel = buildingLevelService.selectBuildingLevelById(resident.getLevelId());
         if(UserConstants.USER_EMAIL_UNIQUE.equals(result)){
-            BuildingLevel buildingLevel = buildingLevelService.selectBuildingLevelById(resident.getLevelId());
+
 
             //生成user数据
             SysUser saver = new SysUser();
@@ -105,9 +107,67 @@ public class ResidentServiceImpl implements IResidentService
             SysUser sysUser = sysUserService.selectUserByEmail(resident.getEmail());
             resident.setUserId(sysUser.getUserId());
         }
+
         resident.setCreateTime(DateUtils.getNowDate());
-        return residentMapper.insertResident(resident);
+        int i = residentMapper.insertResident(resident);
+        if(StringUtils.isNotEmpty(resident.getCarSpaceNumber1())){
+            CarSpace carSpace = new CarSpace();
+            carSpace.setBuildingId(buildingLevel.getBuildingId());
+            carSpace.setResidentId(resident.getResidentId());
+            carSpace.setCarSpaceNumber(resident.getCarSpaceNumber1());
+            carSpace.setCreateBy(resident.getCreateBy());
+            if(StringUtils.isNotEmpty(resident.getCarPlateNumber1())){
+                CarPlate carPlate = new CarPlate();
+                carPlate.setBuildingId(buildingLevel.getBuildingId());
+                carPlate.setCarPlateNumber(resident.getCarPlateNumber1());
+                carPlate.setResidentId(resident.getResidentId());
+                carPlate.setCreateBy(resident.getCreateBy());
+                carPlateService.insertCarPlate(carPlate);
+                carSpace.setCarPlateId(carPlate.getCarPlateId());
+            }
+            carSpace.setOrder(1);
+            carSpaceService.insertCarSpace(carSpace);
+        }
+        if(StringUtils.isNotEmpty(resident.getCarSpaceNumber2())){
+            CarSpace carSpace = new CarSpace();
+            carSpace.setBuildingId(buildingLevel.getBuildingId());
+            carSpace.setResidentId(resident.getResidentId());
+            carSpace.setCarSpaceNumber(resident.getCarSpaceNumber2());
+            carSpace.setCreateBy(resident.getCreateBy());
+            if(StringUtils.isNotEmpty(resident.getCarPlateNumber2())){
+                CarPlate carPlate = new CarPlate();
+                carPlate.setBuildingId(buildingLevel.getBuildingId());
+                carPlate.setCarPlateNumber(resident.getCarPlateNumber2());
+                carPlate.setResidentId(resident.getResidentId());
+                carPlate.setCreateBy(resident.getCreateBy());
+                carPlateService.insertCarPlate(carPlate);
+                carSpace.setCarPlateId(carPlate.getCarPlateId());
+            }
+            carSpace.setOrder(2);
+            carSpaceService.insertCarSpace(carSpace);
+        }
+        if(StringUtils.isNotEmpty(resident.getCarSpaceNumber3())){
+            CarSpace carSpace = new CarSpace();
+            carSpace.setBuildingId(buildingLevel.getBuildingId());
+            carSpace.setResidentId(resident.getResidentId());
+            carSpace.setCarSpaceNumber(resident.getCarSpaceNumber3());
+            carSpace.setCreateBy(resident.getCreateBy());
+            if(StringUtils.isNotEmpty(resident.getCarPlateNumber3())){
+                CarPlate carPlate = new CarPlate();
+                carPlate.setBuildingId(buildingLevel.getBuildingId());
+                carPlate.setCarPlateNumber(resident.getCarPlateNumber3());
+                carPlate.setResidentId(resident.getResidentId());
+                carPlate.setCreateBy(resident.getCreateBy());
+                carPlateService.insertCarPlate(carPlate);
+                carSpace.setCarPlateId(carPlate.getCarPlateId());
+            }
+            carSpace.setOrder(3);
+            carSpaceService.insertCarSpace(carSpace);
+        }
+        return i;
     }
+
+
 
     /**
      * 修改resident
@@ -116,9 +176,74 @@ public class ResidentServiceImpl implements IResidentService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateResident(Resident resident)
     {
         resident.setUpdateTime(DateUtils.getNowDate());
+        BuildingLevel buildingLevel = buildingLevelService.selectBuildingLevelById(resident.getLevelId());
+        //删除关联carspace carplate数据
+        carSpaceService.deleteCarSpaceByResidentId(resident.getResidentId());
+        carPlateService.deleteCarPlateByResidentId(resident.getResidentId());
+        if(resident.getCarparkSpaceAmount()>=1){
+            if(StringUtils.isNotEmpty(resident.getCarSpaceNumber1())){
+                CarSpace carSpace = new CarSpace();
+                carSpace.setBuildingId(buildingLevel.getBuildingId());
+                carSpace.setResidentId(resident.getResidentId());
+                carSpace.setCarSpaceNumber(resident.getCarSpaceNumber1());
+                carSpace.setCreateBy(resident.getCreateBy());
+                if(StringUtils.isNotEmpty(resident.getCarPlateNumber1())){
+                    CarPlate carPlate = new CarPlate();
+                    carPlate.setBuildingId(buildingLevel.getBuildingId());
+                    carPlate.setCarPlateNumber(resident.getCarPlateNumber1());
+                    carPlate.setResidentId(resident.getResidentId());
+                    carPlate.setCreateBy(resident.getCreateBy());
+                    carPlateService.insertCarPlate(carPlate);
+                    carSpace.setCarPlateId(carPlate.getCarPlateId());
+                }
+                carSpace.setOrder(1);
+                carSpaceService.insertCarSpace(carSpace);
+            }
+        }
+        if(resident.getCarparkSpaceAmount()>=2) {
+            if (StringUtils.isNotEmpty(resident.getCarSpaceNumber2())) {
+                CarSpace carSpace = new CarSpace();
+                carSpace.setBuildingId(buildingLevel.getBuildingId());
+                carSpace.setResidentId(resident.getResidentId());
+                carSpace.setCarSpaceNumber(resident.getCarSpaceNumber2());
+                carSpace.setCreateBy(resident.getCreateBy());
+                if (StringUtils.isNotEmpty(resident.getCarPlateNumber2())) {
+                    CarPlate carPlate = new CarPlate();
+                    carPlate.setBuildingId(buildingLevel.getBuildingId());
+                    carPlate.setCarPlateNumber(resident.getCarPlateNumber2());
+                    carPlate.setResidentId(resident.getResidentId());
+                    carPlate.setCreateBy(resident.getCreateBy());
+                    carPlateService.insertCarPlate(carPlate);
+                    carSpace.setCarPlateId(carPlate.getCarPlateId());
+                }
+                carSpace.setOrder(2);
+                carSpaceService.insertCarSpace(carSpace);
+            }
+        }
+        if(resident.getCarparkSpaceAmount()>=3) {
+            if (StringUtils.isNotEmpty(resident.getCarSpaceNumber3())) {
+                CarSpace carSpace = new CarSpace();
+                carSpace.setBuildingId(buildingLevel.getBuildingId());
+                carSpace.setResidentId(resident.getResidentId());
+                carSpace.setCarSpaceNumber(resident.getCarSpaceNumber3());
+                carSpace.setCreateBy(resident.getCreateBy());
+                if (StringUtils.isNotEmpty(resident.getCarPlateNumber3())) {
+                    CarPlate carPlate = new CarPlate();
+                    carPlate.setBuildingId(buildingLevel.getBuildingId());
+                    carPlate.setCarPlateNumber(resident.getCarPlateNumber3());
+                    carPlate.setResidentId(resident.getResidentId());
+                    carPlate.setCreateBy(resident.getCreateBy());
+                    carPlateService.insertCarPlate(carPlate);
+                    carSpace.setCarPlateId(carPlate.getCarPlateId());
+                }
+                carSpace.setOrder(3);
+                carSpaceService.insertCarSpace(carSpace);
+            }
+        }
         return residentMapper.updateResident(resident);
     }
 

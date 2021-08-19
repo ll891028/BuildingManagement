@@ -14,19 +14,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="carPlateId"    column="car_plate_id"    />
+        <result property="order"    column="order"    />
+        <result property="carPlateNumber"    column="car_plate_number"    />
     </resultMap>
 
     <sql id="selectCarSpaceVo">
-        select car_space_id, car_space_number, resident_id, building_id, create_by, create_time, update_by, update_time, car_plate_id from car_space
+        select car_space_id, car_space_number, resident_id, building_id, create_by, create_time, update_by,
+               update_time, car_plate_id,`order` from car_space
     </sql>
 
     <select id="selectCarSpaceList" parameterType="CarSpace" resultMap="CarSpaceResult">
-        <include refid="selectCarSpaceVo"/>
+        select t1.*,t2.car_plate_number from car_space t1 left join car_plate t2 on t1.car_plate_id = t2.car_plate_id
         <where>  
-            <if test="carSpaceNumber != null  and carSpaceNumber != ''"> and car_space_number = #{carSpaceNumber}</if>
-            <if test="residentId != null "> and resident_id = #{residentId}</if>
-            <if test="buildingId != null "> and building_id = #{buildingId}</if>
-            <if test="carPlateId != null "> and car_plate_id = #{carPlateId}</if>
+            <if test="carSpaceNumber != null  and carSpaceNumber != ''"> and t1.car_space_number =
+                #{carSpaceNumber}</if>
+            <if test="residentId != null "> and t1.resident_id = #{residentId}</if>
+            <if test="buildingId != null "> and t1.building_id = #{buildingId}</if>
+            <if test="carPlateId != null "> and t1.car_plate_id = #{carPlateId}</if>
         </where>
     </select>
     
@@ -46,6 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="carPlateId != null">car_plate_id,</if>
+            <if test="order != null">`order`,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="carSpaceNumber != null and carSpaceNumber != ''">#{carSpaceNumber},</if>
@@ -56,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="carPlateId != null">#{carPlateId},</if>
+            <if test="order != null">#{order},</if>
          </trim>
     </insert>
 
@@ -78,11 +84,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from car_space where car_space_id = #{carSpaceId}
     </delete>
 
+    <delete id="deleteCarSpaceByResidentId" parameterType="Long">
+        delete from car_space where resident_id = #{residentId}
+    </delete>
+
     <delete id="deleteCarSpaceByIds" parameterType="String">
         delete from car_space where car_space_id in 
         <foreach item="carSpaceId" collection="array" open="(" separator="," close=")">
             #{carSpaceId}
         </foreach>
     </delete>
+
+    <select id="checkCarSpaceNumberUnique" resultMap="CarSpaceResult">
+        select * from car_space where building_id = #{buildingId}
+        and car_space_number = #{carSpaceNumber}
+        <if test="carSpaceId!=null">
+            and car_space_id != #{carSpaceId}
+        </if>
+    </select>
 
 </mapper>

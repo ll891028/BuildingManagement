@@ -1,7 +1,10 @@
 package com.liulin.system.service.impl;
 
 import java.util.List;
+
+import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.CarSpaceMapper;
@@ -93,5 +96,19 @@ public class CarSpaceServiceImpl implements ICarSpaceService
     public int deleteCarSpaceById(Long carSpaceId)
     {
         return carSpaceMapper.deleteCarSpaceById(carSpaceId);
+    }
+
+    @Override
+    public int deleteCarSpaceByResidentId(Long residentId) {
+        return carSpaceMapper.deleteCarSpaceByResidentId(residentId);
+    }
+
+    @Override
+    public String checkCarSpaceNumberUnique(CarSpace carSpace) {
+        if(StringUtils.isNotNull(carSpaceMapper.checkCarSpaceNumberUnique(carSpace.getBuildingId(),carSpace.getCarSpaceNumber(),
+                carSpace.getCarSpaceId()))){
+            return UserConstants.NAME_UNIQUE;
+        }
+        return UserConstants.NAME_NOT_UNIQUE;
     }
 }

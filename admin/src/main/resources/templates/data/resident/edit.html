@@ -78,12 +78,73 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Carpark Space Amount：</label>
                 <div class="col-sm-8">
-                    <select name="carparkSpaceAmount" class="form-control m-b" required>
+                    <select name="carparkSpaceAmount" class="form-control m-b" required onchange="selectCarSpace(this)">
                         <option value="0" th:field="*{carparkSpaceAmount}">0</option>
                         <option value="1" th:field="*{carparkSpaceAmount}">1</option>
                         <option value="2" th:field="*{carparkSpaceAmount}">2</option>
                         <option value="3" th:field="*{carparkSpaceAmount}">3</option>
                     </select>
+                </div>
+            </div>
+
+            <div class="form-group" id="car1" th:style="'display:' + ${resident.carparkSpaceAmount>0 ? 'block' : 'none'}"
+                 >
+                <label class="col-sm-3 control-label is-required">#1 Car Space Number：</label>
+                <div class="col-sm-2">
+                    <input type="hidden" th:value="${carSpaces.size()>0?carSpaces[0].carSpaceId:''}"
+                           id="carSpaceId1">
+                    <input name="carSpaceNumber1" id="carSpaceNumber1"
+                           th:value="${carSpaces.size()>0?carSpaces[0].carSpaceNumber:''}"
+                           class="form-control"
+                           type="text"
+                           required>
+                </div>
+                <label class="col-sm-3 control-label">#1 Car Plate Number：</label>
+                <div class="col-sm-2">
+                    <input type="hidden" th:value="${carSpaces.size()>0?carSpaces[0].carPlateId:''}"
+                           id="carPlateId1">
+                    <input name="carPlateNumber1" id="carPlateNumber1"
+                           th:value="${carSpaces.size()>0?carSpaces[0].carPlateNumber:''}"
+                           class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group" id="car2"
+                 th:style="'display:' + ${resident.carparkSpaceAmount>1 ? 'block' : 'none'}">
+                <label class="col-sm-3 control-label is-required">#2 Car Space Number：</label>
+                <div class="col-sm-2">
+                    <input type="hidden" th:value="${carSpaces.size()>1?carSpaces[1].carSpaceId:''}"
+                           id="carSpaceId2">
+                    <input name="carSpaceNumber2" id="carSpaceNumber2"
+                           th:value="${carSpaces.size()>1?carSpaces[1].carSpaceNumber:''}"
+                           class="form-control" type="text" required>
+                </div>
+                <label class="col-sm-3 control-label">#2 Car Plate Number：</label>
+                <div class="col-sm-2">
+                    <input type="hidden" th:value="${carSpaces.size()>1?carSpaces[1].carPlateId:''}"
+                           id="carPlateId2">
+                    <input name="carPlateNumber2" id="carPlateNumber2"
+                           th:value="${carSpaces.size()>1?carSpaces[1].carPlateNumber:''}"
+                           class="form-control" type="text">
+                </div>
+
+            </div>
+            <div class="form-group" id="car3"
+                 th:style="'display:' + ${resident.carparkSpaceAmount>2 ? 'block' : 'none'}">
+                <label class="col-sm-3 control-label is-required">#3 Car Space Number：</label>
+                <div class="col-sm-2">
+                    <input type="hidden" th:value="${carSpaces.size()>2?carSpaces[2].carSpaceId:''}"
+                           id="carSpaceId3">
+                    <input name="carSpaceNumber3" id="carSpaceNumber3"
+                           th:value="${carSpaces.size()>2?carSpaces[2].carSpaceNumber:''}"
+                           class="form-control" type="text" required>
+                </div>
+                <label class="col-sm-3 control-label">#3 Car Plate Number：</label>
+                <div class="col-sm-2">
+                    <input type="hidden" th:value="${carSpaces.size()>2?carSpaces[2].carPlateId:''}"
+                           id="carPlateId3">
+                    <input name="carPlateNumber3" id="carPlateNumber3"
+                           th:value="${carSpaces.size()>2?carSpaces[2].carPlateNumber:''}"
+                           class="form-control" type="text" >
                 </div>
             </div>
             <div class="form-group">    
@@ -148,18 +209,171 @@
                             return $.validate.unique(data);
                         }
                     }
+                },carSpaceNumber1:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarSpaceNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carSpaceNumber" : function() {
+                                return $.common.trim($("#carSpaceNumber1").val());
+                            },
+                            "carSpaceId" : function() {
+                                return $.common.trim($("#carSpaceId1").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carSpaceNumber2:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarSpaceNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carSpaceNumber" : function() {
+                                return $.common.trim($("#carSpaceNumber2").val());
+                            },
+                            "carSpaceId" : function() {
+                                return $.common.trim($("#carSpaceId2").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carSpaceNumber3:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarSpaceNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carSpaceNumber" : function() {
+                                return $.common.trim($("#carSpaceNumber3").val());
+                            },
+                            "carSpaceId" : function() {
+                                return $.common.trim($("#carSpaceId3").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carPlateNumber1:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarPlateNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carPlateNumber" : function() {
+                                return $.common.trim($("#carPlateNumber1").val());
+                            },
+                            "carPlateId" : function() {
+                                return $.common.trim($("#carPlateId1").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carPlateNumber2:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarPlateNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carPlateNumber" : function() {
+                                return $.common.trim($("#carPlateNumber2").val());
+                            },
+                            "carPlateId" : function() {
+                                return $.common.trim($("#carPlateId2").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carPlateNumber3:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarPlateNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carPlateNumber" : function() {
+                                return $.common.trim($("#carPlateNumber3").val());
+                            },
+                            "carPlateId" : function() {
+                                return $.common.trim($("#carPlateId3").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
                 }
             },
             messages: {
                 "unitNumber": {
                     remote: "Existing unit number"
-                }
+                },
+                "carSpaceNumber1": {
+                    remote: "Exist"
+                },
+                "carSpaceNumber2": {
+                    remote: "Exist"
+                },
+                "carSpaceNumber3": {
+                    remote: "Exist"
+                },
+                "carPlateNumber1": {
+                    remote: "Exist"
+                },
+                "carPlateNumber2": {
+                    remote: "Exist"
+                },
+                "carPlateNumber3": {
+                    remote: "Exist"
+                },
             },
         });
 
         function submitHandler() {
             if ($.validate.form()) {
                 $.operate.save(prefix + "/edit", $('#form-resident-edit').serialize());
+            }
+        }
+
+        function selectCarSpace(obj){
+            var carSpace = $(obj).val();
+            if(carSpace==0){
+                $("#car1").hide();
+                $("#car2").hide();
+                $("#car3").hide();
+            }else if(carSpace==1){
+                $("#car1").show();
+                $("#car2").hide();
+                $("#car3").hide();
+            }else if(carSpace==2){
+                $("#car1").show();
+                $("#car2").show();
+                $("#car3").hide();
+            }else if(carSpace==3){
+                $("#car1").show();
+                $("#car2").show();
+                $("#car3").show();
             }
         }
     </script>

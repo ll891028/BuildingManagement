@@ -87,32 +87,32 @@
             <div class="form-group" id="car1" style="display: none">
                 <label class="col-sm-3 control-label is-required">#1 Car Space Number：</label>
                 <div class="col-sm-2">
-                    <input name="carSpaceNumber1" class="form-control" type="text" required>
+                    <input name="carSpaceNumber1" id="carSpaceNumber1" class="form-control" type="text" required>
                 </div>
                 <label class="col-sm-3 control-label">#1 Car Plate Number：</label>
                 <div class="col-sm-2">
-                    <input name="carPlatNumber1" class="form-control" type="text">
+                    <input name="carPlateNumber1" id="carPlateNumber1" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group" id="car2" style="display: none">
                 <label class="col-sm-3 control-label is-required">#2 Car Space Number：</label>
                 <div class="col-sm-2">
-                    <input name="carSpaceNumber2" class="form-control" type="text" required>
+                    <input name="carSpaceNumber2" id="carSpaceNumber2" class="form-control" type="text" required>
                 </div>
                 <label class="col-sm-3 control-label">#2 Car Plate Number：</label>
                 <div class="col-sm-2">
-                    <input name="carPlatNumber2" class="form-control" type="text">
+                    <input name="carPlateNumber2" id="carPlateNumber2" class="form-control" type="text">
                 </div>
 
             </div>
             <div class="form-group" id="car3" style="display: none">
                 <label class="col-sm-3 control-label is-required">#3 Car Space Number：</label>
                 <div class="col-sm-2">
-                    <input name="carSpaceNumber3" class="form-control" type="text" required>
+                    <input name="carSpaceNumber3" id="carSpaceNumber3" class="form-control" type="text" required>
                 </div>
                 <label class="col-sm-3 control-label">#3 Car Plate Number：</label>
                 <div class="col-sm-2">
-                    <input name="carPlatNumber3" class="form-control" type="text" >
+                    <input name="carPlateNumber3" id="carPlateNumber3" class="form-control" type="text" >
                 </div>
             </div>
             <div class="form-group">    
@@ -144,6 +144,13 @@
         var prefix = ctx + "data/resident"
         $("#form-resident-add").validate({
             focusCleanup: true,
+            // errorPlacement:function (error,element){
+            //   if(element.is(":input")) {
+            //       error.appendTo(element.child());
+            //   }else{
+            //       error.insertAfter(element);
+            //   }
+            // },
             rules:{
                 firstName:{
                     required:true
@@ -174,12 +181,126 @@
                             return $.validate.unique(data);
                         }
                     }
+                },carSpaceNumber1:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarSpaceNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carSpaceNumber" : function() {
+                                return $.common.trim($("#carSpaceNumber1").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carSpaceNumber2:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarSpaceNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carSpaceNumber" : function() {
+                                return $.common.trim($("#carSpaceNumber2").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carSpaceNumber3:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarSpaceNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carSpaceNumber" : function() {
+                                return $.common.trim($("#carSpaceNumber3").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carPlateNumber1:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarPlateNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carPlateNumber" : function() {
+                                return $.common.trim($("#carPlateNumber1").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carPlateNumber2:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarPlateNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carPlateNumber" : function() {
+                                return $.common.trim($("#carPlateNumber2").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },carPlateNumber3:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkCarPlateNumberUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "carPlateNumber" : function() {
+                                return $.common.trim($("#carPlateNumber3").val());
+                            }
+
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
                 }
             },
             messages: {
                 "unitNumber": {
-                    remote: "Existing unit number"
-                }
+                    remote: "Exist"
+                },
+                "carSpaceNumber1": {
+                    remote: "Exist"
+                },
+                "carSpaceNumber2": {
+                    remote: "Exist"
+                },
+                "carSpaceNumber3": {
+                    remote: "Exist"
+                },
+                "carPlateNumber1": {
+                    remote: "Exist"
+                },
+                "carPlateNumber2": {
+                    remote: "Exist"
+                },
+                "carPlateNumber3": {
+                    remote: "Exist"
+                },
             },
         });
 

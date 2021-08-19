@@ -58,4 +58,8 @@ public interface ICarPlateService
      * @return 结果
      */
     public int deleteCarPlateById(Long carPlateId);
+
+    int deleteCarPlateByResidentId(Long residentId);
+
+    String checkCarPlateNumberUnique(CarPlate carPlate);
 }

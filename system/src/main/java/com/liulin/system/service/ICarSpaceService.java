@@ -58,4 +58,8 @@ public interface ICarSpaceService
      * @return 结果
      */
     public int deleteCarSpaceById(Long carSpaceId);
+
+    int deleteCarSpaceByResidentId(Long residentId);
+
+    String checkCarSpaceNumberUnique(CarSpace carSpace);
 }

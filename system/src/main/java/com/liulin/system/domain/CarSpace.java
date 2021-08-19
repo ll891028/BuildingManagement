@@ -34,7 +34,27 @@ public class CarSpace extends BaseEntity
     @Excel(name = "Car Plate Id")
     private Long carPlateId;
 
-    public void setCarSpaceId(Long carSpaceId) 
+    private Integer order;
+
+    private String carPlateNumber;
+
+    public String getCarPlateNumber() {
+        return carPlateNumber;
+    }
+
+    public void setCarPlateNumber(String carPlateNumber) {
+        this.carPlateNumber = carPlateNumber;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public void setCarSpaceId(Long carSpaceId)
     {
         this.carSpaceId = carSpaceId;
     }

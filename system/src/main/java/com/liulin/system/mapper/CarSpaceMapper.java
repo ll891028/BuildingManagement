@@ -2,6 +2,7 @@ package com.liulin.system.mapper;
 
 import java.util.List;
 import com.liulin.system.domain.CarSpace;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * CarSpaceMapper接口
@@ -51,6 +52,8 @@ public interface CarSpaceMapper
      */
     public int deleteCarSpaceById(Long carSpaceId);
 
+    public int deleteCarSpaceByResidentId(Long residentId);
+
     /**
      * 批量删除CarSpace
      * 
@@ -58,4 +61,8 @@ public interface CarSpaceMapper
      * @return 结果
      */
     public int deleteCarSpaceByIds(String[] carSpaceIds);
+
+    CarSpace checkCarSpaceNumberUnique(@Param("buildingId") Long buildingId,
+                                       @Param("carSpaceNumber")String carSpaceNumber,
+                                       @Param("carSpaceId")Long carSpaceId);
 }

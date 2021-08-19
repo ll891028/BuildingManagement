@@ -6,10 +6,8 @@ import java.util.List;
 
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.utils.ShiroUtils;
-import com.liulin.system.domain.BuildingLevel;
-import com.liulin.system.domain.Supplier;
-import com.liulin.system.service.IBuildingLevelService;
-import com.liulin.system.service.ISysDeptService;
+import com.liulin.system.domain.*;
+import com.liulin.system.service.*;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.liulin.common.annotation.Log;
 import com.liulin.common.enums.BusinessType;
-import com.liulin.system.domain.Resident;
-import com.liulin.system.service.IResidentService;
 import com.liulin.common.core.controller.BaseController;
 import com.liulin.common.core.domain.AjaxResult;
 import com.liulin.common.utils.poi.ExcelUtil;
@@ -45,6 +41,12 @@ public class ResidentController extends BaseController
 
     @Autowired
     private IBuildingLevelService buildingLevelService;
+
+    @Autowired
+    private ICarSpaceService carSpaceService;
+
+    @Autowired
+    private ICarPlateService carPlateService;
 
     @RequiresPermissions("data:resident:view")
     @GetMapping()
@@ -118,6 +120,10 @@ public class ResidentController extends BaseController
         mmap.put("buildingLevels",buildingLevels);
         Resident resident = residentService.selectResidentById(residentId);
         mmap.put("resident", resident);
+        CarSpace query = new CarSpace();
+        query.setResidentId(residentId);
+        List<CarSpace> carSpaces = carSpaceService.selectCarSpaceList(query);
+        mmap.put("carSpaces", carSpaces);
         return prefix + "/edit";
     }
 
@@ -130,6 +136,7 @@ public class ResidentController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Resident resident)
     {
+
         return toAjax(residentService.updateResident(resident));
     }
 
@@ -155,5 +162,27 @@ public class ResidentController extends BaseController
     {
         resident.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         return residentService.checkUnitNumberUnique(resident);
+    }
+
+    /**
+     * 校验CarSpaceNumber唯一
+     */
+    @PostMapping("/checkCarSpaceNumberUnique")
+    @ResponseBody
+    public String checkCarSpaceNumberUnique(CarSpace carSpace)
+    {
+        carSpace.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        return carSpaceService.checkCarSpaceNumberUnique(carSpace);
+    }
+
+    /**
+     * 校验CarPlateNumber唯一
+     */
+    @PostMapping("/checkCarPlateNumberUnique")
+    @ResponseBody
+    public String checkCarPlateNumberUnique(CarPlate carPlate)
+    {
+        carPlate.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        return carPlateService.checkCarPlateNumberUnique(carPlate);
     }
 }

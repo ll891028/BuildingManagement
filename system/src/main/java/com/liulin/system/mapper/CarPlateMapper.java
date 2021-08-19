@@ -2,6 +2,7 @@ package com.liulin.system.mapper;
 
 import java.util.List;
 import com.liulin.system.domain.CarPlate;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * PlateMapper接口
@@ -51,6 +52,8 @@ public interface CarPlateMapper
      */
     public int deleteCarPlateById(Long carPlateId);
 
+    public int deleteCarPlateByResidentId(Long residentId);
+
     /**
      * 批量删除Plate
      * 
@@ -58,4 +61,8 @@ public interface CarPlateMapper
      * @return 结果
      */
     public int deleteCarPlateByIds(String[] carPlateIds);
+
+    CarPlate checkCarPlateNumberUnique(@Param("buildingId") Long buildingId,
+                                       @Param("carPlateNumber")String carPlateNumber,
+                                       @Param("carPlateId")Long carPlateId);
 }

@@ -72,6 +72,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <delete id="deleteCarPlateById" parameterType="Long">
         delete from car_plate where car_plate_id = #{carPlateId}
     </delete>
+    <delete id="deleteCarPlateByResidentId" parameterType="Long">
+        delete from car_plate where resident_id = #{residentId}
+    </delete>
 
     <delete id="deleteCarPlateByIds" parameterType="String">
         delete from car_plate where car_plate_id in 
@@ -80,4 +83,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <select id="checkCarPlateNumberUnique" resultMap="CarPlateResult">
+        select * from car_plate where building_id = #{buildingId}
+        and car_plate_number = #{carPlateNumber}
+        <if test="carPlateId!=null">
+            and car_plate_id != #{carPlateId}
+        </if>
+    </select>
 </mapper>

@@ -82,11 +82,11 @@ public class Resident extends BaseEntity
 
     private String carSpaceNumber3;
 
-    private String carPlatNumber1;
+    private String carPlateNumber1;
 
-    private String carPlatNumber2;
+    private String carPlateNumber2;
 
-    private String carPlatNumber3;
+    private String carPlateNumber3;
 
     private Long buildingId;
 
@@ -114,28 +114,28 @@ public class Resident extends BaseEntity
         this.carSpaceNumber3 = carSpaceNumber3;
     }
 
-    public String getCarPlatNumber1() {
-        return carPlatNumber1;
+    public String getCarPlateNumber1() {
+        return carPlateNumber1;
     }
 
-    public void setCarPlatNumber1(String carPlatNumber1) {
-        this.carPlatNumber1 = carPlatNumber1;
+    public void setCarPlateNumber1(String carPlateNumber1) {
+        this.carPlateNumber1 = carPlateNumber1;
     }
 
-    public String getCarPlatNumber2() {
-        return carPlatNumber2;
+    public String getCarPlateNumber2() {
+        return carPlateNumber2;
     }
 
-    public void setCarPlatNumber2(String carPlatNumber2) {
-        this.carPlatNumber2 = carPlatNumber2;
+    public void setCarPlateNumber2(String carPlateNumber2) {
+        this.carPlateNumber2 = carPlateNumber2;
     }
 
-    public String getCarPlatNumber3() {
-        return carPlatNumber3;
+    public String getCarPlateNumber3() {
+        return carPlateNumber3;
     }
 
-    public void setCarPlatNumber3(String carPlatNumber3) {
-        this.carPlatNumber3 = carPlatNumber3;
+    public void setCarPlateNumber3(String carPlateNumber3) {
+        this.carPlateNumber3 = carPlateNumber3;
     }
 
     public Long getBuildingId() {
