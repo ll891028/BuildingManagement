@@ -20,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="buildingId"    column="building_id"    />
+        <result property="levelName"    column="level_name"    />
     </resultMap>
 
     <sql id="selectAssetVo">
@@ -28,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectAssetList" parameterType="Asset" resultMap="AssetResult">
 <!--        <include refid="selectAssetVo"/>-->
-        select t1.* from asset t1
+        select t1.*,t2.level_name from asset t1
         left join building_level t2
         on t1.level_id = t2.level_id
         <where>  

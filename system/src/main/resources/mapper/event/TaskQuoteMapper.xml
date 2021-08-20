@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.TaskQuoteMapper">
+    
+    <resultMap type="TaskQuote" id="TaskQuoteResult">
+        <result property="taskQuoteId"    column="task_quote_id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="quotePrice"    column="quote_price"    />
+        <result property="contactPerson"    column="contact_person"    />
+        <result property="email"    column="email"    />
+        <result property="companyName"    column="company_name"    />
+    </resultMap>
+
+    <sql id="selectTaskQuoteVo">
+        select task_quote_id, task_id, supplier_id, quote_price from task_quote
+    </sql>
+
+    <select id="selectTaskQuoteList" parameterType="TaskQuote" resultMap="TaskQuoteResult">
+        select t1.*,t2.company_name,t2.email,t2.contactPerson from
+        task_quote t1 left join supplier t2 on t1.supplier_id = t2.supplier_id
+        <where>  
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+            <if test="quotePrice != null "> and quote_price = #{quotePrice}</if>
+        </where>
+    </select>
+    
+    <select id="selectTaskQuoteById" parameterType="Long" resultMap="TaskQuoteResult">
+        <include refid="selectTaskQuoteVo"/>
+        where task_quote_id = #{taskQuoteId}
+    </select>
+        
+    <insert id="insertTaskQuote" parameterType="TaskQuote" useGeneratedKeys="true" keyProperty="taskQuoteId">
+        insert into task_quote
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="quotePrice != null">quote_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="quotePrice != null">#{quotePrice},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTaskQuote" parameterType="TaskQuote">
+        update task_quote
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="quotePrice != null">quote_price = #{quotePrice},</if>
+        </trim>
+        where task_quote_id = #{taskQuoteId}
+    </update>
+
+    <delete id="deleteTaskQuoteById" parameterType="Long">
+        delete from task_quote where task_quote_id = #{taskQuoteId}
+    </delete>
+
+    <delete id="deleteTaskQuoteByIds" parameterType="String">
+        delete from task_quote where task_quote_id in 
+        <foreach item="taskQuoteId" collection="array" open="(" separator="," close=")">
+            #{taskQuoteId}
+        </foreach>
+    </delete>
+
+</mapper>

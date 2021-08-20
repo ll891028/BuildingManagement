@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('supplier列表')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="supplierList()" shiro:hasPermission="data:asset:add">
+                <i class="fa fa-plus"></i> add
+            </a>
+
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('data:supplier:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('data:supplier:remove')}]];
+    var statusDatas = [[${@dict.getType('resident_status')}]];
+    var prefix = ctx + "event/task";
+
+    $(function() {
+        var options = {
+            url: prefix + "/selectQuoteSupplier/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: " supplier",
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            columns: [{
+                checkbox: false
+            },
+                {
+                    field: 'taskQuoteId',
+                    title: 'Task Quote Id',
+                    visible: true
+                },
+                {
+                    field: 'contactPerson',
+                    title: 'Name'
+                },
+                {
+                    field: 'companyName',
+                    title: 'Company Name'
+                },
+                {
+                    field: 'email',
+                    title: 'Email'
+                },
+                {
+                    field: 'QuotePrice',
+                    title: 'Quote Price'
+                }
+            ]
+        };
+        $.table.init(options);
+    });
+
+    function submitHandler(index, layero) {
+        var rows = $.table.selectFirstColumns();
+        var companyName = $.table.selectColumnsNotUnique("companyName");
+        if (rows.length == 0) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        $.modal.close();
+        // 父页面的变量
+        parent.$('#orderSupplierId').val(rows);
+        parent.$('#orderSupplierName').val(companyName);
+    }
+    function supplierList(){
+        $.modal.open("Supplier List", prefix + "/quoteSupplierList")
+    }
+</script>
+</body>
+</html>

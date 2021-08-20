@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.TaskAssetMapper">
+    
+    <resultMap type="TaskAsset" id="TaskAssetResult">
+        <result property="taskAssetId"    column="task_asset_id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="assetId"    column="asset_id"    />
+        <result property="assetName"    column="asset_name"    />
+        <result property="levelName"    column="level_name"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectTaskAssetVo">
+        select task_asset_id, task_id, asset_id from task_asset
+    </sql>
+
+    <select id="selectTaskAssetList" parameterType="TaskAsset" resultMap="TaskAssetResult">
+        select t1.*,t2.asset_name, t3.level_name,t2.status
+        from task_asset t1
+        left join asset t2 on t1.asset_id = t2.asset_id
+        left join building_level t3 on t2.level_id = t3.level_id
+        <where>  
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="assetId != null "> and asset_id = #{assetId}</if>
+        </where>
+    </select>
+    
+    <select id="selectTaskAssetById" parameterType="Long" resultMap="TaskAssetResult">
+        <include refid="selectTaskAssetVo"/>
+        where task_asset_id = #{taskAssetId}
+    </select>
+        
+    <insert id="insertTaskAsset" parameterType="TaskAsset" useGeneratedKeys="true" keyProperty="taskAssetId">
+        insert into task_asset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="assetId != null">asset_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="assetId != null">#{assetId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTaskAsset" parameterType="TaskAsset">
+        update task_asset
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="assetId != null">asset_id = #{assetId},</if>
+        </trim>
+        where task_asset_id = #{taskAssetId}
+    </update>
+
+    <delete id="deleteTaskAssetById" parameterType="Long">
+        delete from task_asset where task_asset_id = #{taskAssetId}
+    </delete>
+
+    <delete id="deleteTaskAssetByIds" parameterType="String">
+        delete from task_asset where task_asset_id in 
+        <foreach item="taskAssetId" collection="array" open="(" separator="," close=")">
+            #{taskAssetId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('Asset列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                Asset Name：
+                                <input type="text" name="assetName"/>
+                            </li>
+                            <li>
+                                Level：
+                                <select name="levelId">
+                                    <option value="">All</option>
+                                    <option th:each="level:${buildingLevels}" th:value="${level.levelId}"
+                                            th:text="${level.levelName}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                Status：
+                                <select name="status" th:with="type=${@dict.getType('resident_status')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                        class="fa fa-search"></i>&nbsp;research</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                        class="fa fa-refresh"></i>&nbsp;reset</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('data:asset:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('data:asset:remove')}]];
+        var needSaftyCheckDatas = [[${@dict.getType('current_resident')}]];
+        var canBeBookedDatas = [[${@dict.getType('current_resident')}]];
+        var statusDatas = [[${@dict.getType('resident_status')}]];
+        var prefix = ctx + "event/task";
+
+        $(function() {
+            var options = {
+                url: prefix + "/asset/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "Asset",
+                showSearch: false,
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'assetId',
+                    title: 'Asset Id',
+                    visible: false
+                },
+                {
+                    field: 'assetName',
+                    title: 'Asset Name'
+                },
+                {
+                    field: 'levelId',
+                    title: 'Level'
+                },
+                    {
+                        field: 'assetName',
+                        title: 'Asset Name'
+                    },
+                    {
+                        field: 'levelName',
+                        title: 'Level'
+                    },
+                    {
+                        field: 'brand',
+                        title: 'Brand'
+                    },
+                    {
+                        field: 'needSaftyCheck',
+                        title: 'Need Safty Check',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(needSaftyCheckDatas, value);
+                        }
+                    },
+                    {
+                        field: 'canBeBooked',
+                        title: 'Can be booked',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(canBeBookedDatas, value);
+                        }
+                    },
+                    {
+                        field: 'status',
+                        title: 'Status',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(statusDatas, value);
+                        }
+                    },
+
+                ]
+            };
+            $.table.init(options);
+        });
+
+        function submitHandler(index, layero) {
+            var rows = $.table.selectFirstColumns();
+            var assetNames = $.table.selectColumnsNotUnique("assetName");
+            if (rows.length == 0) {
+                $.modal.alertWarning("请至少选择一条记录");
+                return;
+            }
+            $.modal.close();
+            // 父页面的变量
+            parent.$('#assetIds').val(rows.join());
+            parent.$('#assetNames').val(assetNames.join());
+        }
+    </script>
+</body>
+</html>

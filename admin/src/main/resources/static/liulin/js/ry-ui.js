@@ -492,6 +492,20 @@ var table = {
             	}
             	return $.common.uniqueFn(rows);
             },
+            selectColumnsNotUnique: function(column) {
+                var rows = $.map($("#" + table.options.id).bootstrapTable('getSelections'), function (row) {
+                    return $.common.getItemField(row, column);
+                });
+                if ($.common.isNotEmpty(table.options.rememberSelected) && table.options.rememberSelected) {
+                    var selectedRows = table.rememberSelecteds[table.options.id];
+                    if($.common.isNotEmpty(selectedRows)) {
+                        rows = $.map(table.rememberSelecteds[table.options.id], function (row) {
+                            return $.common.getItemField(row, column);
+                        });
+                    }
+                }
+                return rows;
+            },
             // 获取当前页选中或者取消的行ID
             affectedRowIds: function(rows) {
             	var column = $.common.isEmpty(table.options.uniqueId) ? table.options.columns[1].field : table.options.uniqueId;

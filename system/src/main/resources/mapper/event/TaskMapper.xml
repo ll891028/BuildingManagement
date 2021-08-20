@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.TaskMapper">
+    
+    <resultMap type="Task" id="TaskResult">
+        <result property="taskId"    column="task_id"    />
+        <result property="buildingId"    column="building_id"    />
+        <result property="description"    column="description"    />
+        <result property="actionRequired"    column="action_required"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="dateRaised"    column="date_raised"    />
+        <result property="timeScheduled"    column="time_scheduled"    />
+        <result property="priority"    column="priority"    />
+        <result property="needWorkOrder"    column="need_work_order"    />
+        <result property="needQuote"    column="need_quote"    />
+        <result property="taskStatus"    column="task_status"    />
+        <result property="attachmentIds"    column="attachment_ids"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="orderInstruction"    column="order_instruction"    />
+        <result property="quoteInstruction"    column="quote_instruction"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="quoteStatus"    column="quote_status"    />
+        <result property="orderSupplierId"    column="order_supplier_id"    />
+    </resultMap>
+
+    <sql id="selectTaskVo">
+        select task_id,building_id, description, action_required, service_id, date_raised, time_scheduled, priority,
+               need_work_order, need_quote, task_status, attachment_ids, create_by, create_time, update_by,
+               update_time,order_instruction,quote_instruction,order_status,quote_status,order_supplier_id from task
+    </sql>
+
+    <select id="selectTaskList" parameterType="Task" resultMap="TaskResult">
+        <include refid="selectTaskVo"/>
+        <where>  
+            <if test="actionRequired != null  and actionRequired != ''"> and action_required = #{actionRequired}</if>
+            <if test="serviceId != null "> and service_id = #{serviceId}</if>
+            <if test="buildingId != null "> and building_id = #{buildingId}</if>
+            <if test="params.beginDateRaised != null and params.beginDateRaised != '' and params.endDateRaised != null and params.endDateRaised != ''"> and date_raised between #{params.beginDateRaised} and #{params.endDateRaised}</if>
+            <if test="params.beginTimeScheduled != null and params.beginTimeScheduled != '' and params.endTimeScheduled != null and params.endTimeScheduled != ''"> and time_scheduled between #{params.beginTimeScheduled} and #{params.endTimeScheduled}</if>
+            <if test="priority != null "> and priority = #{priority}</if>
+            <if test="needWorkOrder != null "> and need_work_order = #{needWorkOrder}</if>
+            <if test="needQuote != null "> and need_quote = #{needQuote}</if>
+            <if test="taskStatus != null "> and task_status = #{taskStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectTaskById" parameterType="Long" resultMap="TaskResult">
+        <include refid="selectTaskVo"/>
+        where task_id = #{taskId}
+    </select>
+        
+    <insert id="insertTask" parameterType="Task" useGeneratedKeys="true" keyProperty="taskId">
+        insert into task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="description != null and description != ''">description,</if>
+            <if test="actionRequired != null and actionRequired != ''">action_required,</if>
+            <if test="serviceId != null">service_id,</if>
+            <if test="buildingId != null">building_id,</if>
+            <if test="dateRaised != null">date_raised,</if>
+            <if test="timeScheduled != null">time_scheduled,</if>
+            <if test="priority != null">priority,</if>
+            <if test="needWorkOrder != null">need_work_order,</if>
+            <if test="needQuote != null">need_quote,</if>
+            <if test="taskStatus != null">task_status,</if>
+            <if test="attachmentIds != null">attachment_ids,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="orderInstruction != null">order_instruction,</if>
+            <if test="quoteInstruction != null">quote_instruction,</if>
+            <if test="orderStatus != null">order_status,</if>
+            <if test="quoteStatus != null">quote_status,</if>
+            <if test="orderSupplierId != null">order_supplier_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="description != null and description != ''">#{description},</if>
+            <if test="actionRequired != null and actionRequired != ''">#{actionRequired},</if>
+            <if test="serviceId != null">#{serviceId},</if>
+            <if test="buildingId != null">#{buildingId},</if>
+            <if test="dateRaised != null">#{dateRaised},</if>
+            <if test="timeScheduled != null">#{timeScheduled},</if>
+            <if test="priority != null">#{priority},</if>
+            <if test="needWorkOrder != null">#{needWorkOrder},</if>
+            <if test="needQuote != null">#{needQuote},</if>
+            <if test="taskStatus != null">#{taskStatus},</if>
+            <if test="attachmentIds != null">#{attachmentIds},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="orderInstruction != null">#{orderInstruction},</if>
+            <if test="quoteInstruction != null">#{quoteInstruction},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+            <if test="quoteStatus != null">#{quoteStatus},</if>
+            <if test="orderSupplierId != null">#{orderSupplierId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTask" parameterType="Task">
+        update task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="actionRequired != null and actionRequired != ''">action_required = #{actionRequired},</if>
+            <if test="serviceId != null">service_id = #{serviceId},</if>
+            <if test="buildingId != null">building_id = #{buildingId},</if>
+            <if test="dateRaised != null">date_raised = #{dateRaised},</if>
+            <if test="timeScheduled != null">time_scheduled = #{timeScheduled},</if>
+            <if test="priority != null">priority = #{priority},</if>
+            <if test="needWorkOrder != null">need_work_order = #{needWorkOrder},</if>
+            <if test="needQuote != null">need_quote = #{needQuote},</if>
+            <if test="taskStatus != null">task_status = #{taskStatus},</if>
+            <if test="attachmentIds != null">attachment_ids = #{attachmentIds},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="orderInstruction != null">order_instruction = #{orderInstruction},</if>
+            <if test="quoteInstruction != null">quote_instruction = #{quoteInstruction},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="quoteStatus != null">quote_status = #{quoteStatus},</if>
+            <if test="orderSupplierId != null">order_supplier_id = #{orderSupplierId},</if>
+        </trim>
+        where task_id = #{taskId}
+    </update>
+
+    <delete id="deleteTaskById" parameterType="Long">
+        delete from task where task_id = #{taskId}
+    </delete>
+
+    <delete id="deleteTaskByIds" parameterType="String">
+        delete from task where task_id in 
+        <foreach item="taskId" collection="array" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+    </delete>
+
+</mapper>
