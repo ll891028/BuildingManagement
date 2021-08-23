@@ -17,6 +17,10 @@ public class Task extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    public static final Integer Y = 1;
+
+    public static final Integer N = 0;
+
     /** Task Id */
     private Long taskId;
 
@@ -76,12 +80,22 @@ public class Task extends BaseEntity
 
     private Long orderSupplierId;
 
+    private String quoteSupplierIds;
+
     public Long getOrderSupplierId() {
         return orderSupplierId;
     }
 
     public void setOrderSupplierId(Long orderSupplierId) {
         this.orderSupplierId = orderSupplierId;
+    }
+
+    public String getQuoteSupplierIds() {
+        return quoteSupplierIds;
+    }
+
+    public void setQuoteSupplierIds(String quoteSupplierIds) {
+        this.quoteSupplierIds = quoteSupplierIds;
     }
 
     public Integer getOrderStatus() {

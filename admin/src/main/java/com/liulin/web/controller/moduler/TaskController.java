@@ -115,6 +115,7 @@ public class TaskController extends BaseController
     @ResponseBody
     public AjaxResult addSave(Task task)
     {
+        task.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         task.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(taskService.insertTask(task));
     }
@@ -215,9 +216,10 @@ public class TaskController extends BaseController
 
 
     @RequiresPermissions("event:task:view")
-    @GetMapping("/selectSupplier")
-    public String selectSupplierList()
+    @GetMapping("/selectSupplier/{serviceId}")
+    public String selectSupplierList(@PathVariable Long serviceId,ModelMap mmp)
     {
+        mmp.put("serviceId",serviceId);
         return prefix + "/orderSupplierList";
     }
 
@@ -236,9 +238,10 @@ public class TaskController extends BaseController
     }
 
     @RequiresPermissions("event:task:view")
-    @GetMapping("/selectQuoteSupplier")
-    public String selectQuoteSupplier()
+    @GetMapping("/selectQuoteSupplier/{serviceId}")
+    public String selectQuoteSupplier(@PathVariable Long serviceId,ModelMap mmp)
     {
+        mmp.put("serviceId",serviceId);
         return prefix + "/selectQuoteSupplierList";
     }
 
@@ -256,9 +259,10 @@ public class TaskController extends BaseController
     }
 
     @RequiresPermissions("event:task:view")
-    @GetMapping("/quoteSupplierList")
-    public String quoteSupplierList()
+    @GetMapping("/quoteSupplierList/{serviceId}")
+    public String quoteSupplierList(@PathVariable Long serviceId,ModelMap mmp)
     {
+        mmp.put("serviceId",serviceId);
         return prefix + "/quoteSupplierList";
     }
 

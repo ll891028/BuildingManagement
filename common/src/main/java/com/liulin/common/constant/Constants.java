@@ -103,4 +103,6 @@ public class Constants
     public static final String LOOKUP_RMI = "rmi://";
 
     public static final Long RESIDENT = 102L;
+
+    public static final String SPLIT_SYMBOL = ",";
 }

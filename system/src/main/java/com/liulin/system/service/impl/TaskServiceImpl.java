@@ -1,10 +1,14 @@
 package com.liulin.system.service.impl;
 
 import java.util.List;
+
+import com.liulin.common.constant.Constants;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.system.domain.TaskAsset;
+import com.liulin.system.domain.TaskQuote;
 import com.liulin.system.service.ITaskAssetService;
+import com.liulin.system.service.ITaskQuoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.TaskMapper;
@@ -26,6 +30,9 @@ public class TaskServiceImpl implements ITaskService
 
     @Autowired
     private ITaskAssetService taskAssetService;
+
+    @Autowired
+    private ITaskQuoteService taskQuoteService;
 
     /**
      * 查询Task
@@ -63,13 +70,31 @@ public class TaskServiceImpl implements ITaskService
         task.setCreateTime(DateUtils.getNowDate());
         int result = taskMapper.insertTask(task);
         if(StringUtils.isNotEmpty(task.getAssetIds())){
-            for (String assetIdStr : task.getAssetIds().split(",")) {
+            for (String assetIdStr : task.getAssetIds().split(Constants.SPLIT_SYMBOL)) {
                 TaskAsset taskAsset = new TaskAsset();
                 taskAsset.setTaskId(task.getTaskId());
                 taskAsset.setAssetId(Long.valueOf(assetIdStr));
                 taskAssetService.insertTaskAsset(taskAsset);
             }
 
+        }
+        if(task.getNeedWorkOrder().equals(Task.N)){
+            task.setOrderInstruction(null);
+            task.setOrderSupplierId(null);
+            task.setOrderStatus(null);
+        }
+        if(task.getNeedQuote().equals(Task.N)){
+            task.setQuoteInstruction(null);
+            task.setQuoteStatus(null);
+            task.setQuoteSupplierIds(null);
+        }
+        if(StringUtils.isNotEmpty(task.getQuoteSupplierIds())){
+            for (String supplierId : task.getQuoteSupplierIds().split(Constants.SPLIT_SYMBOL)) {
+                TaskQuote saver = new TaskQuote();
+                saver.setTaskId(task.getTaskId());
+                saver.setSupplierId(Long.valueOf(supplierId));
+                taskQuoteService.insertTaskQuote(saver);
+            }
         }
         return result;
     }

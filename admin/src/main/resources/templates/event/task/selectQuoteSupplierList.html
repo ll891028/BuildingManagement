@@ -22,6 +22,7 @@
     var editFlag = [[${@permission.hasPermi('data:supplier:edit')}]];
     var removeFlag = [[${@permission.hasPermi('data:supplier:remove')}]];
     var statusDatas = [[${@dict.getType('resident_status')}]];
+    var serviceId = [[${serviceId}]];
     var prefix = ctx + "event/task";
 
     $(function() {
@@ -78,7 +79,7 @@
         parent.$('#orderSupplierName').val(companyName);
     }
     function supplierList(){
-        $.modal.open("Supplier List", prefix + "/quoteSupplierList")
+        $.modal.open("Quote Supplier List", prefix + "/quoteSupplierList/"+serviceId)
     }
 </script>
 </body>

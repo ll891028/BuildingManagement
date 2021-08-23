@@ -11,7 +11,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label is-required">Description：</label>
                 <div class="col-sm-8">
-                    <textarea name="description" class="form-control" required></textarea>
+                    <textarea name="description" id="description" class="form-control" required></textarea>
                 </div>
             </div>
             <div class="form-group">
@@ -23,7 +23,7 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Service：</label>
                 <div class="col-sm-8">
-                    <select name="serviceId" class="form-control m-b" required>
+                    <select name="serviceId" class="form-control m-b" required id="serviceId">
                         <option th:value="${service.serviceId}" th:each="service :${ servizes}">
                             [[${service.serviceName}]]</option>
                     </select>
@@ -42,7 +42,8 @@
                 <label class="col-sm-3 control-label is-required">Time scheduled：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="timeScheduled" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+                        <input name="timeScheduled" id="timeScheduled" class="form-control"
+                               placeholder="yyyy-MM-dd" type="text" required>
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -68,7 +69,8 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Order Instruction</label>
                     <div class="col-sm-8">
-                        <textarea name="orderInstruction" class="form-control" required></textarea>
+                        <textarea name="orderInstruction" id="orderInstruction" class="form-control"
+                                  required></textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -126,7 +128,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Order Supplier</label>
+                    <label class="col-sm-3 control-label">Quote Supplier</label>
                     <div class="col-sm-8">
                         <input type="hidden" name="quoteSupplierIds" id="quoteSupplierIds" class="form-control"
                         />
@@ -237,11 +239,22 @@
         }
 
         function selectSupplier(){
-            $.modal.open("Select Supplier", prefix + "/selectSupplier");
+            $.modal.open("Select Supplier", prefix + "/selectSupplier/"+$("#serviceId").val());
+        }
+
+        function sendWorkOrder(){
+            var url = ctx + "mail/sendOrder/";
+            if($("#assetIds").val()==''){
+                url +=$("#orderSupplierId").val()+"/"+$("#serviceId").val();
+            }else{
+                url +=$("#orderSupplierId").val()+"/"+$("#assetIds").val()+"/"+$("#serviceId").val();
+            }
+            $.modal.open("send work order",
+               url);
         }
 
         function selectQuoteSupplier(){
-            $.modal.open("Select Quote Supplier", prefix + "/selectQuoteSupplier")
+            $.modal.open("Select Quote Supplier", prefix + "/quoteSupplierList/"+$("#serviceId").val())
         }
     </script>
 </body>
