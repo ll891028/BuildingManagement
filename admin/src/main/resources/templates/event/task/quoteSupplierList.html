@@ -49,20 +49,6 @@
                 </form>
             </div>
 
-            <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="data:supplier:add">
-                    <i class="fa fa-plus"></i> add
-                </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="data:supplier:edit">
-                    <i class="fa fa-edit"></i> edit
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="data:supplier:remove">
-                    <i class="fa fa-remove"></i> remove
-                </a>
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="data:supplier:export">
-                    <i class="fa fa-download"></i> export
-                </a>
-            </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
             </div>
@@ -83,6 +69,10 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 modalName: " supplier",
+                showSearch: false,
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
                 columns: [{
                     checkbox: true
                 },
@@ -128,15 +118,28 @@
 
         function submitHandler(index, layero) {
             var rows = $.table.selectFirstColumns();
-            var companyName = $.table.selectColumnsNotUnique("companyName");
+            var companyNames = $.table.selectColumnsNotUnique("companyName");
             if (rows.length == 0) {
                 $.modal.alertWarning("请至少选择一条记录");
                 return;
             }
+            var data = [];
+            var i = 0;
+            for (row in rows){
+                var line = {
+                    id: row,
+                    text: companyNames[i],
+                    selected: true
+                }
+                i++;
+                data.push(line);
+            }
             $.modal.close();
-            // 父页面的变量
-            parent.$('#quoteSupplierIds').val(rows);
-            parent.$('#quoteSupplierNames').val(companyName);
+            parent.$('#quoteSupplierIds').select2(
+                {
+                    data:data,
+                }
+            );
         }
     </script>
 </body>

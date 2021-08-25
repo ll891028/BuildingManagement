@@ -139,7 +139,7 @@
 				uploadUrl: ctx + 'common/uploads',
 				uploadAsync: false,
 				maxFileSize:50*1024, //50MB  单位KB
-				language: 'en'
+				language: 'en',
 			}).on('filebatchuploadsuccess', function (event, data, previewId, index) {
 				var rsp = data.response;
 				var fileJson = rsp.data;

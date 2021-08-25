@@ -9,6 +9,7 @@ import com.liulin.system.domain.TaskAsset;
 import com.liulin.system.domain.TaskQuote;
 import com.liulin.system.service.ITaskAssetService;
 import com.liulin.system.service.ITaskQuoteService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.TaskMapper;
@@ -69,11 +70,11 @@ public class TaskServiceImpl implements ITaskService
     {
         task.setCreateTime(DateUtils.getNowDate());
         int result = taskMapper.insertTask(task);
-        if(StringUtils.isNotEmpty(task.getAssetIds())){
-            for (String assetIdStr : task.getAssetIds().split(Constants.SPLIT_SYMBOL)) {
+        if(CollectionUtils.isNotEmpty(task.getAssetIds())){
+            for (Long assetId : task.getAssetIds()) {
                 TaskAsset taskAsset = new TaskAsset();
                 taskAsset.setTaskId(task.getTaskId());
-                taskAsset.setAssetId(Long.valueOf(assetIdStr));
+                taskAsset.setAssetId(assetId);
                 taskAssetService.insertTaskAsset(taskAsset);
             }
 
@@ -88,11 +89,11 @@ public class TaskServiceImpl implements ITaskService
             task.setQuoteStatus(null);
             task.setQuoteSupplierIds(null);
         }
-        if(StringUtils.isNotEmpty(task.getQuoteSupplierIds())){
-            for (String supplierId : task.getQuoteSupplierIds().split(Constants.SPLIT_SYMBOL)) {
+        if(CollectionUtils.isNotEmpty(task.getQuoteSupplierIds())){
+            for (Long supplierId : task.getQuoteSupplierIds()) {
                 TaskQuote saver = new TaskQuote();
                 saver.setTaskId(task.getTaskId());
-                saver.setSupplierId(Long.valueOf(supplierId));
+                saver.setSupplierId(supplierId);
                 taskQuoteService.insertTaskQuote(saver);
             }
         }

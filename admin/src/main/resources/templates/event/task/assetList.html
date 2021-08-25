@@ -127,10 +127,29 @@
                 $.modal.alertWarning("请至少选择一条记录");
                 return;
             }
+
+            var data = [];
+            var i = 0;
+            for (row in rows){
+                var line = {
+                    id: row,
+                    text: assetNames[i],
+                    selected: true
+                }
+                i++;
+                data.push(line);
+            }
+            // console.info(data)
             $.modal.close();
             // 父页面的变量
-            parent.$('#assetIds').val(rows.join());
-            parent.$('#assetNames').val(assetNames.join());
+            // parent.$('#assetIds').val(rows.join());
+            // parent.$('#assetNames').val(assetNames.join());
+
+            parent.$('#assetIds').select2(
+                {
+                    data:data,
+                }
+            );
         }
     </script>
 </body>

@@ -6,6 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="Task" id="TaskResult">
         <result property="taskId"    column="task_id"    />
+        <result property="taskName"    column="task_name"    />
         <result property="buildingId"    column="building_id"    />
         <result property="description"    column="description"    />
         <result property="actionRequired"    column="action_required"    />
@@ -29,7 +30,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTaskVo">
-        select task_id,building_id, description, action_required, service_id, date_raised, time_scheduled, priority,
+        select task_id,task_name,building_id, description, action_required, service_id, date_raised, time_scheduled,
+               priority,
                need_work_order, need_quote, task_status, attachment_ids, create_by, create_time, update_by,
                update_time,order_instruction,quote_instruction,order_status,quote_status,order_supplier_id from task
     </sql>
@@ -57,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertTask" parameterType="Task" useGeneratedKeys="true" keyProperty="taskId">
         insert into task
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">task_name,</if>
             <if test="description != null and description != ''">description,</if>
             <if test="actionRequired != null and actionRequired != ''">action_required,</if>
             <if test="serviceId != null">service_id,</if>
@@ -79,6 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderSupplierId != null">order_supplier_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">#{taskName},</if>
             <if test="description != null and description != ''">#{description},</if>
             <if test="actionRequired != null and actionRequired != ''">#{actionRequired},</if>
             <if test="serviceId != null">#{serviceId},</if>
@@ -105,6 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateTask" parameterType="Task">
         update task
         <trim prefix="SET" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">task_name = #{taskName},</if>
             <if test="description != null and description != ''">description = #{description},</if>
             <if test="actionRequired != null and actionRequired != ''">action_required = #{actionRequired},</if>
             <if test="serviceId != null">service_id = #{serviceId},</if>

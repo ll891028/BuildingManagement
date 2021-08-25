@@ -1,6 +1,8 @@
 package com.liulin.system.domain;
 
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -23,6 +25,10 @@ public class Task extends BaseEntity
 
     /** Task Id */
     private Long taskId;
+
+    /** Task Name */
+    @Excel(name = "Task Name")
+    private String taskName;
 
     /** Description */
     @Excel(name = "Description")
@@ -66,7 +72,7 @@ public class Task extends BaseEntity
     @Excel(name = "Attachment")
     private String attachmentIds;
 
-    private String assetIds;
+    private List<Long> assetIds;
 
     private Long buildingId;
 
@@ -80,7 +86,15 @@ public class Task extends BaseEntity
 
     private Long orderSupplierId;
 
-    private String quoteSupplierIds;
+    private List<Long> quoteSupplierIds;
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
 
     public Long getOrderSupplierId() {
         return orderSupplierId;
@@ -90,11 +104,11 @@ public class Task extends BaseEntity
         this.orderSupplierId = orderSupplierId;
     }
 
-    public String getQuoteSupplierIds() {
+    public List<Long> getQuoteSupplierIds() {
         return quoteSupplierIds;
     }
 
-    public void setQuoteSupplierIds(String quoteSupplierIds) {
+    public void setQuoteSupplierIds(List<Long> quoteSupplierIds) {
         this.quoteSupplierIds = quoteSupplierIds;
     }
 
@@ -138,11 +152,11 @@ public class Task extends BaseEntity
         this.buildingId = buildingId;
     }
 
-    public String getAssetIds() {
+    public List<Long> getAssetIds() {
         return assetIds;
     }
 
-    public void setAssetIds(String assetIds) {
+    public void setAssetIds(List<Long> assetIds) {
         this.assetIds = assetIds;
     }
 
