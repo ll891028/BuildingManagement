@@ -47,8 +47,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectAssetById" parameterType="Long" resultMap="AssetResult">
-        <include refid="selectAssetVo"/>
-        where asset_id = #{assetId}
+        select t1.*,t2.level_name
+        from asset t1
+        left join building_level t2 on t1.level_id = t2.level_id
+        where t1.asset_id = #{assetId}
     </select>
         
     <insert id="insertAsset" parameterType="Asset">

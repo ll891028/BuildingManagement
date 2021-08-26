@@ -6,7 +6,7 @@
 </head>
 <body class="white-bg">
 <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-    <form class="form-horizontal m" id="form-task-add">
+    <form class="form-horizontal m" id="form-email">
         <div class="form-group">
             <label class="col-sm-3 control-label is-required">To:</label>
             <div class="col-sm-8">
@@ -18,13 +18,14 @@
             <label class="col-sm-3 control-label is-required">Subject:</label>
             <div class="col-sm-8">
                 <input type="text" name="subject" id="subject" class="form-control" value=""
-                       readonly th:value="${subject}"/>
+                       readonly />
             </div>
         </div>
+        <textarea id="content" name="content" style="display: none"></textarea>
         <div class="form-group">
             <label class="col-sm-3 control-label is-required">Content:</label>
             <div class="col-sm-8">
-                <div class="summernote"></div>
+                <div class="summernote" ></div>
             </div>
 
 
@@ -35,7 +36,7 @@
 <th:block th:include="include :: footer" />
 <th:block th:include="include :: summernote-js" />
 <script th:inline="javascript">
-    var prefix = ctx + "event/task"
+    var prefix = ctx + "mail"
     $("#form-task-add").validate({
         focusCleanup: true
     });
@@ -44,12 +45,16 @@
         var description = parent.$('#description').val();
         var orderInstruction = parent.$('#orderInstruction').val();
         var timeScheduled = parent.$('#timeScheduled').val();
+        var taskName = parent.$('#taskName').val();
         var content = [[${content}]];
+        var subject = [[${subject}]];
 
         content = content
             .replace("${description}",description)
             .replace("${instruction}",orderInstruction)
             .replace("${date}",timeScheduled)
+        subject = subject.replace("${taskName}",taskName);
+        $("#subject").val(subject);
         $('.summernote').summernote({
             height:300
         });
@@ -57,6 +62,47 @@
 
 
     });
+    function submitHandler() {
+        var content = $('.summernote').summernote('code');
+        $("#content").val(content);
+        var data = $('#form-email').serialize();
+        console.info(data);
+        // $.operate.save(prefix + "/sendEmail", data);
+        var config = {
+            url: prefix + "/sendEmail",
+            type: "post",
+            dataType: "json",
+            data: data,
+            beforeSend: function () {
+                $.modal.loading("please wait");
+                $.modal.disable();
+            },
+            success: function(result) {
+
+                if (result.code == web_status.SUCCESS) {
+                    $.modal.alertSuccess(result.msg)
+                    $.modal.close();
+                    parent.$.modal.msgSuccess(result.msg);
+                } else if (result.code == web_status.WARNING) {
+                    $.modal.alertWarning(result.msg)
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
+                $.modal.enable();
+            }
+        };
+        $.ajax(config)
+        // $.ajax({
+        //     url: prefix + "/sendEmail",
+        //     data: data,
+        //     dataType: "json",
+        //     type: "post",
+        //     success: function(result) {
+        //         $.operate.saveSuccess(result);
+        //     }
+        // })
+    }
 </script>
 </body>
 </html>

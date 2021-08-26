@@ -124,14 +124,13 @@
                 return;
             }
             var data = [];
-            var i = 0;
-            for (row in rows){
+            for (i=0;i<rows.length;i++ in rows){
                 var line = {
-                    id: row,
+                    id: rows[i],
                     text: companyNames[i],
                     selected: true
                 }
-                i++;
+
                 data.push(line);
             }
             $.modal.close();

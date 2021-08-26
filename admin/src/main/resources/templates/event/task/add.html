@@ -37,7 +37,8 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label is-required">Action Required：</label>
                 <div class="col-sm-8">
-                    <textarea name="actionRequired" class="form-control" required></textarea>
+                    <textarea name="actionRequired" class="form-control" required
+                              onkeyup="changeActionRequired(this)"></textarea>
                 </div>
             </div>
             <div class="form-group">    
@@ -71,7 +72,17 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Priority：</label>
                 <div class="col-sm-8">
-                    <select name="priority" class="form-control m-b" th:with="type=${@dict.getType('priority')}" required>
+                    <select name="priority" id="priority" class="form-control m-b"
+                            th:with="type=${@dict.getType('priority')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">Status：</label>
+                <div class="col-sm-8">
+                    <select name="taskStatus" id="taskStatus" class="form-control m-b"
+                            th:with="type=${@dict.getType('task_status')}" required>
                         <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                     </select>
                 </div>
@@ -89,7 +100,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Order Instruction</label>
                     <div class="col-sm-8">
-                        <textarea name="orderInstruction" id="orderInstruction" class="form-control"
+                        <textarea name="orderInstruction" id="orderInstruction" class="form-control" readonly
                                   required></textarea>
                     </div>
                 </div>
@@ -97,8 +108,9 @@
                     <label class="col-sm-3 control-label">Order Status</label>
                     <div class="col-sm-8">
                         <select name="orderStatus" id="orderStatus" class="form-control m-b"
-                                th:with="type=${@dict.getType('order_status')}" required>
-                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                th:with="type=${@dict.getType('order_status')}" required >
+                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"
+                            ></option>
                         </select>
                     </div>
                 </div>
@@ -135,7 +147,8 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Quote Instruction</label>
                     <div class="col-sm-8">
-                        <textarea name="quoteInstruction" class="form-control" required></textarea>
+                        <textarea name="quoteInstruction" id="quoteInstruction" class="form-control" readonly
+                                  required></textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -150,8 +163,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Quote Supplier</label>
                     <div class="col-sm-8">
-                        <select name="quoteSupplierIds" id="quoteSupplierIds" class="form-control select2-multiple" multiple
-                                required></select>
+                        <select name="quoteSupplierIds" id="quoteSupplierIds" class="form-control select2-multiple" multiple required></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -164,15 +176,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Status：</label>
-                <div class="col-sm-8">
-                    <select name="taskStatus" id="taskStatus" class="form-control m-b"
-                            th:with="type=${@dict.getType('task_status')}" required>
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                    </select>
-                </div>
-            </div>
+
 
 
             <div class="form-group">    
@@ -209,14 +213,27 @@
             )
             $("#orderStatus").select2(
                 {
-                    minimumResultsForSearch: Infinity
+                    minimumResultsForSearch: Infinity,
+                    width:"100%"
                 }
             )
             $("#quoteStatus").select2(
                 {
+                    minimumResultsForSearch: Infinity,
+                    width:"100%"
+                }
+            )
+            $("#priority").select2(
+                {
                     minimumResultsForSearch: Infinity
                 }
             )
+            $("#quoteSupplierIds").select2(
+                {
+                    width:"100%"
+                }
+            )
+
         })
         var prefix = ctx + "event/task"
 
@@ -280,7 +297,7 @@
 
         function sendWorkOrder(){
             var url = ctx + "mail/sendOrder/";
-            if($("#assetIds").val()==''){
+            if($.common.isEmpty($("#assetIds").val())){
                 url +=$("#orderSupplierId").val()+"/"+$("#serviceId").val();
             }else{
                 url +=$("#orderSupplierId").val()+"/"+$("#assetIds").val()+"/"+$("#serviceId").val();
@@ -291,6 +308,12 @@
 
         function selectQuoteSupplier(){
             $.modal.open("Select Quote Supplier", prefix + "/quoteSupplierList/"+$("#serviceId").val())
+        }
+
+        function changeActionRequired(obj){
+            var actionRequired = $(obj).val();
+            $("#orderInstruction").val(actionRequired);
+            $("#quoteInstruction").val(actionRequired);
         }
     </script>
 </body>

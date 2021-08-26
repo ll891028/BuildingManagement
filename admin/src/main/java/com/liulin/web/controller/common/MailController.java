@@ -1,8 +1,11 @@
 package com.liulin.web.controller.common;
 
+import com.liulin.common.core.domain.AjaxResult;
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.framework.web.domain.MailDomain;
+import com.liulin.framework.web.service.MailService;
 import com.liulin.system.domain.Asset;
 import com.liulin.system.domain.Servize;
 import com.liulin.system.domain.Supplier;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Author: LinLiu
@@ -35,6 +39,9 @@ public class MailController {
     @Autowired
     private IServizeService servizeService;
 
+    @Autowired
+    private MailService mailService;
+
     private String prefix = "mail";
 
     @GetMapping(value = {"/sendOrder/{supplierId}/{assetIds}/{serviceId}","/sendOrder/{supplierId}/{serviceId}"})
@@ -47,7 +54,7 @@ public class MailController {
         Servize servize = servizeService.selectServizeById(serviceId);
         mmp.put("supplier",supplier);
         mmp.put("building",building);
-        mmp.put("subject","Work Order:");
+        mmp.put("subject","Work Order:${taskName}");
         String content = "Hi ${companyName},</br>" +
                 "</br>" +
                 "This is the building management of ${buildingName}(${buildingAddress}). We would like to order your" +
@@ -82,5 +89,12 @@ public class MailController {
                 .replace("${phoneNo}", ShiroUtils.getSysUser().getPhonenumber());
         mmp.put("content",content);
         return prefix + "/sendOrder";
+    }
+
+    @RequestMapping("sendEmail")
+    @ResponseBody
+    public AjaxResult sendEmail(MailDomain mailDomain) throws Exception {
+        mailService.sendMail(mailDomain);
+        return  AjaxResult.success();
     }
 }

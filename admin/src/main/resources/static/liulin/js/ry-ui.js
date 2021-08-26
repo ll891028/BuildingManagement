@@ -988,7 +988,7 @@ var table = {
                     dataType: dataType,
                     data: data,
                     beforeSend: function () {
-                        $.modal.loading("正在处理中，请稍后...");
+                        $.modal.loading("please wait...");
                     },
                     success: function(result) {
                         if (typeof callback == "function") {
@@ -1183,7 +1183,7 @@ var table = {
         	        dataType: "json",
         	        data: data,
         	        beforeSend: function () {
-        	            $.modal.loading("正在处理中，请稍后...");
+        	            $.modal.loading("please wait");
         	        },
         	        success: function(result) {
         	            if (typeof callback == "function") {
@@ -1240,7 +1240,7 @@ var table = {
             // 成功结果提示msg（父窗体全局更新）
             saveSuccess: function (result) {
             	if (result.code == web_status.SUCCESS) {
-            	    $.modal.msgReload("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+            	    $.modal.msgReload("success", modal_status.SUCCESS);
                 } else if (result.code == web_status.WARNING) {
             	    $.modal.alertWarning(result.msg)
                 }  else {
