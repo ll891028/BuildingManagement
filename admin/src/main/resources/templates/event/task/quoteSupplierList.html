@@ -134,6 +134,7 @@
                 data.push(line);
             }
             $.modal.close();
+            parent.$('#quoteSupplierIds').select2("destroy").empty();
             parent.$('#quoteSupplierIds').select2(
                 {
                     data:data,

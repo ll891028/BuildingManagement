@@ -16,6 +16,7 @@ import com.liulin.system.mapper.TaskMapper;
 import com.liulin.system.domain.Task;
 import com.liulin.system.service.ITaskService;
 import com.liulin.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * TaskService业务层处理
@@ -107,9 +108,39 @@ public class TaskServiceImpl implements ITaskService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateTask(Task task)
     {
         task.setUpdateTime(DateUtils.getNowDate());
+        taskAssetService.deleteTaskAssetByTaskId(task.getTaskId());
+        taskQuoteService.deleteTaskQuoteByTaskId(task.getTaskId());
+        if(CollectionUtils.isNotEmpty(task.getAssetIds())){
+            for (Long assetId : task.getAssetIds()) {
+                TaskAsset taskAsset = new TaskAsset();
+                taskAsset.setTaskId(task.getTaskId());
+                taskAsset.setAssetId(assetId);
+                taskAssetService.insertTaskAsset(taskAsset);
+            }
+
+        }
+        if(task.getNeedWorkOrder().equals(Task.N)){
+            task.setOrderInstruction(null);
+            task.setOrderSupplierId(null);
+            task.setOrderStatus(null);
+        }
+        if(task.getNeedQuote().equals(Task.N)){
+            task.setQuoteInstruction(null);
+            task.setQuoteStatus(null);
+            task.setQuoteSupplierIds(null);
+        }
+        if(CollectionUtils.isNotEmpty(task.getQuoteSupplierIds())){
+            for (Long supplierId : task.getQuoteSupplierIds()) {
+                TaskQuote saver = new TaskQuote();
+                saver.setTaskId(task.getTaskId());
+                saver.setSupplierId(supplierId);
+                taskQuoteService.insertTaskQuote(saver);
+            }
+        }
         return taskMapper.updateTask(task);
     }
 

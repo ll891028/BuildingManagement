@@ -58,4 +58,6 @@ public interface ITaskQuoteService
      * @return 结果
      */
     public int deleteTaskQuoteById(Long taskQuoteId);
+
+    public int deleteTaskQuoteByTaskId(Long taskId);
 }

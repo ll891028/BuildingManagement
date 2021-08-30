@@ -58,6 +58,7 @@
         var content = [[${content}]];
         var subject = [[${subject}]];
 
+
         content = content
             .replace("${description}",description)
             .replace("${instruction}",orderInstruction)
@@ -72,13 +73,14 @@
 
     });
     function submitHandler() {
+        var supplierIds = [[${supplierIds}]];
         var content = $('.summernote').summernote('code');
         $("#content").val(content);
         var data = $('#form-email').serialize();
         console.info(data);
         // $.operate.save(prefix + "/sendEmail", data);
         var config = {
-            url: prefix + "/sendEmail",
+            url: prefix + "/sendQuoteEmail/"+supplierIds,
             type: "post",
             dataType: "json",
             data: data,

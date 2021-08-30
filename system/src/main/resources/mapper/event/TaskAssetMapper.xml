@@ -65,4 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <delete id="deleteTaskAssetByTaskId" parameterType="Long">
+        delete from task_asset where task_id = #{taskId}
+    </delete>
 </mapper>

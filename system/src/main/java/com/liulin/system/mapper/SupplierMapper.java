@@ -21,6 +21,13 @@ public interface SupplierMapper
     public Supplier selectSupplierById(Long supplierId);
 
     /**
+     * 通过ids查询Supplier
+     * @param supplierIds
+     * @return
+     */
+    public List<Supplier> selectSupplierByIds(List<Long> supplierIds);
+
+    /**
      * 查询supplier列表
      * 
      * @param supplier supplier

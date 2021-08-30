@@ -53,6 +53,8 @@ $(function() {
                 max: $('#endTime').val(),
                 theme: 'molv',
                 trigger: 'click',
+                format:'dd-MM-yyyy',
+                lang: 'en',
                 done: function(value, date) {
                     // 结束时间大于开始时间
                     if (value !== '') {
@@ -71,6 +73,8 @@ $(function() {
                 min: $('#startTime').val(),
                 theme: 'molv',
                 trigger: 'click',
+                format:'dd-MM-yyyy',
+                lang: 'en',
                 done: function(value, date) {
                     // 开始时间小于结束时间
                     if (value !== '') {
@@ -96,7 +100,7 @@ $(function() {
                 // 控制控件外观
                 var type = time.attr("data-type") || 'date';
                 // 控制回显格式
-                var format = time.attr("data-format") || 'yyyy-MM-dd';
+                var format = time.attr("data-format") || 'dd-MM-yyyy';
                 // 控制日期控件按钮
                 var buttons = time.attr("data-btn") || 'clear|now|confirm', newBtnArr = [];
                 // 日期控件选择完成后回调处理
@@ -124,6 +128,7 @@ $(function() {
                     type: type,
                     format: format,
                     btns: newBtnArr,
+                    lang: 'en',
                     done: function (value, data) {
                         if (typeof window[callback] != 'undefined'
                             && window[callback] instanceof Function) {

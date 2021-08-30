@@ -58,4 +58,6 @@ public interface ITaskAssetService
      * @return 结果
      */
     public int deleteTaskAssetById(Long taskAssetId);
+
+    public int deleteTaskAssetByTaskId(Long taskId);
 }

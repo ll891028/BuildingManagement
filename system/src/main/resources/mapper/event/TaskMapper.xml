@@ -27,10 +27,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="orderStatus"    column="order_status"    />
         <result property="quoteStatus"    column="quote_status"    />
         <result property="orderSupplierId"    column="order_supplier_id"    />
+        <result property="orderSupplierName"    column="order_supplier_name"    />
     </resultMap>
 
     <sql id="selectTaskVo">
-        select task_id,task_name,building_id, description, action_required, service_id, date_raised, time_scheduled,
+        select task_id,task_name,building_id, description, action_required, service_id,
+               date_raised,
+               time_scheduled,
                priority,
                need_work_order, need_quote, task_status, attachment_ids, create_by, create_time, update_by,
                update_time,order_instruction,quote_instruction,order_status,quote_status,order_supplier_id from task
@@ -42,8 +45,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="actionRequired != null  and actionRequired != ''"> and action_required = #{actionRequired}</if>
             <if test="serviceId != null "> and service_id = #{serviceId}</if>
             <if test="buildingId != null "> and building_id = #{buildingId}</if>
-            <if test="params.beginDateRaised != null and params.beginDateRaised != '' and params.endDateRaised != null and params.endDateRaised != ''"> and date_raised between #{params.beginDateRaised} and #{params.endDateRaised}</if>
-            <if test="params.beginTimeScheduled != null and params.beginTimeScheduled != '' and params.endTimeScheduled != null and params.endTimeScheduled != ''"> and time_scheduled between #{params.beginTimeScheduled} and #{params.endTimeScheduled}</if>
+            <if
+                    test="params.beginDateRaised != null and params.beginDateRaised != '' and params.endDateRaised != null and params.endDateRaised != ''"> and date_raised between STR_TO_DATE(#{params.beginDateRaised}, '%d-%m-%Y') and STR_TO_DATE(#{params.endDateRaised}, '%d-%m-%Y')</if>
+            <if test="params.beginTimeScheduled != null and params.beginTimeScheduled != '' and params.endTimeScheduled != null and params.endTimeScheduled != ''"> and time_scheduled between STR_TO_DATE(#{params.beginTimeScheduled}, '%d-%m-%Y') and STR_TO_DATE(#{params.endTimeScheduled}, '%d-%m-%Y')</if>
             <if test="priority != null "> and priority = #{priority}</if>
             <if test="needWorkOrder != null "> and need_work_order = #{needWorkOrder}</if>
             <if test="needQuote != null "> and need_quote = #{needQuote}</if>
@@ -52,7 +56,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectTaskById" parameterType="Long" resultMap="TaskResult">
-        <include refid="selectTaskVo"/>
+        select t1.*,t2.company_name as order_supplier_name from task t1
+                            left join supplier t2 on t1.order_supplier_id = t2.supplier_id
         where task_id = #{taskId}
     </select>
         
@@ -125,11 +130,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="orderInstruction != null">order_instruction = #{orderInstruction},</if>
-            <if test="quoteInstruction != null">quote_instruction = #{quoteInstruction},</if>
-            <if test="orderStatus != null">order_status = #{orderStatus},</if>
-            <if test="quoteStatus != null">quote_status = #{quoteStatus},</if>
-            <if test="orderSupplierId != null">order_supplier_id = #{orderSupplierId},</if>
+            order_instruction = #{orderInstruction},
+            quote_instruction = #{quoteInstruction},
+            order_status = #{orderStatus},
+            quote_status = #{quoteStatus},
+            order_supplier_id = #{orderSupplierId},
         </trim>
         where task_id = #{taskId}
     </update>

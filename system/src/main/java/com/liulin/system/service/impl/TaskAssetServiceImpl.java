@@ -91,4 +91,9 @@ public class TaskAssetServiceImpl implements ITaskAssetService
     {
         return taskAssetMapper.deleteTaskAssetById(taskAssetId);
     }
+
+    @Override
+    public int deleteTaskAssetByTaskId(Long taskId) {
+        return taskAssetMapper.deleteTaskAssetByTaskId(taskId);
+    }
 }

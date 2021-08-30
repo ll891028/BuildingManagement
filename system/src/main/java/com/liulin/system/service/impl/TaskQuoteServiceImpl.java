@@ -91,4 +91,9 @@ public class TaskQuoteServiceImpl implements ITaskQuoteService
     {
         return taskQuoteMapper.deleteTaskQuoteById(taskQuoteId);
     }
+
+    @Override
+    public int deleteTaskQuoteByTaskId(Long taskId) {
+        return taskQuoteMapper.deleteTaskQuoteByTaskId(taskId);
+    }
 }

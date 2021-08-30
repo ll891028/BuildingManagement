@@ -51,6 +51,8 @@ public interface TaskQuoteMapper
      */
     public int deleteTaskQuoteById(Long taskQuoteId);
 
+    public int deleteTaskQuoteByTaskId(Long taskId);
+
     /**
      * 批量删除TaskQuote
      * 

@@ -44,6 +44,11 @@ public class SupplierServiceImpl implements ISupplierService
         return supplierMapper.selectSupplierById(supplierId);
     }
 
+    @Override
+    public List<Supplier> selectSupplierByIds(List<Long> supplierIds) {
+        return supplierMapper.selectSupplierByIds(supplierIds);
+    }
+
     /**
      * 查询supplier列表
      * 

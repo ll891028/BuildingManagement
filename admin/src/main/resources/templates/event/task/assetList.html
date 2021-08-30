@@ -143,7 +143,7 @@
             // 父页面的变量
             // parent.$('#assetIds').val(rows.join());
             // parent.$('#assetNames').val(assetNames.join());
-
+            parent.$('#assetIds').select2("destroy").empty();
             parent.$('#assetIds').select2(
                 {
                     data:data,

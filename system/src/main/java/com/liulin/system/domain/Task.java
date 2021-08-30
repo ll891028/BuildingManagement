@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
 import com.liulin.common.core.domain.BaseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * Task对象 task
@@ -43,13 +44,14 @@ public class Task extends BaseEntity
     private Long serviceId;
 
     /** Date Raised */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "Date Raised", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    @Excel(name = "Date Raised", width = 30, dateFormat = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date dateRaised;
 
     /** Time scheduled */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "Time scheduled", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    @Excel(name = "Time scheduled", width = 30, dateFormat = "dd-MM-yyyy")
     private Date timeScheduled;
 
     /** Priority */
@@ -86,7 +88,17 @@ public class Task extends BaseEntity
 
     private Long orderSupplierId;
 
+    private String orderSupplierName;
+
     private List<Long> quoteSupplierIds;
+
+    public String getOrderSupplierName() {
+        return orderSupplierName;
+    }
+
+    public void setOrderSupplierName(String orderSupplierName) {
+        this.orderSupplierName = orderSupplierName;
+    }
 
     public String getTaskName() {
         return taskName;

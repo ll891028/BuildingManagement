@@ -58,4 +58,6 @@ public interface TaskAssetMapper
      * @return 结果
      */
     public int deleteTaskAssetByIds(String[] taskAssetIds);
+
+    public int deleteTaskAssetByTaskId(Long taskId);
 }
