@@ -75,7 +75,9 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Priority：</label>
                 <div class="col-sm-8">
-                    <select name="priority" class="form-control m-b" th:with="type=${@dict.getType('priority')}" required>
+                    <select name="priority" id="priority" class="form-control m-b"
+                            th:with="type=${@dict.getType('priority')}"
+                            required>
                         <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{priority}"></option>
                     </select>
                 </div>
@@ -83,7 +85,8 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label is-required">Status：</label>
                 <div class="col-sm-8">
-                    <select name="taskStatus" class="form-control m-b" th:with="type=${@dict.getType('task_status')}" required>
+                    <select name="taskStatus" id="taskStatus" class="form-control m-b"
+                            th:with="type=${@dict.getType('task_status')}" required>
                         <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{taskStatus}"></option>
                     </select>
                 </div>
