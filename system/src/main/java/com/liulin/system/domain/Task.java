@@ -92,6 +92,26 @@ public class Task extends BaseEntity
 
     private List<Long> quoteSupplierIds;
 
+    private Integer taskType;
+
+    private Integer rootCause;
+
+    public Integer getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(Integer taskType) {
+        this.taskType = taskType;
+    }
+
+    public Integer getRootCause() {
+        return rootCause;
+    }
+
+    public void setRootCause(Integer rootCause) {
+        this.rootCause = rootCause;
+    }
+
     public String getOrderSupplierName() {
         return orderSupplierName;
     }

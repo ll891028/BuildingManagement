@@ -16,6 +16,16 @@
                     <input name="taskName" th:field="*{taskName}" class="form-control" type="text" required />
                 </div>
             </div>
+            <div class="form-group" th:if="${taskType==2}">
+                <label class="col-sm-3 control-label is-required">Root Cause：</label>
+                <div class="col-sm-8">
+                    <select name="rootCause" id="rootCause" class="form-control m-b"
+                            th:with="type=${@dict.getType('root_cause')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{rootCause}"
+                        ></option>
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Related Asset：</label>
                 <div class="col-sm-8">
@@ -224,6 +234,12 @@
                 }
             )
             $("#quoteStatus").select2(
+                {
+                    minimumResultsForSearch: Infinity,
+                    width:"100%"
+                }
+            )
+            $("#rootCause").select2(
                 {
                     minimumResultsForSearch: Infinity,
                     width:"100%"

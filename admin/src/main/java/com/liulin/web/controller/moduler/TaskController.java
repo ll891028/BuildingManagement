@@ -52,15 +52,19 @@ public class TaskController extends BaseController
     @Autowired
     private ITaskQuoteService taskQuoteService;
 
+    @Autowired
+    private IBuildingLevelService buildingLevelService;
+
     @RequiresPermissions("event:task:view")
-    @GetMapping()
-    public String task(ModelMap mmp)
+    @GetMapping(value = {"/{taskType}",""})
+    public String task(@PathVariable(required = false,value = "taskType") Integer taskType, ModelMap mmp)
     {
 
         Servize query = new Servize();
         query.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         List<Servize> servizes = servizeService.selectServizeList(query);
         mmp.put("servizes",servizes);
+        mmp.put("taskType",taskType==null?1:taskType);
         return prefix + "/task";
     }
 
@@ -95,14 +99,15 @@ public class TaskController extends BaseController
     /**
      * 新增Task
      */
-    @GetMapping("/add")
-    public String add(ModelMap mmp)
+    @GetMapping(value = {"/add","/add/{taskType}"})
+    public String add(@PathVariable(required = false,value = "taskType")Integer taskType, ModelMap mmp)
     {
 
         Servize query = new Servize();
         query.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         List<Servize> servizes = servizeService.selectServizeList(query);
         mmp.put("servizes",servizes);
+        mmp.put("taskType",taskType==null?1:taskType);
         return prefix + "/add";
     }
 
@@ -123,8 +128,8 @@ public class TaskController extends BaseController
     /**
      * 修改Task
      */
-    @GetMapping("/edit/{taskId}")
-    public String edit(@PathVariable("taskId") Long taskId, ModelMap mmap)
+    @GetMapping(value = "/edit/{taskId}")
+    public String edit(@PathVariable("taskId") Long taskId,@PathVariable(value = "taskType",required = false)Integer taskType, ModelMap mmap)
     {
         Servize query = new Servize();
         query.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
@@ -173,8 +178,10 @@ public class TaskController extends BaseController
 
     @RequiresPermissions("event:task:view")
     @GetMapping("/asset")
-    public String assetList()
+    public String assetList(ModelMap mmap)
     {
+        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        mmap.put("buildingLevels",buildingLevels);
         return prefix + "/assetList";
     }
 

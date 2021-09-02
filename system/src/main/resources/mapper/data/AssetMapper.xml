@@ -33,15 +33,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join building_level t2
         on t1.level_id = t2.level_id
         <where>  
-            <if test="assetName != null  and assetName != ''"> and asset_name like concat('%', #{assetName}, '%')</if>
-            <if test="levelId != null "> and level_id = #{levelId}</if>
-            <if test="brand != null  and brand != ''"> and brand like concat('%', #{brand}, '%')</if>
-            <if test="needSaftyCheck != null "> and need_safty_check = #{needSaftyCheck}</if>
-            <if test="canBeBooked != null  and canBeBooked != ''"> and can_be_booked = #{canBeBooked}</if>
-            <if test="status != null "> and status = #{status}</if>
-            <if test="installedDate != null "> and installed_date = #{installedDate}</if>
-            <if test="description != null  and description != ''"> and description = #{description}</if>
-            <if test="attachmentIds != null  and attachmentIds != ''"> and attachment_ids = #{attachmentIds}</if>
+            <if test="assetName != null  and assetName != ''"> and t1.asset_name like concat('%', #{assetName}, '%')</if>
+            <if test="levelId != null "> and t1.level_id = #{levelId}</if>
+            <if test="brand != null  and brand != ''"> and t1.brand like concat('%', #{brand}, '%')</if>
+            <if test="needSaftyCheck != null "> and t1.need_safty_check = #{needSaftyCheck}</if>
+            <if test="canBeBooked != null  and canBeBooked != ''"> and t1.can_be_booked = #{canBeBooked}</if>
+            <if test="status != null "> and t1.status = #{status}</if>
+            <if test="installedDate != null "> and t1.installed_date = #{installedDate}</if>
+            <if test="description != null  and description != ''"> and t1.description = #{description}</if>
             <if test="buildingId != null"> and t2.building_id = #{buildingId}</if>
         </where>
     </select>
