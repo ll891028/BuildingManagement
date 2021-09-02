@@ -110,6 +110,7 @@
         var needWorkOrderDatas = [[${@dict.getType('if_groud_floor')}]];
         var needQuoteDatas = [[${@dict.getType('if_groud_floor')}]];
         var taskStatusDatas = [[${@dict.getType('task_status')}]];
+        var rootCauseDatas = [[${@dict.getType('root_cause')}]];
         var taskType = [[${taskType}]];
         var prefix = ctx + "event/task";
         var createUrl=prefix + "/add/"+taskType;
@@ -204,7 +205,10 @@
                 },
                 {
                     field: 'rootCause',
-                    title: 'Root Cause'
+                    title: 'Root Cause',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(rootCauseDatas, value);
+                    }
                 },
                 {
                     field: 'description',
