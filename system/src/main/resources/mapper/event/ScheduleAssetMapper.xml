@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.ScheduleAssetMapper">
+    
+    <resultMap type="ScheduleAsset" id="ScheduleAssetResult">
+        <result property="schAssetId"    column="sch_asset_id"    />
+        <result property="schId"    column="sch_id"    />
+        <result property="assetId"    column="asset_id"    />
+        <result property="assetName"    column="asset_name"    />
+        <result property="levelName"    column="level_name"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectScheduleAssetVo">
+        select sch_asset_id, sch_id, asset_id from schedule_asset
+    </sql>
+
+    <select id="selectScheduleAssetList" parameterType="ScheduleAsset" resultMap="ScheduleAssetResult">
+        select t1.*,t2.asset_name, t3.level_name,t2.status
+        from schedule_asset t1
+        left join asset t2 on t1.asset_id = t2.asset_id
+        left join building_level t3 on t2.level_id = t3.level_id
+        <where>  
+            <if test="schId != null "> and sch_id = #{schId}</if>
+            <if test="assetId != null "> and asset_id = #{assetId}</if>
+        </where>
+    </select>
+    
+    <select id="selectScheduleAssetById" parameterType="Long" resultMap="ScheduleAssetResult">
+        <include refid="selectScheduleAssetVo"/>
+        where sch_asset_id = #{schAssetId}
+    </select>
+        
+    <insert id="insertScheduleAsset" parameterType="ScheduleAsset" useGeneratedKeys="true" keyProperty="schAssetId">
+        insert into schedule_asset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="schId != null">sch_id,</if>
+            <if test="assetId != null">asset_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="schId != null">#{schId},</if>
+            <if test="assetId != null">#{assetId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateScheduleAsset" parameterType="ScheduleAsset">
+        update schedule_asset
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="schId != null">sch_id = #{schId},</if>
+            <if test="assetId != null">asset_id = #{assetId},</if>
+        </trim>
+        where sch_asset_id = #{schAssetId}
+    </update>
+
+    <delete id="deleteScheduleAssetById" parameterType="Long">
+        delete from schedule_asset where sch_asset_id = #{schAssetId}
+    </delete>
+
+    <delete id="deleteScheduleAssetBySchId" parameterType="Long">
+        delete from schedule_asset where sch_id = #{schId}
+    </delete>
+
+    <delete id="deleteScheduleAssetByIds" parameterType="String">
+        delete from schedule_asset where sch_asset_id in 
+        <foreach item="schAssetId" collection="array" open="(" separator="," close=")">
+            #{schAssetId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <th:block th:include="include :: header('新增Task')" />
+    <th:block th:include="include :: header('修改schedule')" />
     <th:block th:include="include :: datetimepicker-css" />
-    <th:block th:include="include :: bootstrap-fileinput-css"/>
     <th:block th:include="include :: select2-css" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-task-add">
-            <input type="hidden" th:value="${taskType}" name="taskType">
+        <form class="form-horizontal m" id="form-schedule-edit" th:object="${schedule}">
+            <input name="schId" th:field="*{schId}" type="hidden">
             <div class="form-group">
-                <label class="col-sm-3 control-label is-required">Task Name：</label>
+                <label class="col-sm-3 control-label is-required">Schedule Name：</label>
                 <div class="col-sm-8">
-                    <input name="taskName" id="taskName" class="form-control" type="text" required />
+                    <input name="schName" id="schName" class="form-control" type="text" required th:field="*{schName}"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Related Asset：</label>
                 <div class="col-sm-8">
-                    <select name="assetIds" id="assetIds" class="form-control select2-multiple" multiple></select>
+                    <select name="assetIds" id="assetIds" class="form-control select2-multiple" multiple>
+                        <option th:each="asset :${taskAssets}" th:value="${asset.assetId}"
+                                th:text="${asset.assetName}" selected/>
+                    </select>
                 </div>
             </div>
             <div class="form-group">
@@ -31,70 +33,51 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label is-required">Description：</label>
                 <div class="col-sm-8">
-                    <textarea name="description" id="description" class="form-control" required></textarea>
+                    <textarea name="description" class="form-control" required>[[*{description}]]</textarea>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label is-required">Action Required：</label>
                 <div class="col-sm-8">
-                    <textarea name="actionRequired" class="form-control" required
-                              onkeyup="changeActionRequired(this)"></textarea>
+                    <textarea name="actionRequired" class="form-control" required>[[*{actionRequired}]]</textarea>
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Service：</label>
                 <div class="col-sm-8">
-                    <select name="serviceId" class="form-control m-b" required id="serviceId">
+                    <select name="serviceId" id="serviceId" class="form-control m-b" required>
                         <option th:value="${service.serviceId}" th:each="service :${ servizes}">
                             [[${service.serviceName}]]</option>
                     </select>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Date Raised：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <input name="dateRaised" class="form-control" placeholder="dd-mm-yyyy" type="text" required
-                               autocomplete="off" >
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Time scheduled：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <input name="timeScheduled" id="timeScheduled" class="form-control"
-                               placeholder="dd-mm-yyyy" type="text" required autocomplete="off">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Priority：</label>
                 <div class="col-sm-8">
                     <select name="priority" id="priority" class="form-control m-b"
-                            th:with="type=${@dict.getType('priority')}" required>
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                            th:with="type=${@dict.getType('priority')}"
+                            required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{priority}"></option>
                     </select>
                 </div>
             </div>
-            <div class="form-group" th:if="${taskType==2}">
-                <label class="col-sm-3 control-label is-required">Root Cause：</label>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Frequency：</label>
                 <div class="col-sm-8">
-                    <select name="rootCause" id="rootCause" class="form-control m-b"
-                            th:with="type=${@dict.getType('root_cause')}" required>
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    <select name="frequency" id="frequency" class="form-control m-b"
+                            th:with="type=${@dict.getType('frequency')}"
+                            required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{frequency}"></option>
                     </select>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label is-required">Status：</label>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Start Date：</label>
                 <div class="col-sm-8">
-                    <select name="taskStatus" id="taskStatus" class="form-control m-b"
-                            th:with="type=${@dict.getType('task_status')}" required>
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                    </select>
+                    <div class="input-group date">
+                        <input name="startDate" th:value="${#dates.format(schedule.startDate, 'dd-MM-yyyy')}" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -102,16 +85,16 @@
                 <div class="col-sm-8">
                     <select name="needQuote" id="needQuote" class="form-control m-b"
                             th:with="type=${@dict.getType('if_groud_floor')}" required onchange="quoteChange(this)">
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{needQuote}"></option>
                     </select>
                 </div>
             </div>
-            <div id="quoteDiv" style="display: none">
+            <div id="quoteDiv" th:style="'display:' + ${schedule.needQuote>0 ? 'block' : 'none'}">
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Quote Instruction</label>
                     <div class="col-sm-8">
                         <textarea name="quoteInstruction" id="quoteInstruction" class="form-control" readonly
-                                  required></textarea>
+                                  required>[[*{actionRequired}]]</textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -119,14 +102,18 @@
                     <div class="col-sm-8">
                         <select name="quoteStatus" id="quoteStatus" class="form-control m-b"
                                 th:with="type=${@dict.getType('quote_status')}" required>
-                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"
+                                    th:field="*{quoteStatus}"></option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Quote Supplier</label>
                     <div class="col-sm-8">
-                        <select name="quoteSupplierIds" id="quoteSupplierIds" class="form-control select2-multiple" multiple required></select>
+                        <select name="quoteSupplierIds" id="quoteSupplierIds" class="form-control select2-multiple" multiple required>
+                            <option th:each="quote :${taskQuotes}" th:value="${quote.supplierId}"
+                                    th:text="${quote.companyName}" selected/>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -139,21 +126,21 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label is-required">Need Work Order：</label>
                 <div class="col-sm-8">
                     <select name="needWorkOrder" id="needWorkOrder" class="form-control m-b"
                             th:with="type=${@dict.getType('if_groud_floor')}" required onchange="workOrderChange(this)">
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{needWorkOrder}"></option>
                     </select>
                 </div>
             </div>
-            <div id="orderDiv" style="display: none">
+            <div id="orderDiv"  th:style="'display:' + ${schedule.needWorkOrder>0 ? 'block' : 'none'}">
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Order Instruction</label>
                     <div class="col-sm-8">
                         <textarea name="orderInstruction" id="orderInstruction" class="form-control" readonly
-                                  required></textarea>
+                                  required>[[*{actionRequired}]]</textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -161,7 +148,7 @@
                     <div class="col-sm-8">
                         <select name="orderStatus" id="orderStatus" class="form-control m-b"
                                 th:with="type=${@dict.getType('order_status')}" required >
-                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"
+                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{orderStatus}"
                             ></option>
                         </select>
                     </div>
@@ -170,9 +157,10 @@
                     <label class="col-sm-3 control-label">Order Supplier</label>
                     <div class="col-sm-8">
                         <input type="hidden" name="orderSupplierId" id="orderSupplierId" class="form-control"
-                               />
+                               th:field="*{orderSupplierId}"
+                        />
                         <input type="text" name="orderSupplierName" id="orderSupplierName" class="form-control"
-                               readonly />
+                               readonly th:field="*{orderSupplierName}"/>
                     </div>
                 </div>
                 <div class="form-group">
@@ -185,22 +173,21 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Attachment：</label>
-                <div class="col-sm-8">
-                    <input type="hidden" name="attachmentIds">
-                    <div class="file-loading">
-                        <input class="form-control file-upload" id="attachmentIds" name="file" type="file">
-                    </div>
-                </div>
-            </div>
+<!--            <div class="form-group">-->
+<!--                <label class="col-sm-3 control-label">Attachment：</label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <input type="hidden" name="attachmentIds" th:field="*{attachmentIds}">-->
+<!--                    <div class="file-loading">-->
+<!--                        <input class="form-control file-upload" id="attachmentIds" name="file" type="file">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </form>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: bootstrap-fileinput-js"/>
     <th:block th:include="include :: select2-js" />
-    <script th:inline="javascript">
+    <script>
         $(function() {
             $("#needWorkOrder").select2(
                 {
@@ -212,7 +199,17 @@
                     minimumResultsForSearch: Infinity
                 }
             )
-            $("#taskStatus").select2(
+            $("#status").select2(
+                {
+                    minimumResultsForSearch: Infinity
+                }
+            )
+            $("#serviceId").select2(
+                {
+                    minimumResultsForSearch: Infinity
+                }
+            )
+            $("#frequency").select2(
                 {
                     minimumResultsForSearch: Infinity
                 }
@@ -229,7 +226,7 @@
                     width:"100%"
                 }
             )
-            $("#rootCause").select2(
+            $("#frequency").select2(
                 {
                     minimumResultsForSearch: Infinity,
                     width:"100%"
@@ -247,45 +244,27 @@
             )
 
         })
-        var prefix = ctx + "event/task"
+    </script>
+    <script th:inline="javascript">
 
-        $("#form-task-add").validate({
+
+        var prefix = ctx + "event/schedule";
+        $("#form-schedule-edit").validate({
             focusCleanup: true
         });
 
         function submitHandler() {
             if ($.validate.form()) {
-                $.operate.save(prefix + "/add", $('#form-task-add').serialize());
+                $.operate.save(prefix + "/edit", $('#form-schedule-edit').serialize());
             }
         }
 
-        $("input[name='dateRaised']").datetimepicker({
+        $("input[name='startDate']").datetimepicker({
             language:"en",
             format: "dd-mm-yyyy",
             minView: "month",
             autoclose: true
         });
-
-        $("input[name='timeScheduled']").datetimepicker({
-            language:"en",
-            format: "dd-mm-yyyy",
-            minView: "month",
-            autoclose: true
-        });
-
-        $(".file-upload").fileinput({
-            uploadUrl: ctx + 'common/upload',
-            maxFileCount: 1,
-            autoReplace: true
-        }).on('fileuploaded', function (event, data, previewId, index) {
-            $("input[name='" + event.currentTarget.id + "']").val(data.response.url)
-        }).on('fileremoved', function (event, id, index) {
-            $("input[name='" + event.currentTarget.id + "']").val('')
-        })
-
-        function assetList(){
-            $.modal.open("Asset List", prefix + "/asset");
-        }
 
         function workOrderChange(obj){
             var status = $(obj).val();
@@ -306,7 +285,7 @@
         }
 
         function selectSupplier(){
-            $.modal.open("Select Supplier", prefix + "/selectSupplier/"+$("#serviceId").val());
+            $.modal.open("Select Supplier", ctx + "event/task" + "/selectSupplier/"+$("#serviceId").val());
         }
 
         function sendWorkOrder(){
@@ -317,7 +296,7 @@
                 url +=$("#orderSupplierId").val()+"/"+$("#assetIds").val()+"/"+$("#serviceId").val();
             }
             $.modal.open("send work order",
-               url);
+                url);
         }
 
         function sendQuoteRequest(){
@@ -328,11 +307,15 @@
                 url +=$("#quoteSupplierIds").val()+"/"+$("#assetIds").val()+"/"+$("#serviceId").val();
             }
             $.modal.open("send quote request",
-               url);
+                url);
+        }
+
+        function assetList(){
+            $.modal.open("Asset List", ctx + "event/task" + "/asset");
         }
 
         function selectQuoteSupplier(){
-            $.modal.open("Select Quote Supplier", prefix + "/quoteSupplierList/"+$("#serviceId").val())
+            $.modal.open("Select Quote Supplier", ctx + "event/task" + "/quoteSupplierList/"+$("#serviceId").val())
         }
 
         function changeActionRequired(obj){
@@ -341,5 +324,8 @@
             $("#quoteInstruction").val(actionRequired);
         }
     </script>
+
+
+
 </body>
 </html>

@@ -298,4 +298,39 @@ public class TaskController extends BaseController
         return getDataTable(list);
     }
 
+    @RequiresPermissions("event:task:view")
+    @GetMapping("/quotePriceList/{taskId}")
+    public String quoteList(@PathVariable Long taskId,ModelMap mmp)
+    {
+        mmp.put("taskId",taskId);
+        return prefix + "/quoteList";
+    }
+
+    /**
+     * 查询selectSupplier列表
+     */
+    @RequiresPermissions("event:task:list")
+    @PostMapping("/quoteList/list")
+    @ResponseBody
+    public TableDataInfo quoteList(TaskQuote taskQuote)
+    {
+        startPage();
+        TaskQuote quoteQuery = new TaskQuote();
+        quoteQuery.setTaskId(taskQuote.getTaskId());
+        List<TaskQuote> taskQuotes = taskQuoteService.selectTaskQuoteList(quoteQuery);
+        return getDataTable(taskQuotes);
+    }
+
+    /**
+     * 修改保存QuorePrice
+     */
+    @RequiresPermissions("event:task:edit")
+    @Log(title = "Task", businessType = BusinessType.UPDATE)
+    @PostMapping("/saveQuotePrice")
+    @ResponseBody
+    public AjaxResult saveQuotePrice(TaskQuote taskQuote)
+    {
+        return toAjax(taskQuoteService.updateTaskQuote(taskQuote));
+    }
+
 }

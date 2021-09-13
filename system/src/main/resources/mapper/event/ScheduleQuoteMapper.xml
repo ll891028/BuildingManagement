@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.ScheduleQuoteMapper">
+    
+    <resultMap type="ScheduleQuote" id="ScheduleQuoteResult">
+        <result property="scheduleQuoteId"    column="schedule_quote_id"    />
+        <result property="scheduleId"    column="schedule_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="quotePrice"    column="quote_price"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="email"    column="email"    />
+        <result property="contactPerson"    column="contact_person"    />
+    </resultMap>
+
+    <sql id="selectScheduleQuoteVo">
+        select schedule_quote_id, schedule_id, supplier_id, quote_price from schedule_quote
+    </sql>
+
+    <select id="selectScheduleQuoteList" parameterType="ScheduleQuote" resultMap="ScheduleQuoteResult">
+        select t1.*,t2.company_name,t2.email,t2.contact_person from
+        schedule_quote t1 left join supplier t2 on t1.supplier_id = t2.supplier_id
+        <where>  
+            <if test="scheduleId != null "> and schedule_id = #{scheduleId}</if>
+            <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+            <if test="quotePrice != null "> and quote_price = #{quotePrice}</if>
+        </where>
+    </select>
+    
+    <select id="selectScheduleQuoteById" parameterType="Long" resultMap="ScheduleQuoteResult">
+        <include refid="selectScheduleQuoteVo"/>
+        where schedule_quote_id = #{scheduleQuoteId}
+    </select>
+        
+    <insert id="insertScheduleQuote" parameterType="ScheduleQuote">
+        insert into schedule_quote
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="scheduleQuoteId != null">schedule_quote_id,</if>
+            <if test="scheduleId != null">schedule_id,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="quotePrice != null">quote_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="scheduleQuoteId != null">#{scheduleQuoteId},</if>
+            <if test="scheduleId != null">#{scheduleId},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="quotePrice != null">#{quotePrice},</if>
+         </trim>
+    </insert>
+
+    <update id="updateScheduleQuote" parameterType="ScheduleQuote">
+        update schedule_quote
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scheduleId != null">schedule_id = #{scheduleId},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="quotePrice != null">quote_price = #{quotePrice},</if>
+        </trim>
+        where schedule_quote_id = #{scheduleQuoteId}
+    </update>
+
+    <delete id="deleteScheduleQuoteById" parameterType="Long">
+        delete from schedule_quote where schedule_quote_id = #{scheduleQuoteId}
+    </delete>
+
+    <delete id="deleteScheduleQuoteBySchId" parameterType="Long">
+        delete from schedule_quote where schedule_id = #{scheduleId}
+    </delete>
+
+    <delete id="deleteScheduleQuoteByIds" parameterType="String">
+        delete from schedule_quote where schedule_quote_id in 
+        <foreach item="scheduleQuoteId" collection="array" open="(" separator="," close=")">
+            #{scheduleQuoteId}
+        </foreach>
+    </delete>
+
+</mapper>

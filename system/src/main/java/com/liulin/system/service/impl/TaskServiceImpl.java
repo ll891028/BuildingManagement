@@ -67,6 +67,7 @@ public class TaskServiceImpl implements ITaskService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertTask(Task task)
     {
         task.setCreateTime(DateUtils.getNowDate());

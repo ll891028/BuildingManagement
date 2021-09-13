@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('supplier列表')" />
+    <th:block th:include="include :: bootstrap-editable-css" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <input type="hidden" th:value="${taskId}" name="taskId" />
+                </form>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: bootstrap-table-editable-js" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('data:supplier:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('data:supplier:remove')}]];
+        var statusDatas = [[${@dict.getType('resident_status')}]];
+        var prefix = ctx + "event/task";
+
+        $(function () {
+            var options = {
+                url: prefix + "/quoteList/list",
+                modalName: " Quote Supplier",
+                showSearch: false,
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
+                onEditableSave: onEditableSave,
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'taskQuoteId',
+                        title: 'Task Quote Id',
+                        visible: false
+                    },
+                    {
+                        field: 'companyName',
+                        title: 'Company Name'
+                    },
+                    {
+                        field: 'contactNumber',
+                        title: 'Contact Number'
+                    },
+                    {
+                        field: 'email',
+                        title: 'Email'
+                    },
+                    {
+                        field: 'quotePrice',
+                        title: 'Quote Price',
+                        editable : {
+                            type : 'text',
+                            title : 'Quote Price',
+                            emptytext : "-",
+                            validate : function(value) {
+                                if (!value.match(/^[1-9][0-9]*([.][0-9]{1,2})?$/)) {
+                                    return 'Invalid Number';
+                                }
+
+                            }
+                        }
+                    }
+                    ]
+            };
+            $.table.init(options);
+        });
+
+        function submitHandler(index, layero) {
+            var rows = $.table.selectFirstColumns();
+            var companyNames = $.table.selectColumnsNotUnique("companyName");
+            if (rows.length == 0) {
+                $.modal.alertWarning("请至少选择一条记录");
+                return;
+            }
+            var data = [];
+            for (i=0;i<rows.length;i++ in rows){
+                var line = {
+                    id: rows[i],
+                    text: companyNames[i],
+                    selected: true
+                }
+
+                data.push(line);
+            }
+            $.modal.close();
+            parent.$('#quoteSupplierIds').select2("destroy").empty();
+            parent.$('#quoteSupplierIds').select2(
+                {
+                    data:data,
+                }
+            );
+        }
+        function onEditableSave (field, row, rowIndex, oldValue, $el) {
+            // if(!row[field].match(/^[\+\-]?\d*?\.?\d*?$/)){
+            //     row[field]=oldValue;
+            //     return;
+            // }
+            // if(!row[field].match(/^(?:[\+\-]?\d+(?:\.\d+)?)?$/)){
+            //     row[field]=oldValue;
+            //     return;
+            // }
+
+            console.log("字段名：" + field + "，当前值：" + row[field]  + "，旧值：" + oldValue);
+            $.ajax({
+                url: prefix + "/saveQuotePrice",
+                data: {taskQuoteId: row['taskQuoteId'], quotePrice: row[field]},
+                type: "post",
+                success: function (result) {
+                    if (result.code == web_status.SUCCESS) {
+
+                    } else {
+                        alert(result.msg);
+                    }
+                }
+            })
+
+        }
+    </script>
+</body>
+</html>

@@ -125,7 +125,7 @@
             },
             {
                 field: 'taskName',
-                title: 'Task Name'
+                title: 'Name'
             },
             {
                 field: 'description',
@@ -185,7 +185,10 @@
                         'fa-edit"></i>edit</a> ');
                     actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" ' +
                         'onclick="$.operate.remove(\'' + row.taskId + '\')"><i class="fa ' +
-                        'fa-remove"></i>remove</a>');
+                        'fa-remove"></i>remove</a> ');
+                    actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
+                        'onclick="quoteList(\'' + row.taskId + '\')"><i class="fa ' +
+                        'fa-money"> </i> quote price</a>');
                     return actions.join('');
                 }
             }];
@@ -201,7 +204,7 @@
                 },
                 {
                     field: 'taskName',
-                    title: 'Task Name'
+                    title: 'Name'
                 },
                 {
                     field: 'rootCause',
@@ -269,6 +272,9 @@
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" ' +
                             'onclick="$.operate.remove(\'' + row.taskId + '\')"><i class="fa ' +
                             'fa-remove"></i>remove</a>');
+                        actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
+                            'onclick="quoteList(\'' + row.taskId + '\')"><i class="fa ' +
+                            'fa-money"> </i> quote price</a>');
                         return actions.join('');
                     }
                 }]
@@ -285,6 +291,10 @@
             };
             $.table.init(options);
         });
+
+        function quoteList(taskId) {
+            $.modal.openTab("Quote List", prefix + "/quotePriceList/"+taskId)
+        }
     </script>
 </body>
 </html>
