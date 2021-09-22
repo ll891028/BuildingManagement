@@ -12,6 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="actionRequired"    column="action_required"    />
         <result property="serviceId"    column="service_id"    />
         <result property="dateRaised"    column="date_raised"    />
+        <result property="dateComplete"    column="date_complete"    />
         <result property="timeScheduled"    column="time_scheduled"    />
         <result property="priority"    column="priority"    />
         <result property="needWorkOrder"    column="need_work_order"    />
@@ -30,11 +31,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="orderSupplierName"    column="order_supplier_name"    />
         <result property="taskType"    column="task_type"    />
         <result property="rootCause"    column="root_cause"    />
+        <result property="serviceName"    column="service_name"    />
     </resultMap>
 
     <sql id="selectTaskVo">
         select task_id,task_name,building_id, description, action_required, service_id,
                date_raised,
+               date_complete,
                time_scheduled,
                priority,
                need_work_order, need_quote, task_status, attachment_ids, create_by, create_time, update_by,
@@ -43,13 +46,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectTaskList" parameterType="Task" resultMap="TaskResult">
-        <include refid="selectTaskVo"/>
+        select t1.*,t2.service_name from task t1
+        left join service t2 on t1.service_id = t2.service_id
         <where>  
             <if test="actionRequired != null  and actionRequired != ''"> and action_required = #{actionRequired}</if>
             <if test="serviceId != null "> and service_id = #{serviceId}</if>
             <if test="buildingId != null "> and building_id = #{buildingId}</if>
+            <if test="params.beginDateRaised != null and params.beginDateRaised != '' and params.endDateRaised != null and params.endDateRaised != ''"> and date_raised between STR_TO_DATE(#{params.beginDateRaised}, '%d-%m-%Y') and STR_TO_DATE(#{params.endDateRaised}, '%d-%m-%Y')</if>
             <if
-                    test="params.beginDateRaised != null and params.beginDateRaised != '' and params.endDateRaised != null and params.endDateRaised != ''"> and date_raised between STR_TO_DATE(#{params.beginDateRaised}, '%d-%m-%Y') and STR_TO_DATE(#{params.endDateRaised}, '%d-%m-%Y')</if>
+                    test="params.beginDateComplete != null and params.beginDateComplete != '' and params.endDateComplete != null and params.endDateComplete != ''"> and date_complete between STR_TO_DATE(#{params.beginDateComplete}, '%d-%m-%Y') and STR_TO_DATE(#{params.endDateComplete}, '%d-%m-%Y')</if>
             <if test="params.beginTimeScheduled != null and params.beginTimeScheduled != '' and params.endTimeScheduled != null and params.endTimeScheduled != ''"> and time_scheduled between STR_TO_DATE(#{params.beginTimeScheduled}, '%d-%m-%Y') and STR_TO_DATE(#{params.endTimeScheduled}, '%d-%m-%Y')</if>
             <if test="priority != null "> and priority = #{priority}</if>
             <if test="needWorkOrder != null "> and need_work_order = #{needWorkOrder}</if>
@@ -75,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceId != null">service_id,</if>
             <if test="buildingId != null">building_id,</if>
             <if test="dateRaised != null">date_raised,</if>
+            <if test="dateComplete != null">date_complete,</if>
             <if test="timeScheduled != null">time_scheduled,</if>
             <if test="priority != null">priority,</if>
             <if test="needWorkOrder != null">need_work_order,</if>
@@ -100,6 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceId != null">#{serviceId},</if>
             <if test="buildingId != null">#{buildingId},</if>
             <if test="dateRaised != null">#{dateRaised},</if>
+            <if test="dateComplete != null">#{dateComplete},</if>
             <if test="timeScheduled != null">#{timeScheduled},</if>
             <if test="priority != null">#{priority},</if>
             <if test="needWorkOrder != null">#{needWorkOrder},</if>
@@ -129,6 +136,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceId != null">service_id = #{serviceId},</if>
             <if test="buildingId != null">building_id = #{buildingId},</if>
             <if test="dateRaised != null">date_raised = #{dateRaised},</if>
+            <if test="dateComplete != null">date_complete = #{dateComplete},</if>
             <if test="timeScheduled != null">time_scheduled = #{timeScheduled},</if>
             <if test="priority != null">priority = #{priority},</if>
             <if test="needWorkOrder != null">need_work_order = #{needWorkOrder},</if>

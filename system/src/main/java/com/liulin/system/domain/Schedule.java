@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
 import com.liulin.common.core.domain.BaseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * schedule对象 schedule
@@ -18,6 +19,25 @@ import com.liulin.common.core.domain.BaseEntity;
 public class Schedule extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
+
+    public static final Integer ACTIVE = 1;
+
+    public static final Integer INACTIVE = 2;
+
+    public static final Integer MONTHLY = 1;
+
+    public static final Integer QUARTERLY = 2;
+
+    public static final Integer HALF_YEARLY = 3;
+
+    public static final Integer YEARLY = 4;
+
+    public static final Integer PENDING = 2;
+
+    public static final Integer CLOSED = 3;
+
+
+
 
     /** Schedule Id */
     private Long schId;
@@ -48,8 +68,9 @@ public class Schedule extends BaseEntity
     private Integer frequency;
 
     /** Start Date */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "Start Date", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    @Excel(name = "Start Date", width = 30, dateFormat = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date startDate;
 
     /** Need Work Order */
@@ -85,6 +106,16 @@ public class Schedule extends BaseEntity
     private List<Long> quoteSupplierIds;
 
     private String orderSupplierName;
+
+    private String serviceName;
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
     public String getOrderSupplierName() {
         return orderSupplierName;

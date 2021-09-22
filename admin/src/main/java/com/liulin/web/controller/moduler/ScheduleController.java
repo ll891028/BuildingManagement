@@ -1,24 +1,21 @@
 package com.liulin.web.controller.moduler;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
+import com.liulin.common.config.ServerConfig;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.system.domain.*;
-import com.liulin.system.service.IScheduleAssetService;
-import com.liulin.system.service.IScheduleQuoteService;
-import com.liulin.system.service.IServizeService;
+import com.liulin.system.service.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import com.liulin.common.annotation.Log;
 import com.liulin.common.enums.BusinessType;
-import com.liulin.system.service.IScheduleService;
 import com.liulin.common.core.controller.BaseController;
 import com.liulin.common.core.domain.AjaxResult;
 import com.liulin.common.utils.poi.ExcelUtil;
@@ -48,6 +45,13 @@ public class ScheduleController extends BaseController
     @Autowired
     private IScheduleQuoteService scheduleQuoteService;
 
+    @Autowired
+    private ITaskService taskService;
+
+    @Autowired
+    private IScheduleDetailService scheduleDetailService;
+
+
     @RequiresPermissions("event:schedule:view")
     @GetMapping()
     public String schedule(ModelMap mmp)
@@ -67,9 +71,37 @@ public class ScheduleController extends BaseController
     @ResponseBody
     public TableDataInfo list(Schedule schedule)
     {
+        schedule.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         startPage();
         List<Schedule> list = scheduleService.selectScheduleList(schedule);
         return getDataTable(list);
+    }
+
+    /**
+     * 查询schedule详情
+     */
+    @RequiresPermissions("event:schedule:list")
+    @GetMapping("/detail/{schId}")
+    public String detail(@PathVariable Long schId,ModelMap mmp)
+    {
+        Servize query = new Servize();
+        query.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        List<Servize> servizes = servizeService.selectServizeList(query);
+        mmp.put("servizes",servizes);
+
+        Schedule schedule = scheduleService.selectScheduleById(schId);
+        mmp.put("schedule", schedule);
+
+        ScheduleAsset assetQuery = new ScheduleAsset();
+        assetQuery.setSchId(schId);
+        List<ScheduleAsset> taskAssets = scheduleAssetService.selectScheduleAssetList(assetQuery);
+        mmp.put("taskAssets",taskAssets);
+
+        ScheduleQuote quoteQuery = new ScheduleQuote();
+        quoteQuery.setScheduleId(schId);
+        List<ScheduleQuote> taskQuotes = scheduleQuoteService.selectScheduleQuoteList(quoteQuery);
+        mmp.put("taskQuotes",taskQuotes);
+        return prefix + "/detail";
     }
 
     /**
@@ -165,15 +197,15 @@ public class ScheduleController extends BaseController
 
 
     @RequiresPermissions("event:schedule:view")
-    @GetMapping("/quotePriceList/{taskId}")
-    public String quoteList(@PathVariable Long taskId,ModelMap mmp)
+    @GetMapping("/quotePriceList/{scheduleId}")
+    public String quoteList(@PathVariable Long scheduleId,ModelMap mmp)
     {
-        mmp.put("taskId",taskId);
+        mmp.put("scheduleId",scheduleId);
         return prefix + "/quoteList";
     }
 
     /**
-     * 查询selectSupplier列表
+     * 查询quoteList列表
      */
     @RequiresPermissions("event:schedule:list")
     @PostMapping("/quoteList/list")
@@ -181,9 +213,7 @@ public class ScheduleController extends BaseController
     public TableDataInfo quoteList(ScheduleQuote scheduleQuote)
     {
         startPage();
-        ScheduleQuote quoteQuery = new ScheduleQuote();
-        quoteQuery.setScheduleId(scheduleQuote.getScheduleId());
-        List<ScheduleQuote> scheduleQuotes = scheduleQuoteService.selectScheduleQuoteList(quoteQuery);
+        List<ScheduleQuote> scheduleQuotes = scheduleQuoteService.selectScheduleQuoteList(scheduleQuote);
         return getDataTable(scheduleQuotes);
     }
 
@@ -198,4 +228,119 @@ public class ScheduleController extends BaseController
     {
         return toAjax(scheduleQuoteService.updateScheduleQuote(scheduleQuote));
     }
+
+    @RequiresPermissions("event:schedule:list")
+    @GetMapping("/eventList")
+    @ResponseBody
+    public AjaxResult eventList(@RequestParam Long from,@RequestParam Long to)
+    {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date startDate = new Date(from);
+        Date endDate = new Date(to);
+        ScheduleDetail scheduleQuery = new ScheduleDetail();
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("beginSchDate",simpleDateFormat.format(startDate));
+        paramsMap.put("endSchDate",simpleDateFormat.format(endDate));
+        scheduleQuery.setParams(paramsMap);
+        scheduleQuery.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        List<Map> eventList = new ArrayList<>();
+        List<ScheduleDetail> list = scheduleDetailService.selectScheduleDetailList(scheduleQuery);
+
+        Task taskQuery = new Task();
+        taskQuery.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        paramsMap.put("beginTimeScheduled",simpleDateFormat.format(startDate));
+        paramsMap.put("endTimeScheduled",simpleDateFormat.format(endDate));
+
+        List<Task> tasks = taskService.selectTaskList(taskQuery);
+        String prefixUrl = new ServerConfig().getUrl();
+        if(CollectionUtils.isNotEmpty(list)){
+            for (ScheduleDetail schedule : list) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(schedule.getSchDate());
+                cal.add(Calendar.DATE,1);
+                Date end =cal.getTime();
+                Map<String ,String> map = new HashMap<>();
+                map.put("id", String.valueOf(schedule.getSchId()));
+                map.put("title",schedule.getSchName());
+                map.put("url", prefixUrl+"/event/schedule/detail/"+schedule.getSchId());
+                map.put("class","event-success");
+                map.put("start", String.valueOf(schedule.getSchDate().getTime()));
+                map.put("end",String.valueOf(end.getTime()));
+                eventList.add(map);
+            }
+        }
+        if(CollectionUtils.isNotEmpty(tasks)){
+            for (Task task : tasks) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(task.getTimeScheduled());
+                cal.add(Calendar.DATE,1);
+                Date end =cal.getTime();
+                Map<String ,String> map = new HashMap<>();
+                map.put("id", String.valueOf(task.getTaskId()));
+                map.put("title",task.getTaskName());
+                map.put("url","");
+                if(task.getTaskType()==1) {
+                    map.put("class","event-primary");
+                }else{
+                    map.put("class","event-info");
+                }
+
+                map.put("start", String.valueOf(task.getTimeScheduled().getTime()));
+                map.put("end",String.valueOf(end.getTime()));
+                eventList.add(map);
+            }
+        }
+
+        AjaxResult result = new AjaxResult();
+        result.put("success",1);
+        result.put("result",eventList);
+        return result;
+    }
+
+
+    @RequiresPermissions("event:schedule:view")
+    @GetMapping("/schDetailList/{scheduleId}")
+    public String schDetailList(@PathVariable Long scheduleId,ModelMap mmp)
+    {
+        mmp.put("scheduleId",scheduleId);
+        return prefix + "/schDetailList";
+    }
+
+    /**
+     * 查询schDetailList列表
+     */
+    @RequiresPermissions("event:schedule:list")
+    @PostMapping("/schDetailList/list")
+    @ResponseBody
+    public TableDataInfo schDetailList(ScheduleDetail scheduleDetail)
+    {
+        startPage();
+        List<ScheduleDetail> scheduleDetails = scheduleDetailService.selectScheduleDetailList(scheduleDetail);
+        return getDataTable(scheduleDetails);
+    }
+
+
+    /**
+     * 修改scheduleDetail
+     */
+    @GetMapping("/detailEdit/{schDetailId}")
+    public String editDetail(@PathVariable("schDetailId") Long schDetailId, ModelMap mmap)
+    {
+        ScheduleDetail detail = scheduleDetailService.selectScheduleDetailById(schDetailId);
+        mmap.put("detail",detail);
+        return prefix + "/schDetail";
+    }
+
+    /**
+     * 修改保存schedule
+     */
+    @RequiresPermissions("event:schedule:edit")
+    @Log(title = "schedule", businessType = BusinessType.UPDATE)
+    @PostMapping("/editDetail")
+    @ResponseBody
+    public AjaxResult editDetailSave(ScheduleDetail scheduleDetail)
+    {
+        return toAjax(scheduleDetailService.updateScheduleDetail(scheduleDetail));
+    }
+
 }

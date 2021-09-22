@@ -65,6 +65,16 @@
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <input name="timeScheduled" id="timeScheduled" class="form-control"
+                               placeholder="dd-mm-yyyy HH:mm:ss" type="text" required autocomplete="off">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">Date Complete：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="dateComplete" id="dateComplete" class="form-control"
                                placeholder="dd-mm-yyyy" type="text" required autocomplete="off">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
@@ -267,6 +277,13 @@
         });
 
         $("input[name='timeScheduled']").datetimepicker({
+            language:"en",
+            format: "dd-mm-yyyy hh:ii:ss",
+            // minView: "day",
+            autoclose: true
+        });
+
+        $("input[name='dateComplete']").datetimepicker({
             language:"en",
             format: "dd-mm-yyyy",
             minView: "month",

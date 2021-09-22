@@ -3,6 +3,7 @@ package com.liulin.common.utils;
 import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -160,4 +161,165 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         // long sec = diff % nd % nh % nm / ns;
         return day + "天" + hour + "小时" + min + "分钟";
     }
+
+    /**
+     * 计算相差一个月
+     * @param formDate
+     * @param toDate
+     * @return
+     */
+    public static boolean diffMonth(Date formDate, Date toDate){
+
+        Calendar calendarFrom = Calendar.getInstance();
+        calendarFrom.setTime(formDate);
+        Calendar calendarTo = Calendar.getInstance();
+        calendarTo.setTime(toDate);
+        int fromYear = calendarFrom.get(Calendar.YEAR);
+        int fromMonth = calendarFrom.get(Calendar.MONTH);
+        int fromDay = calendarFrom.get(Calendar.DAY_OF_MONTH);
+
+        int toYear = calendarTo.get(Calendar.YEAR);
+        int toMonth = calendarTo.get(Calendar.MONTH);
+        int toDay = calendarTo.get(Calendar.DAY_OF_MONTH);
+
+        int year = toYear  -  fromYear;
+        int month = toMonth  - fromMonth;
+        int day = toDay  - fromDay;
+
+        if (year==0){
+            if(month==1){
+                if(day>=0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 计算相差三个月
+     * @param formDate
+     * @param toDate
+     * @return
+     */
+    public static boolean diffQuarterly(Date formDate, Date toDate){
+
+        Calendar calendarFrom = Calendar.getInstance();
+        calendarFrom.setTime(formDate);
+        Calendar calendarTo = Calendar.getInstance();
+        calendarTo.setTime(toDate);
+        int fromYear = calendarFrom.get(Calendar.YEAR);
+        int fromMonth = calendarFrom.get(Calendar.MONTH);
+        int fromDay = calendarFrom.get(Calendar.DAY_OF_MONTH);
+
+        int toYear = calendarTo.get(Calendar.YEAR);
+        int toMonth = calendarTo.get(Calendar.MONTH);
+        int toDay = calendarTo.get(Calendar.DAY_OF_MONTH);
+
+        int year = toYear  -  fromYear;
+        int month = toMonth  - fromMonth;
+        int day = toDay  - fromDay;
+
+        if (year==0){
+            if(month>=3){
+                if(day>=0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 计算相差半年
+     * @param formDate
+     * @param toDate
+     * @return
+     */
+    public static boolean diffHalfYear(Date formDate, Date toDate){
+
+        Calendar calendarFrom = Calendar.getInstance();
+        calendarFrom.setTime(formDate);
+        Calendar calendarTo = Calendar.getInstance();
+        calendarTo.setTime(toDate);
+        int fromYear = calendarFrom.get(Calendar.YEAR);
+        int fromMonth = calendarFrom.get(Calendar.MONTH);
+        int fromDay = calendarFrom.get(Calendar.DAY_OF_MONTH);
+
+        int toYear = calendarTo.get(Calendar.YEAR);
+        int toMonth = calendarTo.get(Calendar.MONTH);
+        int toDay = calendarTo.get(Calendar.DAY_OF_MONTH);
+
+        int year = toYear  -  fromYear;
+        int month = toMonth  - fromMonth;
+        int day = toDay  - fromDay;
+
+        if (year==0){
+            if(month>=6){
+                if(day>=0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 计算相差一年
+     * @param formDate
+     * @param toDate
+     * @return
+     */
+    public static boolean diffYearly(Date formDate, Date toDate){
+
+        Calendar calendarFrom = Calendar.getInstance();
+        calendarFrom.setTime(formDate);
+        Calendar calendarTo = Calendar.getInstance();
+        calendarTo.setTime(toDate);
+        int fromYear = calendarFrom.get(Calendar.YEAR);
+        int fromMonth = calendarFrom.get(Calendar.MONTH);
+        int fromDay = calendarFrom.get(Calendar.DAY_OF_MONTH);
+
+        int toYear = calendarTo.get(Calendar.YEAR);
+        int toMonth = calendarTo.get(Calendar.MONTH);
+        int toDay = calendarTo.get(Calendar.DAY_OF_MONTH);
+
+        int year = toYear  -  fromYear;
+        int month = toMonth  - fromMonth;
+        int day = toDay  - fromDay;
+
+        if (year==1){
+            if(month>=0){
+                if(day>=0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 根据dateFile增加时间
+     * @param now
+     * @param dateFiled 1：month 2:quarterly 3:Half Year 4:Year
+     * @return
+     */
+    public static Date addTime(Date now,Integer dateFiled){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        if(dateFiled==1){
+            calendar.add(Calendar.MONTH,1);
+            return calendar.getTime();
+        }else if(dateFiled==2){
+            calendar.add(Calendar.MONTH,3);
+            return calendar.getTime();
+        }else if(dateFiled==3){
+            calendar.add(Calendar.MONTH,6);
+            return calendar.getTime();
+        }else{
+            calendar.add(Calendar.YEAR,1);
+            return calendar.getTime();
+        }
+    }
+
 }

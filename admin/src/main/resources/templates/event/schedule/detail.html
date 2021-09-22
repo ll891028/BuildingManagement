@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改schedule')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-schedule-edit" th:object="${schedule}">
+        <input name="schId" th:field="*{schId}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Schedule Name：</label>
+            <div class="col-sm-8">
+                <input name="schName" id="schName" class="form-control" type="text"  th:field="*{schName}" readonly/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Related Asset：</label>
+            <div class="col-sm-8">
+                <span class="badge badge-primary" th:each="asset :${taskAssets}">[[${asset.assetName}]]</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Description：</label>
+            <div class="col-sm-8">
+                <textarea name="description" class="form-control" readonly>[[*{description}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Action Required：</label>
+            <div class="col-sm-8">
+                <textarea name="actionRequired" class="form-control" readonly>[[*{actionRequired}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Service：</label>
+            <div class="col-sm-8">
+                <select name="serviceId" id="serviceId" class="form-control m-b" disabled>
+                    <option th:value="${service.serviceId}" th:each="service :${ servizes}">
+                        [[${service.serviceName}]]</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Priority：</label>
+            <div class="col-sm-8">
+                <select name="priority" id="priority" class="form-control m-b"
+                        th:with="type=${@dict.getType('priority')}"
+                        disabled>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{priority}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Frequency：</label>
+            <div class="col-sm-8">
+                <select name="frequency" id="frequency" class="form-control m-b"
+                        th:with="type=${@dict.getType('frequency')}"
+                        disabled>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{frequency}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Start Date：</label>
+            <div class="col-sm-8">
+                <div class="input-group date">
+                    <input name="startDate" th:value="${#dates.format(schedule.startDate, 'dd-MM-yyyy')}" class="form-control" placeholder="yyyy-MM-dd" type="text" disabled>
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Need Quote：</label>
+            <div class="col-sm-8">
+                <select name="needQuote" id="needQuote" class="form-control m-b"
+                        th:with="type=${@dict.getType('if_groud_floor')}" disabled onchange="quoteChange(this)">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{needQuote}"></option>
+                </select>
+            </div>
+        </div>
+        <div id="quoteDiv" th:style="'display:' + ${schedule.needQuote>0 ? 'block' : 'none'}">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Quote Instruction</label>
+                <div class="col-sm-8">
+                        <textarea name="quoteInstruction" id="quoteInstruction" class="form-control" readonly
+                                  required>[[*{actionRequired}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Quote Status</label>
+                <div class="col-sm-8">
+                    <select name="quoteStatus" id="quoteStatus" class="form-control m-b"
+                            th:with="type=${@dict.getType('quote_status')}" disabled>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"
+                                th:field="*{quoteStatus}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Quote Supplier</label>
+                <div class="col-sm-8">
+                    <span class="badge badge-primary" th:each="quote :${taskQuotes}">[[${quote.companyName}]]</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Need Work Order：</label>
+            <div class="col-sm-8">
+                <select name="needWorkOrder" id="needWorkOrder" class="form-control m-b"
+                        th:with="type=${@dict.getType('if_groud_floor')}" disabled onchange="workOrderChange(this)">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{needWorkOrder}"></option>
+                </select>
+            </div>
+        </div>
+        <div id="orderDiv"  th:style="'display:' + ${schedule.needWorkOrder>0 ? 'block' : 'none'}">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Order Instruction</label>
+                <div class="col-sm-8">
+                        <textarea name="orderInstruction" id="orderInstruction" class="form-control" readonly
+                                  required>[[*{actionRequired}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Order Status</label>
+                <div class="col-sm-8">
+                    <select name="orderStatus" id="orderStatus" class="form-control m-b"
+                            th:with="type=${@dict.getType('order_status')}" disabled >
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{orderStatus}"
+                        ></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Order Supplier</label>
+                <div class="col-sm-8">
+                    <input type="hidden" name="orderSupplierId" id="orderSupplierId" class="form-control"
+                           th:field="*{orderSupplierId}"
+                    />
+                    <input type="text" name="orderSupplierName" id="orderSupplierName" class="form-control"
+                           readonly th:field="*{orderSupplierName}"/>
+                </div>
+            </div>
+
+        </div>
+        <!--            <div class="form-group">-->
+        <!--                <label class="col-sm-3 control-label">Attachment：</label>-->
+        <!--                <div class="col-sm-8">-->
+        <!--                    <input type="hidden" name="attachmentIds" th:field="*{attachmentIds}">-->
+        <!--                    <div class="file-loading">-->
+        <!--                        <input class="form-control file-upload" id="attachmentIds" name="file" type="file">-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: datetimepicker-js" />
+
+<script th:inline="javascript">
+
+
+    var prefix = ctx + "event/schedule";
+    $("#form-schedule-edit").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-schedule-edit').serialize());
+        }
+    }
+
+    $("input[name='startDate']").datetimepicker({
+        language:"en",
+        format: "dd-mm-yyyy",
+        minView: "month",
+        autoclose: true
+    });
+
+    function workOrderChange(obj){
+        var status = $(obj).val();
+        if(status==0){
+            $("#orderDiv").hide();
+        }else{
+            $("#orderDiv").show();
+        }
+    }
+
+    function quoteChange(obj){
+        var status = $(obj).val();
+        if(status==0){
+            $("#quoteDiv").hide();
+        }else{
+            $("#quoteDiv").show();
+        }
+    }
+
+    function selectSupplier(){
+        $.modal.open("Select Supplier", ctx + "event/task" + "/selectSupplier/"+$("#serviceId").val());
+    }
+
+    function sendWorkOrder(){
+        var url = ctx + "mail/sendOrder/";
+        if($.common.isEmpty($("#assetIds").val())){
+            url +=$("#orderSupplierId").val()+"/"+$("#serviceId").val();
+        }else{
+            url +=$("#orderSupplierId").val()+"/"+$("#assetIds").val()+"/"+$("#serviceId").val();
+        }
+        $.modal.open("send work order",
+            url);
+    }
+
+    function sendQuoteRequest(){
+        var url = ctx + "mail/sendQuote/";
+        if($.common.isEmpty($("#assetIds").val())){
+            url +=$("#quoteSupplierIds").val()+"/"+$("#serviceId").val();
+        }else{
+            url +=$("#quoteSupplierIds").val()+"/"+$("#assetIds").val()+"/"+$("#serviceId").val();
+        }
+        $.modal.open("send quote request",
+            url);
+    }
+
+    function assetList(){
+        $.modal.open("Asset List", ctx + "event/task" + "/asset");
+    }
+
+    function selectQuoteSupplier(){
+        $.modal.open("Select Quote Supplier", ctx + "event/task" + "/quoteSupplierList/"+$("#serviceId").val())
+    }
+
+    function changeActionRequired(obj){
+        var actionRequired = $(obj).val();
+        $("#orderInstruction").val(actionRequired);
+        $("#quoteInstruction").val(actionRequired);
+    }
+</script>
+
+
+
+</body>
+</html>

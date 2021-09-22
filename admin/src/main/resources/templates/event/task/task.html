@@ -56,11 +56,19 @@
                             </li>
                             <li class="select-time">
                                 <label style="width: 100px">Date Raised：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="Start Time"
+                                <input type="text" class="time-input" id="startTime" placeholder="Start Time"  data-format="dd-MM-yyyy"
                                        name="params[beginDateRaised]"/>
                                 <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time"
+                                <input type="text" class="time-input" id="endTime" placeholder="End Time"  data-format="dd-MM-yyyy"
                                        name="params[endDateRaised]"/>
+                            </li>
+                            <li class="select-time">
+                                <label style="width: 150px">Date Complete：</label>
+                                <input type="text" class="time-input" id="startTime" placeholder="Start Time"  data-format="dd-MM-yyyy"
+                                       name="params[beginDateComplete]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="End Time"  data-format="dd-MM-yyyy"
+                                       name="params[endDateComplete]"/>
                             </li>
                             <li class="select-time">
                                 <label style="width: 150px">Time scheduled：</label>
@@ -68,8 +76,7 @@
                                        data-format="dd-MM-yyyy"
                                        name="params[beginTimeScheduled]"/>
                                 <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time"
-                                       data-format="dd-MM-yyyy"
+                                <input type="text" class="time-input" id="endTime" placeholder="End Time" data-format="dd-MM-yyyy"
                                        name="params[endTimeScheduled]"/>
                             </li>
                             <li>
@@ -136,7 +143,7 @@
                 title: 'Action Required'
             },
             {
-                field: 'serviceId',
+                field: 'serviceName',
                 title: 'Service'
             },
             {
@@ -146,6 +153,10 @@
             {
                 field: 'timeScheduled',
                 title: 'Time scheduled'
+            },
+            {
+                field: 'dateComplete',
+                title: 'Date Complete'
             },
             {
                 field: 'priority',
@@ -271,7 +282,7 @@
                             'fa-edit"></i>edit</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" ' +
                             'onclick="$.operate.remove(\'' + row.taskId + '\')"><i class="fa ' +
-                            'fa-remove"></i>remove</a>');
+                            'fa-remove"></i>remove</a> ');
                         actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
                             'onclick="quoteList(\'' + row.taskId + '\')"><i class="fa ' +
                             'fa-money"> </i> quote price</a>');

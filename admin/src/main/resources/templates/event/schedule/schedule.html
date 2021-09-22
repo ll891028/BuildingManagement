@@ -49,7 +49,7 @@
                             </li>
                             <li>
                                 Status：
-                                <select name="status" th:with="type=${@dict.getType('task_status')}">
+                                <select name="status" th:with="type=${@dict.getType('resident_status')}">
                                     <option value="">All</option>
                                     <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                                 </select>
@@ -100,7 +100,7 @@
         var frequencyDatas = [[${@dict.getType('frequency')}]];
         var needWorkOrderDatas = [[${@dict.getType('if_groud_floor')}]];
         var needQuoteDatas = [[${@dict.getType('if_groud_floor')}]];
-        var statusDatas = [[${@dict.getType('task_status')}]];
+        var statusDatas = [[${@dict.getType('resident_status')}]];
         var orderStatusDatas = [[${@dict.getType('if_groud_floor')}]];
         var quoteStatusDatas = [[${@dict.getType('if_groud_floor')}]];
         var prefix = ctx + "event/schedule";
@@ -130,7 +130,7 @@
                         title: 'Action Required'
                     },
                     {
-                        field: 'serviceId',
+                        field: 'serviceName',
                         title: 'Service'
                     },
                     {
@@ -182,10 +182,19 @@
                                 'fa-edit"></i>edit</a> ');
                             actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" ' +
                                 'onclick="$.operate.remove(\'' + row.schId + '\')"><i class="fa ' +
-                                'fa-remove"></i>remove</a>');
-                            actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
-                                'onclick="quoteList(\'' + row.schId + '\')"><i class="fa ' +
-                                'fa-money"> </i> quote price</a>');
+                                'fa-remove"></i>remove</a> ');
+                            actions.push('<a class="btn btn-primary btn-xs ' + editFlag +
+                                '" href="javascript:void(0)" ' +
+                                'onclick="schDetailList(\''+row.schId +'\')"><i class="fa ' +
+                                'fa-list"></i> list</a> ');
+                            var more = [];
+                            more.push("<a class='btn btn-default btn-xs " + editFlag +
+                                "' href='javascript:void(0)' onclick='quoteList(" + row.schId +
+                                ")'><i class='fa fa-money'></i> quote price</a> ");
+                            actions.push('<a tabindex="0" class="btn btn-info btn-xs" role="button" data-container="body" data-placement="left" data-toggle="popover" data-html="true" data-trigger="hover" data-content="' + more.join('') + '"><i class="fa fa-chevron-circle-right"></i>more</a>');
+                            // actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
+                            //     'onclick="quoteList(\'' + row.schId + '\')"><i class="fa ' +
+                            //     'fa-money"> </i> quote price</a>');
                             return actions.join('');
                         }
                     }]
@@ -193,8 +202,12 @@
             $.table.init(options);
         });
 
-        function quoteList(taskId) {
-            $.modal.openTab("Quote List", prefix + "/quotePriceList/"+taskId)
+        function quoteList(schId) {
+            $.modal.openTab("Quote List", prefix + "/quotePriceList/"+schId)
+        }
+
+        function schDetailList(schId) {
+            $.modal.openTab("Schedule Detail List", prefix + "/schDetailList/"+schId)
         }
     </script>
 </body>

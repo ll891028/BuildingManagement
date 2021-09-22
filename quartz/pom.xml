@@ -35,6 +35,12 @@
             <artifactId>common</artifactId>
         </dependency>
 
+        <!-- 系统模块-->
+        <dependency>
+            <groupId>com.liulin</groupId>
+            <artifactId>system</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

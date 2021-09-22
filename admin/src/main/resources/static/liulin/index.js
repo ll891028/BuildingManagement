@@ -309,7 +309,7 @@ $(function() {
             var str1 = '<iframe class="liulin_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
             $('.mainContent').find('iframe.liulin_iframe').hide().parents('.mainContent').append(str1);
 
-            $.modal.loading("数据加载中，请稍后...");
+            $.modal.loading("loading data,please wait...");
 
             $('.mainContent iframe:visible').load(function () {
             	$.modal.closeLoading();
@@ -630,7 +630,7 @@ $(function() {
                     setActiveTab(this);
                     var target = $('.liulin_iframe[data-id="' + this.data('id') + '"]');
                     var url = target.attr('src');
-                    $.modal.loading("数据加载中，请稍后...");
+                    $.modal.loading("loading data,please wait...");
                     target.attr('src', url).load(function () {
                     	$.modal.closeLoading();
                     });

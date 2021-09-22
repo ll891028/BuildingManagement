@@ -26,7 +26,7 @@
         </div>
         <a th:href="@{/index}">
             <li class="logo hidden-xs">
-                <span class="logo-lg">[[${user.company.deptName}]]</span>
+                <span class="logo-lg" th:if="${user.company!=null}">[[${user.company.deptName}]]</span>
             </li>
          </a>
         <div class="sidebar-collapse">
@@ -404,6 +404,7 @@ $(function() {
 					$("#userBuilding").text(buildingName);
 					$(".logo-lg").text(result.data.company.deptName);
 					tabCloseAll();
+					refreshTab();
 				} else {
 					console.log(result.msg);
 				}

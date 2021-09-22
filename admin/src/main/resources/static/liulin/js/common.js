@@ -289,7 +289,7 @@ function createMenuItem(dataUrl, menuName, isRefresh) {
         var str1 = '<iframe class="liulin_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" data-panel="' + panelUrl + '" seamless></iframe>';
         $('.mainContent', topWindow).find('iframe.liulin_iframe').hide().parents('.mainContent').append(str1);
         
-        window.parent.$.modal.loading("数据加载中，请稍后...");
+        window.parent.$.modal.loading("loading data,please wait...");
         $('.mainContent iframe:visible', topWindow).load(function () {
             window.parent.$.modal.closeLoading();
         });

@@ -27,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="orderSupplierName"    column="order_supplier_name"    />
+        <result property="serviceName"    column="service_name"    />
     </resultMap>
 
     <sql id="selectScheduleVo">
@@ -35,18 +36,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectScheduleList" parameterType="Schedule" resultMap="ScheduleResult">
-        <include refid="selectScheduleVo"/>
+       select t1.*,t2.service_name from schedule t1
+        left join service t2 on t1.service_id = t2.service_id
         <where>  
             <if test="serviceId != null "> and service_id = #{serviceId}</if>
             <if test="schName != null and schName!=''"> and sch_name like concat('%',#{serviceId},'%') </if>
             <if test="buildingId != null "> and building_id = #{buildingId}</if>
             <if test="priority != null "> and priority = #{priority}</if>
             <if test="frequency != null "> and frequency = #{frequency}</if>
-            <if
-                    test="params.beginStartDate != null and params.beginStartDate != '' and params.endStartDate != null and params.endStartDate != ''"> and start_date between STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y') and STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y') </if>
+            <if test="params.beginStartDate != null and params.beginStartDate != '' and params.endStartDate != null and params.endStartDate != ''"> and start_date between STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y') and STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y') </if>
             <if test="needWorkOrder != null "> and needWorkOrder = #{needWorkOrder}</if>
             <if test="needQuote != null "> and needQuote = #{needQuote}</if>
-            <if test="status != null "> and status = #{status}</if>
+            <if test="status != null "> and t1.status = #{status}</if>
             <if test="orderInstruction != null  and orderInstruction != ''"> and order_instruction = #{orderInstruction}</if>
         </where>
     </select>

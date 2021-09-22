@@ -40,7 +40,6 @@ public class Task extends BaseEntity
     private String actionRequired;
 
     /** Service */
-    @Excel(name = "Service")
     private Long serviceId;
 
     /** Date Raised */
@@ -50,9 +49,14 @@ public class Task extends BaseEntity
     private Date dateRaised;
 
     /** Time scheduled */
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    @Excel(name = "Time scheduled", width = 30, dateFormat = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @Excel(name = "Time scheduled", width = 30, dateFormat = "dd-MM-yyyy HH:mm:ss")
     private Date timeScheduled;
+
+    /** Date Complete */
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    @Excel(name = "Date Complete", width = 30, dateFormat = "dd-MM-yyyy")
+    private Date dateComplete;
 
     /** Priority */
     @Excel(name = "Priority")
@@ -95,6 +99,25 @@ public class Task extends BaseEntity
     private Integer taskType;
 
     private Integer rootCause;
+
+    @Excel(name = "Service")
+    private String serviceName;
+
+    public Date getDateComplete() {
+        return dateComplete;
+    }
+
+    public void setDateComplete(Date dateComplete) {
+        this.dateComplete = dateComplete;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
     public Integer getTaskType() {
         return taskType;

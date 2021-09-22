@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.ScheduleDetailMapper">
+    
+    <resultMap type="ScheduleDetail" id="ScheduleDetailResult">
+        <result property="schDetailId"    column="sch_detail_id"    />
+        <result property="schId"    column="sch_id"    />
+        <result property="schDate"    column="sch_date"    />
+        <result property="completeDate"    column="complete_date"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="attachmentIds"    column="attachment_ids"    />
+
+        <result property="schName"    column="sch_name"    />
+        <result property="serviceName"    column="service_name"    />
+        <result property="priority"    column="priority"    />
+        <result property="frequency"    column="frequency"    />
+        <result property="needWorkOrder"    column="needWorkOrder"    />
+        <result property="needQuote"    column="needQuote"    />
+        <result property="description"    column="description"    />
+
+
+    </resultMap>
+
+    <sql id="selectScheduleDetailVo">
+        select sch_detail_id, sch_id, sch_date, complete_date, status, create_by, create_time, update_by,
+               update_time, attachment_ids,description from schedule_detail
+    </sql>
+
+    <select id="selectScheduleDetailList" parameterType="ScheduleDetail" resultMap="ScheduleDetailResult">
+        select t1.*,t2.sch_name,t3.service_name,t2.priority,t2.frequency,t2.needWorkOrder,t2.needQuote from
+        schedule_detail t1
+        left join schedule t2 on t1.sch_id = t2.sch_id
+        left join service t3 on t2.service_id = t3.service_id
+        <where>  
+            <if test="status != null "> and t1.status = #{status}</if>
+            <if test="schId != null "> and t1.sch_id = #{schId}</if>
+            <if test="buildingId != null "> and t2.building_id = #{buildingId}</if>
+            <if test="buildingId != null "> and t2.building_id = #{buildingId}</if>
+            <if
+                    test="params.beginSchDate != null and params.beginSchDate != '' and params.endSchDate != null and params.endSchDate != ''"> and sch_date between STR_TO_DATE(#{params.beginSchDate}, '%d-%m-%Y') and STR_TO_DATE(#{params.endSchDate}, '%d-%m-%Y') </if>
+        </where>
+    </select>
+    
+    <select id="selectScheduleDetailById" parameterType="Long" resultMap="ScheduleDetailResult">
+        <include refid="selectScheduleDetailVo"/>
+        where sch_detail_id = #{schDetailId}
+    </select>
+
+    <select id="selectScheduleDetailBySchIdNearBy" parameterType="Long" resultMap="ScheduleDetailResult">
+        <include refid="selectScheduleDetailVo"/>
+        where sch_id = #{schId} and is_del=0
+    </select>
+        
+    <insert id="insertScheduleDetail" parameterType="ScheduleDetail" useGeneratedKeys="true" keyProperty="schDetailId">
+        insert into schedule_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="schId != null">sch_id,</if>
+            <if test="schDate != null">sch_date,</if>
+            <if test="completeDate != null">complete_date,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="attachmentIds != null">attachment_ids,</if>
+            <if test="description != null and description!=''">description,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="schId != null">#{schId},</if>
+            <if test="schDate != null">#{schDate},</if>
+            <if test="completeDate != null">#{completeDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="attachmentIds != null">#{attachmentIds},</if>
+            <if test="description != null and description!=''">#{description},</if>
+         </trim>
+    </insert>
+
+    <update id="updateScheduleDetail" parameterType="ScheduleDetail">
+        update schedule_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="schId != null">sch_id = #{schId},</if>
+            <if test="schDate != null">sch_date = #{schDate},</if>
+            <if test="completeDate != null">complete_date = #{completeDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="attachmentIds != null">attachment_ids = #{attachmentIds},</if>
+            <if test="description != null and description!=''">description = #{description},</if>
+        </trim>
+        where sch_detail_id = #{schDetailId}
+    </update>
+
+    <delete id="deleteScheduleDetailById" parameterType="Long">
+        delete from schedule_detail where sch_detail_id = #{schDetailId}
+    </delete>
+
+    <delete id="deleteScheduleDetailByIds" parameterType="String">
+        delete from schedule_detail where sch_detail_id in 
+        <foreach item="schDetailId" collection="array" open="(" separator="," close=")">
+            #{schDetailId}
+        </foreach>
+    </delete>
+
+</mapper>
