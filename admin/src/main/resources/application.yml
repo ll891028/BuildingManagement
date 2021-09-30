@@ -13,6 +13,10 @@ liulin:
   profile: /opt/upload/upload
   # 获取ip地址开关
   addressEnabled: false
+  awsKeyId: AKIAQR2GE2AFBQ67A7XZ
+  awsSecretId: nHOycAF6eu7r2ik9huwhpr0Aoj/7BoGR4klKylE9
+  bucketName: gtech-bucket
+
 
 # 开发环境配置
 server:

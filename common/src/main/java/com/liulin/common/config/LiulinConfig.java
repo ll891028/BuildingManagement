@@ -30,6 +30,36 @@ public class LiulinConfig
     /** 获取地址开关 */
     private static boolean addressEnabled;
 
+    private static String awsKeyId;
+
+    private static String awsSecretId;
+
+    private static String bucketName;
+
+    public static String getBucketName() {
+        return bucketName;
+    }
+
+    public static void setBucketName(String bucketName) {
+        LiulinConfig.bucketName = bucketName;
+    }
+
+    public static String getAwsKeyId() {
+        return awsKeyId;
+    }
+
+    public static void setAwsKeyId(String awsKeyId) {
+        LiulinConfig.awsKeyId = awsKeyId;
+    }
+
+    public static String getAwsSecretId() {
+        return awsSecretId;
+    }
+
+    public static void setAwsSecretId(String awsSecretId) {
+        LiulinConfig.awsSecretId = awsSecretId;
+    }
+
     public static String getName()
     {
         return name;
