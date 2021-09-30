@@ -4,7 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.liulin.common.config.ServerConfig;
+import com.liulin.common.core.domain.entity.SysDept;
+import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.StringUtils;
 import com.liulin.system.domain.*;
 import com.liulin.system.service.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -50,6 +53,12 @@ public class ScheduleController extends BaseController
 
     @Autowired
     private IScheduleDetailService scheduleDetailService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
+
+    @Autowired
+    private ISafetyCheckService safetyCheckService;
 
 
     @RequiresPermissions("event:schedule:view")
@@ -141,6 +150,7 @@ public class ScheduleController extends BaseController
     public AjaxResult addSave(Schedule schedule)
     {
         schedule.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        schedule.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(scheduleService.insertSchedule(schedule));
     }
 
@@ -168,6 +178,17 @@ public class ScheduleController extends BaseController
         quoteQuery.setScheduleId(schId);
         List<ScheduleQuote> taskQuotes = scheduleQuoteService.selectScheduleQuoteList(quoteQuery);
         mmap.put("taskQuotes",taskQuotes);
+
+        String attachmentIds = schedule.getAttachmentIds();
+        if(StringUtils.isNotEmpty(attachmentIds)){
+            String[] attachmentIdStrArray = attachmentIds.split(",");
+            int [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+            if(CollectionUtils.isNotEmpty(attachments)){
+                mmap.put("attachments",attachments);
+            }
+        }
         return prefix + "/edit";
     }
 
@@ -180,6 +201,7 @@ public class ScheduleController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Schedule schedule)
     {
+        schedule.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(scheduleService.updateSchedule(schedule));
     }
 
@@ -250,8 +272,17 @@ public class ScheduleController extends BaseController
         taskQuery.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         paramsMap.put("beginTimeScheduled",simpleDateFormat.format(startDate));
         paramsMap.put("endTimeScheduled",simpleDateFormat.format(endDate));
-
+        taskQuery.setParams(paramsMap);
         List<Task> tasks = taskService.selectTaskList(taskQuery);
+
+        SafetyCheck checkQuery = new SafetyCheck();
+        checkQuery.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+//        checkQuery.setStatus();
+        paramsMap.put("beginDateSchedule",simpleDateFormat.format(startDate));
+        paramsMap.put("endDateSchedule",simpleDateFormat.format(endDate));
+        checkQuery.setParams(paramsMap);
+        List<SafetyCheck> safetyChecks = safetyCheckService.selectSafetyCheckList(checkQuery);
+
         String prefixUrl = new ServerConfig().getUrl();
         if(CollectionUtils.isNotEmpty(list)){
             for (ScheduleDetail schedule : list) {
@@ -277,8 +308,9 @@ public class ScheduleController extends BaseController
                 Date end =cal.getTime();
                 Map<String ,String> map = new HashMap<>();
                 map.put("id", String.valueOf(task.getTaskId()));
-                map.put("title",task.getTaskName());
-                map.put("url","");
+                map.put("title",task.getTaskName()+" "+ DateUtils.parseDateToStr("dd-MM-yyyy HH:mm:ss",
+                        task.getTimeScheduled()));
+                map.put("url",prefixUrl+"/event/task/detail/"+task.getTaskId());
                 if(task.getTaskType()==1) {
                     map.put("class","event-primary");
                 }else{
@@ -291,6 +323,23 @@ public class ScheduleController extends BaseController
             }
         }
 
+        if(CollectionUtils.isNotEmpty(safetyChecks)){
+            for (SafetyCheck safetyCheck : safetyChecks) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(safetyCheck.getDateSchedule());
+                cal.add(Calendar.DATE,1);
+                Date end =cal.getTime();
+                Map<String ,String> map = new HashMap<>();
+                map.put("id", String.valueOf(safetyCheck.getSafetyCheckId()));
+                map.put("title","Safety Check "+ DateUtils.parseDateToStr("dd-MM-yyyy",
+                        safetyCheck.getDateSchedule()));
+                map.put("url",prefixUrl+"/event/safetyCheck/detail/"+safetyCheck.getSafetyCheckId());
+                map.put("class","event-warning");
+                map.put("start", String.valueOf(safetyCheck.getDateSchedule().getTime()));
+                map.put("end",String.valueOf(end.getTime()));
+                eventList.add(map);
+            }
+        }
         AjaxResult result = new AjaxResult();
         result.put("success",1);
         result.put("result",eventList);
@@ -341,6 +390,19 @@ public class ScheduleController extends BaseController
     public AjaxResult editDetailSave(ScheduleDetail scheduleDetail)
     {
         return toAjax(scheduleDetailService.updateScheduleDetail(scheduleDetail));
+    }
+
+    /**
+     * 删除附件
+     */
+    @Log(title = "删除attachment附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("event:schedule:remove")
+    @PostMapping("/attachment/remove")
+    @ResponseBody
+    public AjaxResult remove(Schedule schedule)
+    {
+
+        return toAjax(scheduleService.updateScheduleAttachment(schedule));
     }
 
 }

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('report列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li class="select-time">
+                                <label style="width: 80px">Start Date：</label>
+                                <input type="text" class="time-input" id="startTime" placeholder="Start Time"
+                                       name="params[beginStartDate]" data-format="dd-MM-yyyy"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="End Time"
+                                       name="params[endStartDate]" data-format="dd-MM-yyyy"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa
+                                 fa-search"></i>&nbsp;reseach</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa
+                                fa-refresh"></i>&nbsp;reset</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="event:schedule:export">
+                    <i class="fa fa-download"></i> export
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('event:schedule:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('event:schedule:remove')}]];
+        var statusDatas = [[${@dict.getType('task_status')}]];
+        var taskTypeDatas = [[${@dict.getType('task_type')}]];
+
+        var prefix = ctx + "event/report";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                exportUrl: prefix + "/export",
+                modalName: " schedule",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'row',
+                        title: 'row'
+                    },
+                    {
+                        field: 'name',
+                        title: 'Name'
+                    },
+                    {
+                        field: 'taskType',
+                        title: 'Type',
+                        formatter: function (value, row, index) {
+                            return $.table.selectDictLabel(taskTypeDatas, value);
+                        }
+                    },
+                    {
+                        field: 'service',
+                        title: 'Service'
+                    },
+                    {
+                        field: 'description',
+                        title: 'description'
+                    },
+                    {
+                        field: 'dateRaised',
+                        title: 'Date Raised'
+                    },
+                    {
+                        field: 'dateComplete',
+                        title: 'Date Complete'
+                    },
+                    {
+                        field: 'status',
+                        title: 'Status',
+                        formatter: function (value, row, index) {
+                            return $.table.selectDictLabel(statusDatas, value);
+                        }
+                    }
+                 ]
+            };
+            $.table.init(options);
+        });
+
+    </script>
+</body>
+</html>

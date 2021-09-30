@@ -32,14 +32,6 @@
                                     <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                                 </select>
                             </li>
-
-                            <li>
-                                Need Work Order：
-                                <select name="needWorkOrder" th:with="type=${@dict.getType('if_groud_floor')}">
-                                    <option value="">All</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
-                            </li>
                             <li>
                                 Need Quote：
                                 <select name="needQuote" th:with="type=${@dict.getType('if_groud_floor')}">
@@ -134,6 +126,10 @@
                         title: 'Service'
                     },
                     {
+                        field: 'orderSupplierName',
+                        title: 'Supplier Company Name'
+                    },
+                    {
                         field: 'priority',
                         title: 'Priority',
                         formatter: function (value, row, index) {
@@ -150,20 +146,6 @@
                     {
                         field: 'startDate',
                         title: 'Start Date'
-                    },
-                    {
-                        field: 'needWorkOrder',
-                        title: 'Need Work Order',
-                        formatter: function (value, row, index) {
-                            return $.table.selectDictLabel(needWorkOrderDatas, value);
-                        }
-                    },
-                    {
-                        field: 'needQuote',
-                        title: 'Need Quote',
-                        formatter: function (value, row, index) {
-                            return $.table.selectDictLabel(needQuoteDatas, value);
-                        }
                     },
                     {
                         field: 'status',
@@ -186,15 +168,7 @@
                             actions.push('<a class="btn btn-primary btn-xs ' + editFlag +
                                 '" href="javascript:void(0)" ' +
                                 'onclick="schDetailList(\''+row.schId +'\')"><i class="fa ' +
-                                'fa-list"></i> list</a> ');
-                            var more = [];
-                            more.push("<a class='btn btn-default btn-xs " + editFlag +
-                                "' href='javascript:void(0)' onclick='quoteList(" + row.schId +
-                                ")'><i class='fa fa-money'></i> quote price</a> ");
-                            actions.push('<a tabindex="0" class="btn btn-info btn-xs" role="button" data-container="body" data-placement="left" data-toggle="popover" data-html="true" data-trigger="hover" data-content="' + more.join('') + '"><i class="fa fa-chevron-circle-right"></i>more</a>');
-                            // actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
-                            //     'onclick="quoteList(\'' + row.schId + '\')"><i class="fa ' +
-                            //     'fa-money"> </i> quote price</a>');
+                                'fa-list"></i> record list</a> ');
                             return actions.join('');
                         }
                     }]

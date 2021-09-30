@@ -1,6 +1,7 @@
 package com.liulin.common.utils.file;
 
 import java.io.*;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletRequest;
@@ -233,6 +234,35 @@ public class FileUtils
             e.printStackTrace();
         }
     }
+
+    public static String downloadFromUrl(String url, String dir) {
+        String fileName = getFileNameFromUrl(url);
+        try {
+            URL httpurl = new URL(url);
+
+//            System.out.println(fileName);
+            File f = new File(dir +File.separator+ fileName);
+            org.apache.commons.io.FileUtils
+                    .copyURLToFile(httpurl, f);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Fault!";
+        }
+        return dir + fileName;
+    }
+
+    public static String getFileNameFromUrl(String url) {
+        String name = new Long(System.currentTimeMillis()).toString() + ".X";
+        int index = url.lastIndexOf("/");
+        if (index > 0) {
+            name = url.substring(index + 1);
+            if (name.trim().length() > 0) {
+                return name;
+            }
+        }
+        return name;
+    }
+
 
 
 }

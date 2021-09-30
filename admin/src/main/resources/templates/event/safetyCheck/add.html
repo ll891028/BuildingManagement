@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增Safety Check')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: select2-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-safetyCheck-add">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Related Asset：</label>
+                <div class="col-sm-8">
+                    <select name="assetIds" id="assetIds" class="form-control select2-multiple" multiple></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-8">
+                    <a class="btn btn-primary" onclick="assetList()">Select related Asset if any</a>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Frequency：</label>
+                <div class="col-sm-8">
+                    <select name="frequency" id="frequency" class="form-control m-b" th:with="type=${@dict.getType('frequency')}"
+                            required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Date Schedule：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="dateSchedule" class="form-control" placeholder="dd-MM-yyyy" type="text" required>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Date Complete：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="dateComplete" class="form-control" placeholder="dd-MM-yyyy" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Status：</label>
+                <div class="col-sm-8">
+                    <select name="status" id="status" class="form-control m-b"
+                            th:with="type=${@dict.getType('task_status')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: select2-js" />
+
+    <script>
+        $(function() {
+            $("#status").select2(
+                {
+                    minimumResultsForSearch: Infinity,
+                    width:"100%"
+                }
+            )
+            $("#frequency").select2(
+                {
+                    minimumResultsForSearch: Infinity,
+                    width:"100%"
+                }
+            )
+        })
+    </script>
+
+    <script th:inline="javascript">
+        var prefix = ctx + "event/safetyCheck"
+        $("#form-safetyCheck-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-safetyCheck-add').serialize());
+            }
+        }
+
+        $("input[name='dateSchedule']").datetimepicker({
+            language:"en",
+            format: "dd-mm-yyyy",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='dateComplete']").datetimepicker({
+            language:"en",
+            format: "dd-mm-yyyy",
+            minView: "month",
+            autoclose: true
+        });
+
+        function assetList(){
+            $.modal.open("Asset List", prefix + "/asset");
+        }
+    </script>
+</body>
+</html>

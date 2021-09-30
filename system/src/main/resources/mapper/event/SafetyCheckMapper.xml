@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.SafetyCheckMapper">
+    
+    <resultMap type="com.liulin.system.domain.SafetyCheck" id="SafetyCheckResult">
+        <result property="safetyCheckId"    column="safety_check_id"    />
+        <result property="frequency"    column="frequency"    />
+        <result property="dateSchedule"    column="date_schedule"    />
+        <result property="dateComplete"    column="date_complete"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="buildingId"    column="building_id"    />
+    </resultMap>
+
+    <sql id="selectSafetyCheckVo">
+        select safety_check_id, frequency, date_schedule, date_complete, status, create_by, create_time, update_by,
+               update_time,building_id from safety_check
+    </sql>
+
+    <select id="selectSafetyCheckList" parameterType="com.liulin.system.domain.SafetyCheck" resultMap="SafetyCheckResult">
+        <include refid="selectSafetyCheckVo"/>
+        <where>  
+            <if test="frequency != null "> and frequency = #{frequency}</if>
+            <if test="params.beginDateSchedule != null and params.beginDateSchedule != ''
+                    and params.endDateSchedule != null and params.endDateSchedule != ''">
+                and date_schedule between STR_TO_DATE(#{params.beginDateSchedule}, '%d-%m-%Y') and STR_TO_DATE(#{params.endDateSchedule}, '%d-%m-%Y')
+            </if>
+            <if test="dateSchedule != null "> and date_schedule = #{dateSchedule}</if>
+            <if test="dateComplete != null "> and date_complete = #{dateComplete}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="buildingId != null"> and building_id = #{buildingId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSafetyCheckById" parameterType="Long" resultMap="SafetyCheckResult">
+        <include refid="selectSafetyCheckVo"/>
+        where safety_check_id = #{safetyCheckId}
+    </select>
+        
+    <insert id="insertSafetyCheck" parameterType="com.liulin.system.domain.SafetyCheck" useGeneratedKeys="true" keyProperty="safetyCheckId">
+        insert into safety_check
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="frequency != null">frequency,</if>
+            <if test="dateSchedule != null">date_schedule,</if>
+            <if test="dateComplete != null">date_complete,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="buildingId != null">building_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="frequency != null">#{frequency},</if>
+            <if test="dateSchedule != null">#{dateSchedule},</if>
+            <if test="dateComplete != null">#{dateComplete},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="buildingId != null">#{buildingId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSafetyCheck" parameterType="com.liulin.system.domain.SafetyCheck">
+        update safety_check
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="frequency != null">frequency = #{frequency},</if>
+            <if test="dateSchedule != null">date_schedule = #{dateSchedule},</if>
+            <if test="dateComplete != null">date_complete = #{dateComplete},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="buildingId != null">building_id = #{buildingId},</if>
+        </trim>
+        where safety_check_id = #{safetyCheckId}
+    </update>
+
+    <delete id="deleteSafetyCheckById" parameterType="Long">
+        delete from safety_check where safety_check_id = #{safetyCheckId}
+    </delete>
+
+    <delete id="deleteSafetyCheckByIds" parameterType="String">
+        delete from safety_check where safety_check_id in 
+        <foreach item="safetyCheckId" collection="array" open="(" separator="," close=")">
+            #{safetyCheckId}
+        </foreach>
+    </delete>
+
+</mapper>

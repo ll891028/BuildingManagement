@@ -758,7 +758,7 @@ var table = {
                 layer.alert(content, {
                     icon: $.modal.icon(type),
                     title: "System message",
-                    btn: ['确认'],
+                    btn: ['ok'],
                     btnclass: ['btn btn-primary'],
                 });
             },
@@ -926,7 +926,7 @@ var table = {
                     shade: 0.3,
                     title: title,
                     content: url,
-                    btn: ['确定', '关闭'],
+                    btn: ['confirm', 'cancel'],
                     // 弹层外区域关闭
                     shadeClose: true,
                     yes: function(index, layero) {

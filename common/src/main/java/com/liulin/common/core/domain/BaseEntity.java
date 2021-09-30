@@ -38,6 +38,32 @@ public class BaseEntity implements Serializable
     /** 请求参数 */
     private Map<String, Object> params;
 
+    /**
+     * 上传url
+     */
+    private String attachmentUrls;
+
+    /**
+     * 上传名称
+     */
+    private String originalFileNames;
+
+    public String getAttachmentUrls() {
+        return attachmentUrls;
+    }
+
+    public void setAttachmentUrls(String attachmentUrls) {
+        this.attachmentUrls = attachmentUrls;
+    }
+
+    public String getOriginalFileNames() {
+        return originalFileNames;
+    }
+
+    public void setOriginalFileNames(String originalFileNames) {
+        this.originalFileNames = originalFileNames;
+    }
+
     public String getSearchValue()
     {
         return searchValue;

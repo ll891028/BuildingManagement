@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.SafetyCheckAssetMapper">
+    
+    <resultMap type="com.liulin.system.domain.SafetyCheckAsset" id="SafetyCheckAssetResult">
+        <result property="safetyCheckAssetId"    column="safety_check_asset_id"    />
+        <result property="safetyCheckId"    column="safety_check_id"    />
+        <result property="assetId"    column="asset_id"    />
+        <result property="note"    column="note"    />
+        <result property="attachmentIds"    column="attachment_ids"    />
+        <result property="assetName"    column="asset_name"    />
+        <result property="levelName"    column="level_name"    />
+        <result property="inGoodCondition"    column="in_good_condition"    />
+    </resultMap>
+
+    <sql id="selectSafetyCheckAssetVo">
+        select safety_check_asset_id, safety_check_id, asset_id, note, attachment_ids,in_good_condition from safety_check_asset
+    </sql>
+
+    <select id="selectSafetyCheckAssetList" parameterType="com.liulin.system.domain.SafetyCheckAsset" resultMap="SafetyCheckAssetResult">
+        select t1.* ,t2.asset_name,t3.level_name
+        from safety_check_asset t1
+        left join asset t2 on t1.asset_id = t2.asset_id
+        left join building_level t3 on t2.level_id = t3.level_id
+        <where>  
+            <if test="safetyCheckId != null "> and safety_check_id = #{safetyCheckId}</if>
+            <if test="assetId != null "> and asset_id = #{assetId}</if>
+            <if test="note != null  and note != ''"> and note = #{note}</if>
+            <if test="attachmentIds != null  and attachmentIds != ''"> and attachment_ids = #{attachmentIds}</if>
+        </where>
+    </select>
+    
+    <select id="selectSafetyCheckAssetById" parameterType="Long" resultMap="SafetyCheckAssetResult">
+        <include refid="selectSafetyCheckAssetVo"/>
+        where safety_check_asset_id = #{safetyCheckAssetId}
+    </select>
+        
+    <insert id="insertSafetyCheckAsset" parameterType="com.liulin.system.domain.SafetyCheckAsset" useGeneratedKeys="true" keyProperty="safetyCheckAssetId">
+        insert into safety_check_asset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="safetyCheckId != null">safety_check_id,</if>
+            <if test="assetId != null">asset_id,</if>
+            <if test="note != null">note,</if>
+            <if test="attachmentIds != null">attachment_ids,</if>
+            <if test="inGoodCondition != null">in_good_condition,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="safetyCheckId != null">#{safetyCheckId},</if>
+            <if test="assetId != null">#{assetId},</if>
+            <if test="note != null">#{note},</if>
+            <if test="attachmentIds != null">#{attachmentIds},</if>
+            <if test="inGoodCondition != null">#{inGoodCondition},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSafetyCheckAsset" parameterType="com.liulin.system.domain.SafetyCheckAsset">
+        update safety_check_asset
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="safetyCheckId != null">safety_check_id = #{safetyCheckId},</if>
+            <if test="assetId != null">asset_id = #{assetId},</if>
+            <if test="note != null">note = #{note},</if>
+            <if test="attachmentIds != null">attachment_ids = #{attachmentIds},</if>
+            <if test="inGoodCondition != null">in_good_condition = #{inGoodCondition},</if>
+        </trim>
+        where safety_check_asset_id = #{safetyCheckAssetId}
+    </update>
+
+    <delete id="deleteSafetyCheckAssetById" parameterType="Long">
+        delete from safety_check_asset where safety_check_asset_id = #{safetyCheckAssetId}
+    </delete>
+
+    <delete id="deleteSafetyCheckAssetByCheckId" parameterType="Long">
+        delete from safety_check_asset where safety_check_id = #{safetyCheckId}
+    </delete>
+
+    <delete id="deleteSafetyCheckAssetByIds" parameterType="String">
+        delete from safety_check_asset where safety_check_asset_id in 
+        <foreach item="safetyCheckAssetId" collection="array" open="(" separator="," close=")">
+            #{safetyCheckAssetId}
+        </foreach>
+    </delete>
+
+</mapper>

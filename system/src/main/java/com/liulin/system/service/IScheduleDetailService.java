@@ -65,4 +65,6 @@ public interface IScheduleDetailService
      * @return 结果
      */
     public int deleteScheduleDetailById(Long schDetailId);
+
+    public int changeDeleteStatusPendingBySchId(Long schId,Integer isDel);
 }

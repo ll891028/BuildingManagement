@@ -149,7 +149,7 @@ public class SysProfileController extends BaseController
         }
         if (userService.updateUserInfo(currentUser) > 0)
         {
-            ShiroUtils.setSysUser(userService.selectUserById(currentUser.getUserId()));
+            ShiroUtils.setSysUser(currentUser);
             return success();
         }
         return error();

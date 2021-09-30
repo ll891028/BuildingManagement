@@ -4,7 +4,6 @@ import javax.validation.constraints.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.core.domain.BaseEntity;
-
 import java.util.List;
 
 /**

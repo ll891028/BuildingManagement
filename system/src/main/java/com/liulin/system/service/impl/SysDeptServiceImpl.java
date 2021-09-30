@@ -232,39 +232,7 @@ public class SysDeptServiceImpl implements ISysDeptService
         dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
         String[] attachmentUrls = dept.getAttachmentUrls().split(",");
         String[] originalFileNames = dept.getOriginalFileNames().split(",");
-        String attachmentIds="";
-        if(attachmentUrls!=null && attachmentUrls.length>0){
-            for (int i = 0; i < attachmentUrls.length; i++) {
-                String attachmentUrl = attachmentUrls[i];
-                if(StringUtils.isEmpty(attachmentUrl)){
-                    continue;
-                }
-                Attachment saver = new Attachment();
-                saver.setExt(FilenameUtils.getExtension(attachmentUrl));
-                saver.setAttachmentUrl(attachmentUrl);
-                String prefix = serverConfig.getUrl()+ Constants.RESOURCE_PREFIX+"/upload";
-                File file =
-                        new File(LiulinConfig.getUploadPath()+StringUtils.substringAfter(attachmentUrl,prefix));
-                String md5 = Md5Utils.getMD5ByFile(file);
-                if(md5!=null){
-                    Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(md5);
-                    if(attachmentByMd5!=null){
-                        saver.setAttachmentUrl(attachmentByMd5.getAttachmentUrl());
-                    }
-                    saver.setFileName(originalFileNames[i]);
-                    saver.setMd5(md5);
-                    saver.setCreateBy(dept.getCreateBy());
-                    attachmentService.insertAttachment(saver);
-                    attachmentIds+=saver.getAttachmentId()+",";
-                }else {
-                    throw new RuntimeException("md5计算错误");
-
-                }
-
-            }
-
-        }
-
+        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,dept.getCreateBy());
         dept.setAttachmentIds(attachmentIds);
         int result = deptMapper.insertDept(dept);
         if(dept.getIfGroundFloor()!=null && dept.getLevels()!=null && dept.getBasements()!=null){
@@ -302,38 +270,7 @@ public class SysDeptServiceImpl implements ISysDeptService
         if(StringUtils.isNotEmpty(dept.getAttachmentUrls())){
             String[] attachmentUrls = dept.getAttachmentUrls().split(",");
             String[] originalFileNames = dept.getOriginalFileNames().split(",");
-            String attachmentIds=oldDept.getAttachmentIds();
-            if(attachmentUrls!=null && attachmentUrls.length>0) {
-                for (int i = 0; i < attachmentUrls.length; i++) {
-                    String attachmentUrl = attachmentUrls[i];
-                    if(StringUtils.isEmpty(attachmentUrl)){
-                        continue;
-                    }
-                    Attachment saver = new Attachment();
-                    saver.setExt(FilenameUtils.getExtension(attachmentUrl));
-                    saver.setAttachmentUrl(attachmentUrl);
-                    String prefix = serverConfig.getUrl() + Constants.RESOURCE_PREFIX + "/upload";
-                    File file =
-                            new File(LiulinConfig.getUploadPath() + StringUtils.substringAfter(attachmentUrl, prefix));
-                    String md5 = Md5Utils.getMD5ByFile(file);
-                    if (md5 != null) {
-                        Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(md5);
-                        if (attachmentByMd5 != null) {
-                            saver.setAttachmentUrl(attachmentByMd5.getAttachmentUrl());
-                        }
-                        saver.setFileName(originalFileNames[i]);
-                        saver.setMd5(md5);
-                        saver.setCreateBy(dept.getUpdateBy());
-                        saver.setType(FileTypeUtils.getFileTypeByExt(saver.getExt()));
-                        attachmentService.insertAttachment(saver);
-                        attachmentIds += saver.getAttachmentId() + ",";
-                    } else {
-                        throw new RuntimeException("md5计算错误");
-
-                    }
-
-                }
-            }
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,dept.getUpdateBy());
             dept.setAttachmentIds(attachmentIds);
         }
 

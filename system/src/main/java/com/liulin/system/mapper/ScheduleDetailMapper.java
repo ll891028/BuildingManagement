@@ -2,6 +2,7 @@ package com.liulin.system.mapper;
 
 import java.util.List;
 import com.liulin.system.domain.ScheduleDetail;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * scheduleDetailMapper接口
@@ -60,4 +61,6 @@ public interface ScheduleDetailMapper
      * @return 结果
      */
     public int deleteScheduleDetailByIds(String[] schDetailIds);
+
+    int changeDeleteStatusPendingBySchId(@Param("schId") Long schId,@Param("isDel") Integer isDel);
 }

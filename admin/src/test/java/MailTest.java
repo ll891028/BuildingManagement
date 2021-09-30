@@ -21,4 +21,5 @@ public class MailTest {
     public void sendMailTest(){
         mailService.sendSimpleMail();
     }
+
 }

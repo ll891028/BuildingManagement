@@ -54,7 +54,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectScheduleDetailBySchIdNearBy" parameterType="Long" resultMap="ScheduleDetailResult">
         <include refid="selectScheduleDetailVo"/>
-        where sch_id = #{schId} and is_del=0
+        where sch_id = #{schId}
+        and is_del=0
+        order by sch_date desc
+        limit 1
     </select>
         
     <insert id="insertScheduleDetail" parameterType="ScheduleDetail" useGeneratedKeys="true" keyProperty="schDetailId">
@@ -112,5 +115,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{schDetailId}
         </foreach>
     </delete>
+
+    <update id="changeDeleteStatusPendingBySchId">
+        update schedule_detail set is_del=#{isDel} where sch_id =#{schId} and status=2
+    </update>
 
 </mapper>

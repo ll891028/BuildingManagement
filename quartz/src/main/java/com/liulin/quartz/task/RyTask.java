@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.liulin.common.utils.StringUtils;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 定时任务调度测试
@@ -50,21 +49,26 @@ public class RyTask
 
     public void scheduleDetailJob()
     {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date now = new Date();
         log.info("开始执行PM Schedule Job,开始时间:{}",DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS,now));
         Schedule schQuery = new Schedule();
         //查询激活中的任务列表
         schQuery.setStatus(Schedule.ACTIVE);
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("endStartDate",simpleDateFormat.format(now));
+        schQuery.setParams(paramsMap);
         List<Schedule> schedules = scheduleService.selectScheduleList(schQuery);
         if(CollectionUtils.isNotEmpty(schedules)){
             for (Schedule schedule : schedules) {
-                ScheduleDetail detailQuery = new ScheduleDetail();
-                detailQuery.setSchId(schedule.getSchId());
                 //查询最近的一次detail数据
                 ScheduleDetail detail = scheduleDetailService.selectScheduleDetailBySchIdNearBy(schedule.getSchId());
                 if(detail!=null){
                     Date schDate = detail.getSchDate();
-                    if(schedule.getFrequency()==Schedule.MONTHLY && DateUtils.diffMonth(schDate,now)){
+                    if(!DateUtils.diffCurrentMonth(schDate,now)){
+                        return;
+                    }
+                    if(schedule.getFrequency()==Schedule.MONTHLY){
                         //插入一条数据
                         ScheduleDetail saver = new ScheduleDetail();
                         BeanUtils.copyProperties(detail,saver);
@@ -73,7 +77,7 @@ public class RyTask
                         saver.setSchDate(DateUtils.addTime(schDate,Schedule.MONTHLY));
                         saver.setStatus(Schedule.PENDING);
                         scheduleDetailService.insertScheduleDetail(saver);
-                    }else if(schedule.getFrequency()==Schedule.QUARTERLY && DateUtils.diffQuarterly(schDate,now)){
+                    }else if(schedule.getFrequency()==Schedule.QUARTERLY){
                         //插入一条数据
                         ScheduleDetail saver = new ScheduleDetail();
                         BeanUtils.copyProperties(detail,saver);
@@ -82,7 +86,7 @@ public class RyTask
                         saver.setSchDate(DateUtils.addTime(schDate,Schedule.QUARTERLY));
                         saver.setStatus(Schedule.PENDING);
                         scheduleDetailService.insertScheduleDetail(saver);
-                    }else if(schedule.getFrequency()==Schedule.HALF_YEARLY && DateUtils.diffHalfYear(schDate,now)){
+                    }else if(schedule.getFrequency()==Schedule.HALF_YEARLY){
                         //插入一条数据
                         ScheduleDetail saver = new ScheduleDetail();
                         BeanUtils.copyProperties(detail,saver);
@@ -91,7 +95,7 @@ public class RyTask
                         saver.setSchDate(DateUtils.addTime(schDate,Schedule.HALF_YEARLY));
                         saver.setStatus(Schedule.PENDING);
                         scheduleDetailService.insertScheduleDetail(saver);
-                    }else if(schedule.getFrequency()==Schedule.YEARLY && DateUtils.diffYearly(schDate,now)){
+                    }else if(schedule.getFrequency()==Schedule.YEARLY){
                         //插入一条数据
                         ScheduleDetail saver = new ScheduleDetail();
                         BeanUtils.copyProperties(detail,saver);
@@ -103,40 +107,51 @@ public class RyTask
                     }
                 }else{
                     if(schedule.getFrequency()==Schedule.MONTHLY){
-                        //插入一条数据
+                        //插入两条数据
                         ScheduleDetail saver = new ScheduleDetail();
                         saver.setSchId(schedule.getSchId());
                         saver.setCreateTime(now);
-                        saver.setSchDate(now);
+                        saver.setSchDate(schedule.getStartDate());
                         saver.setStatus(Schedule.PENDING);
+                        scheduleDetailService.insertScheduleDetail(saver);
+                        saver.setSchDetailId(null);
+                        saver.setSchDate(DateUtils.addTime(schedule.getStartDate(),Schedule.MONTHLY));
                         scheduleDetailService.insertScheduleDetail(saver);
                     }else if(schedule.getFrequency()==Schedule.QUARTERLY){
-                        //插入一条数据
+                        //插入两条数据
                         ScheduleDetail saver = new ScheduleDetail();
                         saver.setSchId(schedule.getSchId());
                         saver.setCreateTime(now);
-                        saver.setSchDate(now);
+                        saver.setSchDate(schedule.getStartDate());
                         saver.setStatus(Schedule.PENDING);
+                        scheduleDetailService.insertScheduleDetail(saver);
+                        saver.setSchDetailId(null);
+                        saver.setSchDate(DateUtils.addTime(schedule.getStartDate(),Schedule.QUARTERLY));
                         scheduleDetailService.insertScheduleDetail(saver);
                     }else if(schedule.getFrequency()==Schedule.HALF_YEARLY){
-                        //插入一条数据
+                        //插入两条数据
                         ScheduleDetail saver = new ScheduleDetail();
                         saver.setSchId(schedule.getSchId());
                         saver.setCreateTime(now);
-                        saver.setSchDate(now);
+                        saver.setSchDate(schedule.getStartDate());
                         saver.setStatus(Schedule.PENDING);
                         scheduleDetailService.insertScheduleDetail(saver);
+                        saver.setSchDetailId(null);
+                        saver.setSchDate(DateUtils.addTime(schedule.getStartDate(),Schedule.HALF_YEARLY));
+                        scheduleDetailService.insertScheduleDetail(saver);
                     }else if(schedule.getFrequency()==Schedule.YEARLY){
-                        //插入一条数据
+                        //插入两条数据
                         ScheduleDetail saver = new ScheduleDetail();
                         saver.setSchId(schedule.getSchId());
                         saver.setCreateTime(now);
-                        saver.setSchDate(now);
+                        saver.setSchDate(schedule.getStartDate());
                         saver.setStatus(Schedule.PENDING);
+                        scheduleDetailService.insertScheduleDetail(saver);
+                        saver.setSchDetailId(null);
+                        saver.setSchDate(DateUtils.addTime(schedule.getStartDate(),Schedule.YEARLY));
                         scheduleDetailService.insertScheduleDetail(saver);
                     }
                 }
-
             }
         }
 

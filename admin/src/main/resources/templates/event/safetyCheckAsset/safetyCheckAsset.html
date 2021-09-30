@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('Safety Check Asset列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <input type="hidden" th:value="${safetyCheckId}" name="safetyCheckId" />
+                </form>
+            </div>
+
+<!--            <div class="btn-group-sm" id="toolbar" role="group">-->
+<!--                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="event:safetyCheckAsset:add">-->
+<!--                    <i class="fa fa-plus"></i> add-->
+<!--                </a>-->
+<!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="event:safetyCheckAsset:edit">-->
+<!--                    <i class="fa fa-edit"></i> edit-->
+<!--                </a>-->
+<!--                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="event:safetyCheckAsset:remove">-->
+<!--                    <i class="fa fa-remove"></i> remove-->
+<!--                </a>-->
+<!--                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="event:safetyCheckAsset:export">-->
+<!--                    <i class="fa fa-download"></i> export-->
+<!--                </a>-->
+<!--            </div>-->
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('event:safetyCheckAsset:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('event:safetyCheckAsset:remove')}]];
+        var prefix = ctx + "event/safetyCheckAsset";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: " Safety Check Asset",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'safetyCheckAssetId',
+                    title: 'Safety Check Asset Id',
+                    visible: false
+                },
+                    {
+                        field: 'assetName',
+                        title: 'Asset Name'
+                    },
+                {
+                    field: 'levelName',
+                    title: 'Level'
+                },
+                {
+                    field: 'inGoodCondition',
+                    title: 'In Good Condition',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return statusTools(row);
+                    }
+                },
+                {
+                    field: 'note',
+                    title: 'Note'
+                },
+                // {
+                //     field: 'attachmentIds',
+                //     title: 'Attachment'
+                // },
+                {
+                    title: 'action',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" ' +
+                                'onclick="$.operate.edit(\'' + row.safetyCheckAssetId + '\')"><i class="fa ' +
+                                'fa-edit"></i>edit</a> ');
+                        // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" ' +
+                        //         'onclick="$.operate.remove(\'' + row.safetyCheckAssetId + '\')"><i class="fa ' +
+                        //         'fa-remove"></i>remove</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+        function statusTools(row) {
+            if (row.inGoodCondition == 1) {
+                return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.safetyCheckAssetId + '\')"></i> ';
+            } else {
+                return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.safetyCheckAssetId + '\')"></i> ';
+            }
+        }
+
+        function disable(safetyCheckAssetId) {
+            $.modal.confirm("Are you sure asset is in not good condition?", function() {
+                $.operate.post(prefix + "/changeGoodCondition", { "safetyCheckAssetId": safetyCheckAssetId,
+                    "inGoodCondition": 1 });
+            })
+        }
+
+        function enable(safetyCheckAssetId) {
+            $.modal.confirm("Are you sure asset is in good condition？", function() {
+                $.operate.post(prefix + "/changeGoodCondition", { "safetyCheckAssetId": safetyCheckAssetId, "inGoodCondition": 0
+                });
+            })
+        }
+    </script>
+</body>
+</html>

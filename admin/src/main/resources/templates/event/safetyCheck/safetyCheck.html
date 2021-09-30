@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('Safety Check列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                Frequency：
+                                <select name="frequency" th:with="type=${@dict.getType('frequency')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                Date Schedule：
+                                <input type="text" class="time-input" placeholder="Date Schedule" name="dateSchedule"/>
+                            </li>
+                            <li>
+                                Date Complete：
+                                <input type="text" class="time-input" placeholder="Date Complete" name="dateComplete"/>
+                            </li>
+                            <li>
+                                Status：
+                                <select name="status" th:with="type=${@dict.getType('task_status')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa
+                                 fa-search"></i>&nbsp;reseach</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa
+                                fa-refresh"></i>&nbsp;reset</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="event:safetyCheck:add">
+                    <i class="fa fa-plus"></i> add
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="event:safetyCheck:edit">
+                    <i class="fa fa-edit"></i> edit
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="event:safetyCheck:remove">
+                    <i class="fa fa-remove"></i> remove
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="event:safetyCheck:export">
+                    <i class="fa fa-download"></i> export
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('event:safetyCheck:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('event:safetyCheck:remove')}]];
+        var taskStatusDatas = [[${@dict.getType('task_status')}]];
+        var frequencyDatas = [[${@dict.getType('frequency')}]];
+        var prefix = ctx + "event/safetyCheck";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: " Safety Check",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'safetyCheckId',
+                    title: 'Safety Check Id',
+                    visible: false
+                },
+                {
+                    field: 'frequency',
+                    title: 'Frequency',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(frequencyDatas, value);
+                    }
+                },
+                {
+                    field: 'dateSchedule',
+                    title: 'Date Schedule'
+                },
+                {
+                    field: 'dateComplete',
+                    title: 'Date Complete'
+                },
+                {
+                    field: 'status',
+                    title: 'Status',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(taskStatusDatas, value);
+                    }
+                },
+                {
+                    title: 'action',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" ' +
+                                'onclick="$.operate.edit(\'' + row.safetyCheckId + '\')"><i class="fa ' +
+                                'fa-edit"></i>edit</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" ' +
+                                'onclick="$.operate.remove(\'' + row.safetyCheckId + '\')"><i class="fa ' +
+                                'fa-remove"></i>remove</a> ');
+                        actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="javascript:void(0)" ' +
+                            'onclick="assetList(\'' + row.safetyCheckId + '\')"><i class="fa ' +
+                            'fa-list"></i> asset list</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        function assetList(safetyCheckId) {
+            $.modal.openTab("Asset List", "event/safetyCheckAsset" + "/"+safetyCheckId)
+        }
+    </script>
+</body>
+</html>

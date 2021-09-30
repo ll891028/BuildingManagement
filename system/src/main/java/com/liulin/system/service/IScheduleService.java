@@ -1,6 +1,9 @@
 package com.liulin.system.service;
 
+import java.util.Date;
 import java.util.List;
+
+import com.liulin.system.domain.ReportDto;
 import com.liulin.system.domain.Schedule;
 
 /**
@@ -27,6 +30,8 @@ public interface IScheduleService
      */
     public List<Schedule> selectScheduleList(Schedule schedule);
 
+    public List<ReportDto> selectReportList(ReportDto reportDto);
+
     /**
      * 新增schedule
      * 
@@ -43,6 +48,8 @@ public interface IScheduleService
      */
     public int updateSchedule(Schedule schedule);
 
+    public int updateScheduleAttachment(Schedule schedule);
+
     /**
      * 批量删除schedule
      * 
@@ -58,4 +65,6 @@ public interface IScheduleService
      * @return 结果
      */
     public int deleteScheduleById(Long schId);
+
+    void generateScheduleDetail(Schedule schedule, Date startDate);
 }

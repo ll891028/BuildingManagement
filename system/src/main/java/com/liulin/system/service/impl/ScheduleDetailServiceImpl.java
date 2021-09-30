@@ -99,4 +99,9 @@ public class ScheduleDetailServiceImpl implements IScheduleDetailService
     {
         return scheduleDetailMapper.deleteScheduleDetailById(schDetailId);
     }
+
+    @Override
+    public int changeDeleteStatusPendingBySchId(Long schId,Integer isDel) {
+        return scheduleDetailMapper.changeDeleteStatusPendingBySchId(schId,isDel);
+    }
 }

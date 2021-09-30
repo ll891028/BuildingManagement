@@ -1,7 +1,16 @@
 package com.liulin.system.service.impl;
 
+import java.io.File;
 import java.util.List;
+
+import com.liulin.common.config.LiulinConfig;
+import com.liulin.common.config.ServerConfig;
+import com.liulin.common.constant.Constants;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.common.utils.StringUtils;
+import com.liulin.common.utils.file.FileUtils;
+import com.liulin.common.utils.security.Md5Utils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.AttachmentMapper;
@@ -22,6 +31,9 @@ public class AttachmentServiceImpl implements IAttachmentService
 {
     @Autowired
     private AttachmentMapper attachmentMapper;
+
+    @Autowired
+    private ServerConfig serverConfig;
 
     /**
      * 查询attachment
@@ -107,5 +119,45 @@ public class AttachmentServiceImpl implements IAttachmentService
         Attachment query = new Attachment();
         query.setAttachmentIds(ids);
         return attachmentMapper.selectAttachmentList(query);
+    }
+
+    @Override
+    public String insertAttachments(String[] attachmentUrls, String[] originalFileNames,String createBy) {
+        String attachmentIds="";
+        if(attachmentUrls!=null && attachmentUrls.length>0){
+            for (int i = 0; i < attachmentUrls.length; i++) {
+                String attachmentUrl = attachmentUrls[i];
+                if(StringUtils.isEmpty(attachmentUrl)){
+                    continue;
+                }
+                Attachment saver = new Attachment();
+                saver.setExt(FilenameUtils.getExtension(attachmentUrl));
+                saver.setAttachmentUrl(attachmentUrl);
+                String prefix = LiulinConfig.getUploadPath();
+//                File file =
+//                        new File(LiulinConfig.getUploadPath()+StringUtils.substringAfter(attachmentUrl,prefix));
+                String filePath = FileUtils.downloadFromUrl(attachmentUrl, prefix);
+                File file = new File(filePath);
+                String md5 = Md5Utils.getMD5ByFile(file);
+                if(md5!=null){
+                    Attachment attachmentByMd5 = getAttachmentByMd5(md5);
+                    if(attachmentByMd5!=null){
+                        saver.setAttachmentUrl(attachmentByMd5.getAttachmentUrl());
+                    }
+                    saver.setFileName(originalFileNames[i]);
+                    saver.setMd5(md5);
+                    saver.setCreateBy(createBy);
+                    insertAttachment(saver);
+                    attachmentIds+=saver.getAttachmentId()+",";
+                }else {
+                    file.delete();
+                    throw new RuntimeException("md5计算错误");
+
+                }
+                file.delete();
+            }
+
+        }
+        return attachmentIds;
     }
 }

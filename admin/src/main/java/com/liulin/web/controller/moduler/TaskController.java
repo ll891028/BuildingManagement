@@ -129,7 +129,7 @@ public class TaskController extends BaseController
      * 修改Task
      */
     @GetMapping(value = "/edit/{taskId}")
-    public String edit(@PathVariable("taskId") Long taskId,@PathVariable(value = "taskType",required = false)Integer taskType, ModelMap mmap)
+    public String edit(@PathVariable("taskId") Long taskId, ModelMap mmap)
     {
         Servize query = new Servize();
         query.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
@@ -331,6 +331,32 @@ public class TaskController extends BaseController
     public AjaxResult saveQuotePrice(TaskQuote taskQuote)
     {
         return toAjax(taskQuoteService.updateTaskQuote(taskQuote));
+    }
+
+    /**
+     * 预览Task
+     */
+    @GetMapping(value = "/detail/{taskId}")
+    public String detail(@PathVariable("taskId") Long taskId, ModelMap mmap)
+    {
+        Servize query = new Servize();
+        query.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        List<Servize> servizes = servizeService.selectServizeList(query);
+        mmap.put("servizes",servizes);
+
+        Task task = taskService.selectTaskById(taskId);
+        mmap.put("task", task);
+
+        TaskAsset assetQuery = new TaskAsset();
+        assetQuery.setTaskId(taskId);
+        List<TaskAsset> taskAssets = taskAssetService.selectTaskAssetList(assetQuery);
+        mmap.put("taskAssets",taskAssets);
+
+        TaskQuote quoteQuery = new TaskQuote();
+        quoteQuery.setTaskId(taskId);
+        List<TaskQuote> taskQuotes = taskQuoteService.selectTaskQuoteList(quoteQuery);
+        mmap.put("taskQuotes",taskQuotes);
+        return prefix + "/detail";
     }
 
 }

@@ -1,6 +1,8 @@
 package com.liulin.system.mapper;
 
 import java.util.List;
+
+import com.liulin.system.domain.ReportDto;
 import com.liulin.system.domain.Schedule;
 
 /**
@@ -27,6 +29,7 @@ public interface ScheduleMapper
      */
     public List<Schedule> selectScheduleList(Schedule schedule);
 
+    List<ReportDto> selectReportList(ReportDto reportDto);
     /**
      * 新增schedule
      * 

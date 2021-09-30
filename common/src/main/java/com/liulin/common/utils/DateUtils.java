@@ -163,6 +163,38 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     }
 
     /**
+     * 计算是否为当月
+     * @param formDate
+     * @param toDate
+     * @return
+     */
+    public static boolean diffCurrentMonth(Date formDate, Date toDate){
+
+        Calendar calendarFrom = Calendar.getInstance();
+        calendarFrom.setTime(formDate);
+        Calendar calendarTo = Calendar.getInstance();
+        calendarTo.setTime(toDate);
+        int fromYear = calendarFrom.get(Calendar.YEAR);
+        int fromMonth = calendarFrom.get(Calendar.MONTH);
+        int fromDay = calendarFrom.get(Calendar.DAY_OF_MONTH);
+
+        int toYear = calendarTo.get(Calendar.YEAR);
+        int toMonth = calendarTo.get(Calendar.MONTH);
+        int toDay = calendarTo.get(Calendar.DAY_OF_MONTH);
+
+        int year = toYear  -  fromYear;
+        int month = toMonth  - fromMonth;
+        int day = toDay  - fromDay;
+
+        if (year==0){
+            if(month==0){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 计算相差一个月
      * @param formDate
      * @param toDate

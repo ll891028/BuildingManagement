@@ -28,28 +28,125 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="orderSupplierName"    column="order_supplier_name"    />
         <result property="serviceName"    column="service_name"    />
+        <result property="quoteSummary"    column="quote_summary"    />
+        <result property="attachmentIds"    column="attachment_ids"    />
+
+    </resultMap>
+
+    <resultMap type="com.liulin.system.domain.ReportDto" id="ReportResult">
+        <result property="name"    column="name"    />
+        <result property="description"    column="description"    />
+        <result property="status"    column="status"    />
+        <result property="row"    column="row"    />
+        <result property="dateRaised"    column="date_raised"    />
+        <result property="dateComplete"    column="date_complete"    />
+        <result property="attachments"    column="attachments"    />
+        <result property="taskType"    column="task_type"    />
+        <result property="service"    column="service"    />
+        <result property="attachmentIds"    column="attachment_ids"    />
+
     </resultMap>
 
     <sql id="selectScheduleVo">
         select sch_id, sch_name,building_id, description, action_required, service_id, priority, frequency, start_date,
-               needWorkOrder, needQuote, status, order_instruction, quote_instruction, order_status, quote_status, order_supplier_id, create_by, create_time, update_by, update_time from schedule
+               needWorkOrder, needQuote, status, order_instruction, quote_instruction, order_status, quote_status,
+               order_supplier_id, create_by, create_time, update_by, update_time,quote_summary,attachment_ids from schedule
     </sql>
 
     <select id="selectScheduleList" parameterType="Schedule" resultMap="ScheduleResult">
-       select t1.*,t2.service_name from schedule t1
+       select t1.*,t2.service_name,t3.company_name as order_supplier_name from schedule t1
         left join service t2 on t1.service_id = t2.service_id
+        left join supplier t3 on t1.order_supplier_id = t3.supplier_id
         <where>  
             <if test="serviceId != null "> and service_id = #{serviceId}</if>
             <if test="schName != null and schName!=''"> and sch_name like concat('%',#{serviceId},'%') </if>
             <if test="buildingId != null "> and building_id = #{buildingId}</if>
             <if test="priority != null "> and priority = #{priority}</if>
             <if test="frequency != null "> and frequency = #{frequency}</if>
-            <if test="params.beginStartDate != null and params.beginStartDate != '' and params.endStartDate != null and params.endStartDate != ''"> and start_date between STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y') and STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y') </if>
+            <if test="params.beginStartDate != null and params.beginStartDate != ''"> and start_date >=
+                STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y') </if>
+            <if test="params.endStartDate != null and params.endStartDate != ''"> and start_date <![CDATA[ <= ]]>
+                    STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y') </if>
             <if test="needWorkOrder != null "> and needWorkOrder = #{needWorkOrder}</if>
             <if test="needQuote != null "> and needQuote = #{needQuote}</if>
             <if test="status != null "> and t1.status = #{status}</if>
             <if test="orderInstruction != null  and orderInstruction != ''"> and order_instruction = #{orderInstruction}</if>
         </where>
+    </select>
+
+    <select id="selectReportList" parameterType="com.liulin.system.domain.ReportDto" resultMap="ReportResult">
+        select
+        aa.*,
+        @rownum := @rownum + 1 AS row
+        from (
+        select t1.task_name as name,
+        t2.service_name as service,
+        t1.description as description,
+        t1.date_raised as date_raised,
+        t1.date_complete as date_complete,
+        t1.task_status as status,
+        t1.attachment_ids as attachment_ids,
+        @rowNum:=0,
+        t1.task_type as task_type
+        from task t1 left join service t2 on t1.service_id = t2.service_id
+        <where>
+            <if test="buildingId!=null">
+                and t1.building_id = #{buildingId}
+            </if>
+            <if test="params.beginStartDate != null and params.beginStartDate != '' and params.endStartDate != null and params.endStartDate != ''">
+                and (
+                (
+                t1.date_raised >= STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y')
+                and t1.date_raised <![CDATA[ <= ]]> STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y')
+                )
+                or
+                ( t1.date_complete >= STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y')
+                and t1.date_complete <![CDATA[ <= ]]> STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y')
+                )
+                or (
+                t1.date_raised >= STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y')
+                and t1.date_raised <![CDATA[ <= ]]> STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y')
+                and t1.date_complete is null
+                )
+                )
+            </if>
+        </where>
+        Union
+        select t2.sch_name as name,
+        t3.service_name as service,
+        t2.description as description,
+        t1.sch_date as date_raised,
+        t1.complete_date as date_complete,
+        t2.status as status,
+        t2.attachment_ids as attachment_ids,
+        @rowNum:=0,
+        3 as task_type
+        from schedule_detail t1 left join schedule t2 on t2.sch_id = t1.sch_id
+        left join service t3 on t2.service_id = t3.service_id
+        <where>
+            t1.is_del=0
+            <if test="buildingId!=null">
+                and t2.building_id = #{buildingId}
+            </if>
+            <if test="params.beginStartDate != null and params.beginStartDate != '' and params.endStartDate != null and params.endStartDate != ''">
+                and (
+                (
+                t1.sch_date >= STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y')
+                and t1.sch_date <![CDATA[ <= ]]> STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y')
+                )
+                or
+                ( t1.complete_date >= STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y')
+                and t1.complete_date <![CDATA[ <= ]]> STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y')
+                )
+                or (
+                    t1.sch_date >= STR_TO_DATE(#{params.beginStartDate}, '%d-%m-%Y')
+                and t1.sch_date <![CDATA[ <= ]]> STR_TO_DATE(#{params.endStartDate}, '%d-%m-%Y')
+                and t1.complete_date is null)
+                )
+            </if>
+        </where>
+        order by service,date_raised
+        ) aa
     </select>
     
     <select id="selectScheduleById" parameterType="Long" resultMap="ScheduleResult">
@@ -64,6 +161,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="schName != null and schName!=''">sch_name,</if>
             <if test="buildingId != null ">building_id,</if>
             <if test="description != null and description != ''">description,</if>
+            <if test="quoteSummary != null and quoteSummary != ''">quote_summary,</if>
             <if test="actionRequired != null and actionRequired != ''">action_required,</if>
             <if test="serviceId != null">service_id,</if>
             <if test="priority != null">priority,</if>
@@ -81,11 +179,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="attachmentIds != null and attachmentIds!=''">attachment_ids,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="schName != null and schName!=''">#{schName},</if>
             <if test="buildingId != null ">#{buildingId},</if>
             <if test="description != null and description != ''">#{description},</if>
+            <if test="quoteSummary != null and quoteSummary != ''">#{quoteSummary},</if>
             <if test="actionRequired != null and actionRequired != ''">#{actionRequired},</if>
             <if test="serviceId != null">#{serviceId},</if>
             <if test="priority != null">#{priority},</if>
@@ -103,6 +203,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="attachmentIds != null and attachmentIds!=''">#{attachmentIds},</if>
          </trim>
     </insert>
 
@@ -112,6 +213,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="schName != null and schName!=''">sch_name = #{schName},</if>
             <if test="buildingId != null">  building_id = #{buildingId},</if>
             <if test="description != null and description != ''">description = #{description},</if>
+            <if test="quoteSummary != null and quoteSummary != ''">quote_summary = #{quoteSummary},</if>
             <if test="actionRequired != null and actionRequired != ''">action_required = #{actionRequired},</if>
             <if test="serviceId != null">service_id = #{serviceId},</if>
             <if test="priority != null">priority = #{priority},</if>
@@ -129,6 +231,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            attachment_ids = #{attachmentIds}
         </trim>
         where sch_id = #{schId}
     </update>

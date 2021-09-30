@@ -51,6 +51,9 @@ public class Schedule extends BaseEntity
     /** Description */
     private String description;
 
+    /** Quote Summary */
+    private String quoteSummary;
+
     /** Action Required */
     @Excel(name = "Action Required")
     private String actionRequired;
@@ -108,6 +111,24 @@ public class Schedule extends BaseEntity
     private String orderSupplierName;
 
     private String serviceName;
+
+    private String attachmentIds;
+
+    public String getAttachmentIds() {
+        return attachmentIds;
+    }
+
+    public void setAttachmentIds(String attachmentIds) {
+        this.attachmentIds = attachmentIds;
+    }
+
+    public String getQuoteSummary() {
+        return quoteSummary;
+    }
+
+    public void setQuoteSummary(String quoteSummary) {
+        this.quoteSummary = quoteSummary;
+    }
 
     public String getServiceName() {
         return serviceName;

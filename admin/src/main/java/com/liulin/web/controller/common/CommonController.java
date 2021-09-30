@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.liulin.common.utils.file.AwsFileUtils;
 import com.liulin.common.utils.security.Md5Utils;
 import com.liulin.system.domain.Attachment;
 import com.liulin.system.service.IAttachmentService;
@@ -86,8 +87,13 @@ public class CommonController {
                 // 上传文件路径
                 String filePath = LiulinConfig.getUploadPath();
                 // 上传并返回新文件名称
-                fileName = FileUploadUtils.upload(filePath, file);
-                url = serverConfig.getUrl() + fileName;
+//                fileName = FileUploadUtils.upload(filePath, file);
+                File savedFile = new File(filePath+"/"+fileName);
+                file.transferTo(savedFile);
+                String keyName = "attachments/"+fileName;
+                AwsFileUtils.putObject("attachments/"+fileName,savedFile);
+                savedFile.delete();
+                url = AwsFileUtils.getUrl(keyName);
             }
 
 
@@ -122,8 +128,9 @@ public class CommonController {
                     fileName = file.getOriginalFilename();
                 } else {
                     // 上传并返回新文件名称
-                    fileName = FileUploadUtils.upload(filePath, file);
-                    url = serverConfig.getUrl() + fileName;
+                    String keyName = "attachments/"+file.getOriginalFilename();
+                    AwsFileUtils.putObject("attachments/"+file.getOriginalFilename(),tempFile);
+                    url = AwsFileUtils.getUrl(keyName);
                 }
                 tempFile.delete();
                 fileInfos.add(new FileInfo(fileName, url, file.getOriginalFilename()));

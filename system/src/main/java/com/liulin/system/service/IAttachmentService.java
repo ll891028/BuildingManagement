@@ -62,4 +62,6 @@ public interface IAttachmentService
     public Attachment getAttachmentByMd5(String md5);
 
     List<Attachment> selectAttachmentByIds(int[] ids);
+
+    String insertAttachments(String[] attachmentUrls, String[] originalFileNames,String createBy);
 }
