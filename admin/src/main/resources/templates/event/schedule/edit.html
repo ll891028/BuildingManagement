@@ -202,6 +202,8 @@
             var schedule = [[${schedule}]];
             var initPrevConfig = new Array();
             var imgUrls = new Array();
+            var attachmentUrls="";
+            var originalFileNames="";
             $(attachments).each(function (index,item) {
                 initPrevConfig[index] = {
                     caption: item.fileName, /*文件标题*/
@@ -213,7 +215,11 @@
                     extra: {attachmentId: item.attachmentId,schId:schedule.schId}  /*删除文件携带的参数*/
                 };
                 imgUrls.push(item.attachmentUrl);
+                attachmentUrls+=item.attachmentUrl+",";
+                originalFileNames+=item.fileName+",";
             });
+            $("#attachmentUrls").val(attachmentUrls);
+            $("#originalFileNames").val(originalFileNames);
             // 多图上传
             $("#multipleFile").fileinput({
                 uploadUrl: ctx + 'common/uploads',

@@ -22,13 +22,16 @@ import java.util.List;
  */
 public class AwsFileUtils {
 
-    private final static Regions clientRegion = Regions.AP_SOUTHEAST_1;
+    private final static Regions clientRegion = Regions.AP_SOUTHEAST_2;
 
-    private final static String URL_PREFIX="https://"+ LiulinConfig.getBucketName() +".s3."+Regions.AP_SOUTHEAST_1.getName()+
+    private final static String URL_PREFIX=
+            "https://"+ LiulinConfig.getBucketName() +".s3."+Regions.AP_SOUTHEAST_2.getName()+
             ".amazonaws.com/";
 
 
     public static void putObject(String keyName,File file){
+        System.out.println(LiulinConfig.getBucketName()+","+LiulinConfig.getAwsKeyId()+","+LiulinConfig.getAwsSecretId());
+        System.out.println(LiulinConfig.getName()+","+LiulinConfig.getProfile());
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(LiulinConfig.getAwsKeyId(), LiulinConfig.getAwsSecretId());
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds))

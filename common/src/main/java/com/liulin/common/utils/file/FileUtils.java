@@ -248,7 +248,7 @@ public class FileUtils
             e.printStackTrace();
             return "Fault!";
         }
-        return dir + fileName;
+        return dir +File.separator+ fileName;
     }
 
     public static String getFileNameFromUrl(String url) {

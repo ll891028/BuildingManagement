@@ -40,7 +40,7 @@ public class LiulinConfig
         return bucketName;
     }
 
-    public static void setBucketName(String bucketName) {
+    public void setBucketName(String bucketName) {
         LiulinConfig.bucketName = bucketName;
     }
 
@@ -48,7 +48,7 @@ public class LiulinConfig
         return awsKeyId;
     }
 
-    public static void setAwsKeyId(String awsKeyId) {
+    public void setAwsKeyId(String awsKeyId) {
         LiulinConfig.awsKeyId = awsKeyId;
     }
 
@@ -56,7 +56,7 @@ public class LiulinConfig
         return awsSecretId;
     }
 
-    public static void setAwsSecretId(String awsSecretId) {
+    public void setAwsSecretId(String awsSecretId) {
         LiulinConfig.awsSecretId = awsSecretId;
     }
 
