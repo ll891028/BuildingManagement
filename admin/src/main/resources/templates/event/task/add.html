@@ -65,7 +65,7 @@
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <input name="timeScheduled" id="timeScheduled" class="form-control"
-                               placeholder="dd-mm-yyyy HH:mm:ss" type="text" required autocomplete="off">
+                               placeholder="dd-mm-yyyy HH:mm" type="text" required autocomplete="off">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -278,7 +278,7 @@
 
         $("input[name='timeScheduled']").datetimepicker({
             language:"en",
-            format: "dd-mm-yyyy hh:ii:ss",
+            format: "dd-mm-yyyy hh:ii",
             // minView: "day",
             autoclose: true
         });

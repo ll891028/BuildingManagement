@@ -49,8 +49,8 @@ public class Task extends BaseEntity
     private Date dateRaised;
 
     /** Time scheduled */
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    @Excel(name = "Time scheduled", width = 30, dateFormat = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
+    @Excel(name = "Time scheduled", width = 30, dateFormat = "dd-MM-yyyy HH:mm")
     private Date timeScheduled;
 
     /** Date Complete */

@@ -308,7 +308,7 @@ public class ScheduleController extends BaseController
                 Date end =cal.getTime();
                 Map<String ,String> map = new HashMap<>();
                 map.put("id", String.valueOf(task.getTaskId()));
-                map.put("title",task.getTaskName()+" "+ DateUtils.parseDateToStr("dd-MM-yyyy HH:mm:ss",
+                map.put("title",task.getTaskName()+" "+ DateUtils.parseDateToStr("dd-MM-yyyy HH:mm",
                         task.getTimeScheduled()));
                 map.put("url",prefixUrl+"/event/task/detail/"+task.getTaskId());
                 if(task.getTaskType()==1) {

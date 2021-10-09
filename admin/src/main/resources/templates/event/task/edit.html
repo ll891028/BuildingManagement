@@ -67,8 +67,8 @@
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <input name="timeScheduled"
-                               th:value="${#dates.format(task.timeScheduled, 'dd-MM-yyyy HH:mm:ss')}"
-                               class="form-control" placeholder="dd-mm-yyyy HH:mm:ss" type="text" required autocomplete="off">
+                               th:value="${#dates.format(task.timeScheduled, 'dd-MM-yyyy HH:mm')}"
+                               class="form-control" placeholder="dd-mm-yyyy HH:mm" type="text" required autocomplete="off">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -297,7 +297,7 @@
         $("input[name='timeScheduled']").datetimepicker({
             language:"en",
             forceParse:0,
-            format: "dd-mm-yyyy hh:ii:ss",
+            format: "dd-mm-yyyy hh:ii",
             // minView: "month",
             autoclose: true
         });
