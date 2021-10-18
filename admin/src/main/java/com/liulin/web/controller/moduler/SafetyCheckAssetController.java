@@ -1,6 +1,8 @@
 package com.liulin.web.controller.moduler;
 
 import java.util.List;
+
+import com.liulin.system.domain.ScheduleDetail;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -131,5 +133,18 @@ public class SafetyCheckAssetController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(safetyCheckAssetService.deleteSafetyCheckAssetByIds(ids));
+    }
+
+    /**
+     * 删除asset附件
+     */
+    @Log(title = "删除asset附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("event:safetyCheckAsset:remove")
+    @PostMapping("/attachment/remove")
+    @ResponseBody
+    public AjaxResult attachRemove(SafetyCheckAsset safetyCheckAsset)
+    {
+
+        return toAjax(safetyCheckAssetService.updateAssetAttachment(safetyCheckAsset));
     }
 }

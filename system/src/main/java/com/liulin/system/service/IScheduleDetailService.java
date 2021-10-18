@@ -1,6 +1,8 @@
 package com.liulin.system.service;
 
 import java.util.List;
+
+import com.liulin.system.domain.Schedule;
 import com.liulin.system.domain.ScheduleDetail;
 
 /**
@@ -67,4 +69,6 @@ public interface IScheduleDetailService
     public int deleteScheduleDetailById(Long schDetailId);
 
     public int changeDeleteStatusPendingBySchId(Long schId,Integer isDel);
+
+    public int updateScheduleAttachment(ScheduleDetail scheduleDetail);
 }

@@ -2,6 +2,9 @@ package com.liulin.system.service.impl;
 
 import java.util.List;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Schedule;
+import com.liulin.system.service.IAttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.ScheduleDetailMapper;
@@ -20,6 +23,9 @@ public class ScheduleDetailServiceImpl implements IScheduleDetailService
 {
     @Autowired
     private ScheduleDetailMapper scheduleDetailMapper;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     /**
      * 查询scheduleDetail
@@ -73,6 +79,13 @@ public class ScheduleDetailServiceImpl implements IScheduleDetailService
     public int updateScheduleDetail(ScheduleDetail scheduleDetail)
     {
         scheduleDetail.setUpdateTime(DateUtils.getNowDate());
+        if(StringUtils.isNotEmpty(scheduleDetail.getAttachmentUrls())){
+            String[] attachmentUrls = scheduleDetail.getAttachmentUrls().split(",");
+            String[] originalFileNames = scheduleDetail.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    scheduleDetail.getUpdateBy());
+            scheduleDetail.setAttachmentIds(attachmentIds);
+        }
         return scheduleDetailMapper.updateScheduleDetail(scheduleDetail);
     }
 
@@ -103,5 +116,17 @@ public class ScheduleDetailServiceImpl implements IScheduleDetailService
     @Override
     public int changeDeleteStatusPendingBySchId(Long schId,Integer isDel) {
         return scheduleDetailMapper.changeDeleteStatusPendingBySchId(schId,isDel);
+    }
+
+    @Override
+    public int updateScheduleAttachment(ScheduleDetail scheduleDetail) {
+
+        if(StringUtils.isNotEmpty(scheduleDetail.getAttachmentUrls())){
+            String[] attachmentUrls = scheduleDetail.getAttachmentUrls().split(",");
+            String[] originalFileNames = scheduleDetail.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,scheduleDetail.getCreateBy());
+            scheduleDetail.setAttachmentIds(attachmentIds);
+        }
+        return scheduleDetailMapper.updateScheduleDetail(scheduleDetail);
     }
 }

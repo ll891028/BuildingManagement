@@ -3,6 +3,8 @@ package com.liulin.common.core.domain.entity;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.*;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -155,6 +157,17 @@ public class SysUser extends BaseEntity
     public boolean isAdmin()
     {
         return isAdmin(this.userId);
+    }
+
+    public boolean isDirector(){
+        if(CollectionUtils.isNotEmpty(this.roles)){
+            for (SysRole role : this.roles) {
+                if(role.getRoleId().equals(101L)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static boolean isAdmin(Long userId)

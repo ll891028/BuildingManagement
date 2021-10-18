@@ -72,10 +72,10 @@ public class SysDeptController extends BaseController
     @GetMapping("/add/{parentId}")
     public String add(@PathVariable("parentId") Long parentId, ModelMap mmap)
     {
-        if (!ShiroUtils.getSysUser().isAdmin())
-        {
-            parentId = ShiroUtils.getSysUser().getDeptId();
-        }
+//        if (!ShiroUtils.getSysUser().isAdmin())
+//        {
+//            parentId = ShiroUtils.getSysUser().getDeptId();
+//        }
         mmap.put("dept", deptService.selectDeptById(parentId));
         return prefix + "/add";
     }

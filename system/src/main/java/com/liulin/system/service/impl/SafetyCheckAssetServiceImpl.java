@@ -1,6 +1,9 @@
 package com.liulin.system.service.impl;
 
 import java.util.List;
+
+import com.liulin.common.utils.StringUtils;
+import com.liulin.system.service.IAttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.SafetyCheckAssetMapper;
@@ -19,6 +22,9 @@ public class SafetyCheckAssetServiceImpl implements ISafetyCheckAssetService
 {
     @Autowired
     private SafetyCheckAssetMapper safetyCheckAssetMapper;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     /**
      * 查询Safety Check Asset
@@ -95,5 +101,16 @@ public class SafetyCheckAssetServiceImpl implements ISafetyCheckAssetService
     @Override
     public int deleteSafetyCheckAssetByCheckId(Long safetyCheckId) {
         return safetyCheckAssetMapper.deleteSafetyCheckAssetByCheckId(safetyCheckId);
+    }
+
+    @Override
+    public int updateAssetAttachment(SafetyCheckAsset safetyCheckAsset) {
+        if(StringUtils.isNotEmpty(safetyCheckAsset.getAttachmentUrls())){
+            String[] attachmentUrls = safetyCheckAsset.getAttachmentUrls().split(",");
+            String[] originalFileNames = safetyCheckAsset.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,safetyCheckAsset.getCreateBy());
+            safetyCheckAsset.setAttachmentIds(attachmentIds);
+        }
+        return safetyCheckAssetMapper.updateSafetyCheckAsset(safetyCheckAsset);
     }
 }

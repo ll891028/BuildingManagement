@@ -196,12 +196,12 @@
 <!--                    <li><a data-toggle="tooltip" data-trigger="hover" data-placement="bottom" title="开发文档" href="http://doc.liulin.vip/liulin" target="_blank"><i class="fa fa-question-circle"></i> 文档</a></li>-->
 					<li class="dropdown">
 						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
-							<i class="fa fa-building-o"></i> <span class="hidden-xs" id="userBuilding">[[${user
+							<i class="fa fa-building-o"></i> <span class="hidden-xs" id="userBuilding" th:if=" ${user.building!=null}">[[${user
 							.building.deptName}]]</span>
 						</a>
 						<ul class="dropdown-menu">
 							<li class="mt5">
-								<a th:each="building : ${user.buildingsList}"
+								<a th:if=" ${user.buildingsList!=null}" th:each="building : ${user.buildingsList}"
 								   th:onclick="changeUserBuilding([[${building.deptId}]],[[${building.deptName}]])">
 									[[${building.deptName}]]</a>
 							</li>

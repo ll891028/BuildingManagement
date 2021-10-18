@@ -136,25 +136,18 @@ public class AttachmentServiceImpl implements IAttachmentService
                 String prefix = LiulinConfig.getUploadPath();
 //                File file =
 //                        new File(LiulinConfig.getUploadPath()+StringUtils.substringAfter(attachmentUrl,prefix));
-                String filePath = FileUtils.downloadFromUrl(attachmentUrl, prefix);
-                File file = new File(filePath);
-                String md5 = Md5Utils.getMD5ByFile(file);
-                if(md5!=null){
-                    Attachment attachmentByMd5 = getAttachmentByMd5(md5);
-                    if(attachmentByMd5!=null){
-                        saver.setAttachmentUrl(attachmentByMd5.getAttachmentUrl());
-                    }
-                    saver.setFileName(originalFileNames[i]);
-                    saver.setMd5(md5);
-                    saver.setCreateBy(createBy);
-                    insertAttachment(saver);
-                    attachmentIds+=saver.getAttachmentId()+",";
-                }else {
-                    file.delete();
-                    throw new RuntimeException("md5计算错误");
-
-                }
-                file.delete();
+//                String filePath = FileUtils.downloadFromUrl(attachmentUrl, prefix);
+//                File file = new File(filePath);
+//                String md5 = Md5Utils.getMD5ByFile(file);
+//                Attachment attachmentByMd5 = getAttachmentByMd5(md5);
+//                if (attachmentByMd5 != null) {
+//                    saver.setAttachmentUrl(attachmentByMd5.getAttachmentUrl());
+//                }
+                saver.setFileName(originalFileNames[i]);
+//                saver.setMd5(md5);
+                saver.setCreateBy(createBy);
+                insertAttachment(saver);
+                attachmentIds += saver.getAttachmentId() + ",";
             }
 
         }

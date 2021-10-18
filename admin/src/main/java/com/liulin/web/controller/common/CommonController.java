@@ -79,12 +79,12 @@ public class CommonController {
             String fileName = "";
             String url = "";
             String fileOriName = file.getOriginalFilename().replace(" ", "");
-            Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(Md5Utils.getMD5ByFile(FileUtils.multipartFileToFile(file)));
-            if (attachmentByMd5 != null) {
-                //MD5重复 不再保存文件直接使用上次的地址
-                url = attachmentByMd5.getAttachmentUrl();
-                fileName = fileOriName;
-            } else {
+//            Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(Md5Utils.getMD5ByFile(FileUtils.multipartFileToFile(file)));
+//            if (attachmentByMd5 != null) {
+//                //MD5重复 不再保存文件直接使用上次的地址
+//                url = attachmentByMd5.getAttachmentUrl();
+//                fileName = fileOriName;
+//            } else {
                 // 上传文件路径
                 String filePath = LiulinConfig.getUploadPath();
                 // 上传并返回新文件名称
@@ -95,7 +95,7 @@ public class CommonController {
                 AwsFileUtils.putObject("attachments/"+fileName,savedFile);
                 savedFile.delete();
                 url = AwsFileUtils.getUrl(keyName);
-            }
+//            }
 
 
             AjaxResult ajax = AjaxResult.success();
@@ -123,17 +123,17 @@ public class CommonController {
                 String url = "";
                 File tempFile = FileUtils.multipartFileToFile(file);
                 String fileOriName = file.getOriginalFilename().replace(" ", "");
-                Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(Md5Utils.getMD5ByFile(tempFile));
-                if (attachmentByMd5 != null) {
-                    //MD5重复 不再保存文件直接使用上次的地址
-                    url = attachmentByMd5.getAttachmentUrl();
-                    fileName = fileOriName;
-                } else {
+//                Attachment attachmentByMd5 = attachmentService.getAttachmentByMd5(Md5Utils.getMD5ByFile(tempFile));
+//                if (attachmentByMd5 != null) {
+//                    //MD5重复 不再保存文件直接使用上次的地址
+//                    url = attachmentByMd5.getAttachmentUrl();
+//                    fileName = fileOriName;
+//                } else {
                     // 上传并返回新文件名称
                     String keyName = "attachments/"+fileOriName;
                     AwsFileUtils.putObject("attachments/"+fileOriName,tempFile);
                     url = AwsFileUtils.getUrl(keyName);
-                }
+//                }
                 tempFile.delete();
                 fileInfos.add(new FileInfo(fileName, url, fileOriName));
             }

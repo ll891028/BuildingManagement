@@ -377,6 +377,17 @@ public class ScheduleController extends BaseController
     {
         ScheduleDetail detail = scheduleDetailService.selectScheduleDetailById(schDetailId);
         mmap.put("detail",detail);
+
+        String attachmentIds = detail.getAttachmentIds();
+        if(StringUtils.isNotEmpty(attachmentIds)){
+            String[] attachmentIdStrArray = attachmentIds.split(",");
+            int [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+            if(CollectionUtils.isNotEmpty(attachments)){
+                mmap.put("attachments",attachments);
+            }
+        }
         return prefix + "/schDetail";
     }
 
@@ -389,6 +400,7 @@ public class ScheduleController extends BaseController
     @ResponseBody
     public AjaxResult editDetailSave(ScheduleDetail scheduleDetail)
     {
+        scheduleDetail.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(scheduleDetailService.updateScheduleDetail(scheduleDetail));
     }
 
@@ -403,6 +415,19 @@ public class ScheduleController extends BaseController
     {
 
         return toAjax(scheduleService.updateScheduleAttachment(schedule));
+    }
+
+    /**
+     * 删除detail附件
+     */
+    @Log(title = "删除detail附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("event:schedule:remove")
+    @PostMapping("/scheduleDetail/attachment/remove")
+    @ResponseBody
+    public AjaxResult scheduleDetailRemove(ScheduleDetail scheduleDetail)
+    {
+
+        return toAjax(scheduleDetailService.updateScheduleAttachment(scheduleDetail));
     }
 
 }

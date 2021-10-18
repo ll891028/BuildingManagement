@@ -2,6 +2,7 @@ package com.liulin.system.service;
 
 import java.util.List;
 import com.liulin.system.domain.SafetyCheckAsset;
+import com.liulin.system.domain.ScheduleDetail;
 
 /**
  * Safety Check AssetService接口
@@ -60,4 +61,6 @@ public interface ISafetyCheckAssetService
     public int deleteSafetyCheckAssetById(Long safetyCheckAssetId);
 
     public int deleteSafetyCheckAssetByCheckId(Long safetyCheckId);
+
+    public int updateAssetAttachment(SafetyCheckAsset safetyCheckAsset);
 }

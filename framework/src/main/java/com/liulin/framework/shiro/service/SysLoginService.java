@@ -3,6 +3,7 @@ package com.liulin.framework.shiro.service;
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.utils.*;
 import com.liulin.system.service.ISysDeptService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -83,18 +84,26 @@ public class SysLoginService
         SysDept query = new SysDept();
         query.setTypeList(new ArrayList<>(Arrays.asList(2L,3L,4L,5L)));
         List<SysDept> buildings = null;
-        if(!user.isAdmin()){
+        if(user.isAdmin()) {
+            buildings = sysDeptService.selectDeptList(query);
+        }else if(user.isDirector()){
+            //如果是经理
             query.setDeptId(user.getDeptId());
             buildings = sysDeptService.selectChildrenDeptByIdAndType(query);
         }else{
-            buildings = sysDeptService.selectDeptList(query);
+            query.setDeptId(user.getDeptId());
+            buildings = sysDeptService.selectChildrenDeptByIdAndType(query);
+
         }
 
         user.setBuildingsList(buildings);
         SysDept building = (SysDept) CacheUtils.get("user:building:" + user.getUserId());
         if(building==null){
-            user.setBuilding(buildings.get(0));
-            CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
+            if(CollectionUtils.isNotEmpty(buildings)){
+                user.setBuilding(buildings.get(0));
+                CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
+            }
+
         }else{
             //查询是否该building被系统移除
             SysDept sysDept = buildings.stream().filter(b -> b.getDeptId().equals(building.getDeptId())).findAny().orElse(null);
@@ -109,6 +118,12 @@ public class SysLoginService
         if(building!=null){
             SysDept company = sysDeptService.selectCompanyByBuildingId(building.getParentId());
             user.setCompany(company);
+        }else{
+            if(user.isDirector()){
+
+                SysDept company = sysDeptService.selectDeptById(user.getDeptId());
+                user.setCompany(company);
+            }
         }
 
         /**
