@@ -58,7 +58,7 @@ public interface ISysDictTypeService
      * @return 结果
      * @throws Exception 异常
      */
-    public void deleteDictTypeByIds(String ids);
+    public void deleteDictTypeByIds(String ids) throws Exception;
 
     /**
      * 加载字典缓存数据

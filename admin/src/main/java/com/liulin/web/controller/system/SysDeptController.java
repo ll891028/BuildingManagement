@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.liulin.common.core.domain.entity.SysUser;
+import com.liulin.common.core.redis.RedisCache;
 import com.liulin.common.utils.CacheUtils;
 import com.liulin.system.domain.Attachment;
 import com.liulin.system.service.IAttachmentService;
@@ -48,6 +49,9 @@ public class SysDeptController extends BaseController
 
     @Autowired
     private IAttachmentService attachmentService;
+
+    @Autowired
+    private RedisCache redisCache;
 
 
     @RequiresPermissions("system:dept:view")
@@ -251,7 +255,8 @@ public class SysDeptController extends BaseController
         SysDept company = deptService.selectCompanyByBuildingId(sysDept.getParentId());
         sysUser.setCompany(company);
         ShiroUtils.setSysUser(sysUser);
-        CacheUtils.put("user:building:"+sysUser.getUserId(),sysUser.getBuilding());
+        redisCache.setCacheObject("user:building:"+sysUser.getUserId(),sysUser.getBuilding());
+//        CacheUtils.put("user:building:"+sysUser.getUserId(),sysUser.getBuilding());
         Map data = new HashMap();
         data.put("company",company);
         return AjaxResult.success("success",data);

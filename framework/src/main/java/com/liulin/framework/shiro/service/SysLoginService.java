@@ -1,6 +1,7 @@
 package com.liulin.framework.shiro.service;
 
 import com.liulin.common.core.domain.entity.SysDept;
+import com.liulin.common.core.redis.RedisCache;
 import com.liulin.common.utils.*;
 import com.liulin.system.service.ISysDeptService;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,7 +40,8 @@ public class SysLoginService
     @Autowired
     private ISysUserService userService;
 
-
+    @Autowired
+    private RedisCache redisCache;
 
     @Autowired
     private ISysDeptService sysDeptService;
@@ -97,11 +99,13 @@ public class SysLoginService
         }
 
         user.setBuildingsList(buildings);
-        SysDept building = (SysDept) CacheUtils.get("user:building:" + user.getUserId());
+        SysDept building = redisCache.getCacheObject("user:building:"+user.getUserId());
+//        SysDept building = (SysDept) CacheUtils.get("user:building:" + user.getUserId());
         if(building==null){
             if(CollectionUtils.isNotEmpty(buildings)){
                 user.setBuilding(buildings.get(0));
-                CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
+                redisCache.setCacheObject("user:building:"+user.getUserId(),user.getBuilding());
+//                CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
             }
 
         }else{
@@ -110,7 +114,8 @@ public class SysLoginService
             if(sysDept==null){
                 //已被移除
                 user.setBuilding(buildings.get(0));
-                CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
+                redisCache.setCacheObject("user:building:"+user.getUserId(),user.getBuilding());
+//                CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
             }else{
                 user.setBuilding(building);
             }

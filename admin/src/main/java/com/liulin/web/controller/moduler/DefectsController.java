@@ -1,6 +1,14 @@
 package com.liulin.web.controller.moduler;
 
+import java.util.Arrays;
 import java.util.List;
+
+import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Attachment;
+import com.liulin.system.domain.Schedule;
+import com.liulin.system.service.IAttachmentService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +41,9 @@ public class DefectsController extends BaseController
 
     @Autowired
     private IDefectsService defectsService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     @RequiresPermissions("event:defects:view")
     @GetMapping()
@@ -86,6 +97,7 @@ public class DefectsController extends BaseController
     @ResponseBody
     public AjaxResult addSave(Defects defects)
     {
+        defects.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(defectsService.insertDefects(defects));
     }
 
@@ -97,6 +109,17 @@ public class DefectsController extends BaseController
     {
         Defects defects = defectsService.selectDefectsById(defectId);
         mmap.put("defects", defects);
+
+        String attachmentIds = defects.getAttachmentIds();
+        if(StringUtils.isNotEmpty(attachmentIds)){
+            String[] attachmentIdStrArray = attachmentIds.split(",");
+            int [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+            if(CollectionUtils.isNotEmpty(attachments)){
+                mmap.put("attachments",attachments);
+            }
+        }
         return prefix + "/edit";
     }
 
@@ -109,6 +132,8 @@ public class DefectsController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Defects defects)
     {
+
+        defects.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(defectsService.updateDefects(defects));
     }
 
@@ -122,5 +147,18 @@ public class DefectsController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(defectsService.deleteDefectsByIds(ids));
+    }
+
+    /**
+     * 删除附件
+     */
+    @Log(title = "删除defects附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("event:defects:remove")
+    @PostMapping("/attachment/remove")
+    @ResponseBody
+    public AjaxResult remove(Defects defects)
+    {
+        defects.setCreateBy(ShiroUtils.getLoginName());
+        return toAjax(defectsService.updateDefectsAttachment(defects));
     }
 }

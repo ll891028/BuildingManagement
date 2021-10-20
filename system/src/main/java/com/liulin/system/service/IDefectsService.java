@@ -58,4 +58,6 @@ public interface IDefectsService
      * @return 结果
      */
     public int deleteDefectsById(Long defectId);
+
+    public int updateDefectsAttachment(Defects defects);
 }

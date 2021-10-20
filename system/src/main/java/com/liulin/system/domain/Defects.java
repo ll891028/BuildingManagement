@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
 import com.liulin.common.core.domain.BaseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * Defects Register对象 defects
@@ -21,8 +22,9 @@ public class Defects extends BaseEntity
     private Long defectId;
 
     /** Date Raised */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "Date Raised", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    @Excel(name = "Date Raised", width = 30, dateFormat = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date dateRaised;
 
     /** Location */
@@ -42,8 +44,9 @@ public class Defects extends BaseEntity
     private Long status;
 
     /** Date Complete */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "Date Complete", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    @Excel(name = "Date Complete", width = 30, dateFormat = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date dateComplete;
 
     /** Attachment */

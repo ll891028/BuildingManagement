@@ -56,7 +56,7 @@ public interface ISysConfigService
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public void deleteConfigByIds(String ids);
+    public void deleteConfigByIds(String ids) throws Exception;
 
     /**
      * 加载参数缓存数据

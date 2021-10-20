@@ -129,7 +129,11 @@ public class SysConfigController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        configService.deleteConfigByIds(ids);
+        try {
+            configService.deleteConfigByIds(ids);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return success();
     }
 

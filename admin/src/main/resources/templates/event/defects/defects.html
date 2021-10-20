@@ -12,12 +12,12 @@
                         <ul>
                             <li>
                                 Date Raised：
-                                <input type="text" class="time-input" placeholder="Date Raised" name="dateRaised"/>
+                                <input type="text" class="time-input" placeholder="Date Raised" name="dateRaised" autocomplete="off"/>
                             </li>
-                            <li>
-                                Location：
-                                <input type="text" name="location"/>
-                            </li>
+<!--                            <li>-->
+<!--                                Location：-->
+<!--                                <input type="text" name="location"/>-->
+<!--                            </li>-->
                             <li>
                                 Status：
                                 <select name="status" th:with="type=${@dict.getType('task_status')}">
@@ -27,7 +27,7 @@
                             </li>
                             <li>
                                 Date Complete：
-                                <input type="text" class="time-input" placeholder="Date Complete" name="dateComplete"/>
+                                <input type="text" class="time-input" placeholder="Date Complete" name="dateComplete" autocomplete="off"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa
@@ -108,10 +108,6 @@
                 {
                     field: 'dateComplete',
                     title: 'Date Complete'
-                },
-                {
-                    field: 'attachmentIds',
-                    title: 'Attachment'
                 },
                 {
                     title: 'action',

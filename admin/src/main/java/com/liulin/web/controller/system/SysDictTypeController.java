@@ -125,7 +125,11 @@ public class SysDictTypeController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        dictTypeService.deleteDictTypeByIds(ids);
+        try {
+            dictTypeService.deleteDictTypeByIds(ids);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return success();
     }
 

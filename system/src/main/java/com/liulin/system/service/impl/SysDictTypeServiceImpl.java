@@ -11,7 +11,7 @@ import com.liulin.common.core.domain.Ztree;
 import com.liulin.common.core.domain.entity.SysDictData;
 import com.liulin.common.core.domain.entity.SysDictType;
 import com.liulin.common.core.text.Convert;
-import com.liulin.common.exception.BusinessException;
+//import com.liulin.common.exception.ServiceException;
 import com.liulin.common.utils.DictUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.system.mapper.SysDictDataMapper;
@@ -118,15 +118,14 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService
      * @return 结果
      */
     @Override
-    public void deleteDictTypeByIds(String ids)
-    {
+    public void deleteDictTypeByIds(String ids) throws Exception {
         Long[] dictIds = Convert.toLongArray(ids);
         for (Long dictId : dictIds)
         {
             SysDictType dictType = selectDictTypeById(dictId);
             if (dictDataMapper.countDictDataByType(dictType.getDictType()) > 0)
             {
-                throw new BusinessException(String.format("%1$s已分配,不能删除", dictType.getDictName()));
+                throw new Exception(String.format("%1$s已分配,不能删除", dictType.getDictName()));
             }
             dictTypeMapper.deleteDictTypeById(dictId);
             DictUtils.removeDictCache(dictType.getDictType());

@@ -1,20 +1,23 @@
 package com.liulin.framework.shiro.web.filter;
 
+import java.io.Serializable;
+import java.util.Deque;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.SessionException;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.liulin.common.constant.Constants;
+import com.liulin.common.constant.ShiroConstants;
 import com.liulin.common.core.domain.entity.SysUser;
 import com.liulin.common.utils.MessageUtils;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
-import com.liulin.common.utils.spring.SpringUtils;
 import com.liulin.framework.manager.AsyncManager;
 import com.liulin.framework.manager.factory.AsyncFactory;
-import com.liulin.system.service.ISysUserOnlineService;
 
 /**
  * 退出过滤器
@@ -29,6 +32,8 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
      * 退出后重定向的地址
      */
     private String loginUrl;
+
+    private Cache<String, Deque<Serializable>> cache;
 
     public String getLoginUrl()
     {
@@ -56,7 +61,7 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
                     // 记录用户退出日志
                     AsyncManager.me().execute(AsyncFactory.recordLogininfor(loginName, Constants.LOGOUT, MessageUtils.message("user.logout.success")));
                     // 清理缓存
-                    SpringUtils.getBean(ISysUserOnlineService.class).removeUserCache(loginName, ShiroUtils.getSessionId());
+                    removeUserCache(loginName, ShiroUtils.getSessionId());
                 }
                 // 退出登录
                 subject.logout();
@@ -74,6 +79,17 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
         return false;
     }
 
+    public void removeUserCache(String loginName, String sessionId)
+    {
+        Deque<Serializable> deque = cache.get(loginName);
+        if (StringUtils.isEmpty(deque) || deque.size() == 0)
+        {
+            return;
+        }
+        deque.remove(sessionId);
+        cache.put(loginName, deque);
+    }
+
     /**
      * 退出跳转URL
      */
@@ -86,5 +102,12 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
             return url;
         }
         return super.getRedirectUrl(request, response, subject);
+    }
+
+    // 设置Cache的key的前缀
+    public void setCacheManager(CacheManager cacheManager)
+    {
+        // 必须和ehcache缓存配置中的缓存name一致
+        this.cache = cacheManager.getCache(ShiroConstants.SYS_USERCACHE);
     }
 }
