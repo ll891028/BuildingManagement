@@ -1,12 +1,17 @@
 package com.liulin.web.controller.moduler;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Attachment;
 import com.liulin.system.domain.CompanyService;
 import com.liulin.system.domain.Servize;
+import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.ICompanyServiceService;
 import com.liulin.system.service.IServizeService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,6 +50,9 @@ public class SupplierController extends BaseController
 
     @Autowired
     private ICompanyServiceService companyServiceService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     @RequiresPermissions("data:supplier:view")
     @GetMapping()
@@ -135,6 +143,17 @@ public class SupplierController extends BaseController
             }
         }
         mmap.put("serviceList",serviceList);
+
+        String attachmentIds = supplier.getAttachmentIds();
+        if(StringUtils.isNotEmpty(attachmentIds)){
+            String[] attachmentIdStrArray = attachmentIds.split(",");
+            int [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+            if(CollectionUtils.isNotEmpty(attachments)){
+                mmap.put("attachments",attachments);
+            }
+        }
         return prefix + "/edit";
     }
 

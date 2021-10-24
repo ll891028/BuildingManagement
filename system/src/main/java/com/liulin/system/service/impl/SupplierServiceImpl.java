@@ -6,6 +6,8 @@ import com.liulin.common.constant.Constants;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Asset;
+import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.ICompanyServiceService;
 import com.liulin.system.service.IServizeService;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,6 +33,9 @@ public class SupplierServiceImpl implements ISupplierService
 
     @Autowired
     private ICompanyServiceService companyServiceService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     /**
      * 查询supplier
@@ -72,10 +77,15 @@ public class SupplierServiceImpl implements ISupplierService
     public int insertSupplier(Supplier supplier)
     {
         supplier.setCreateTime(DateUtils.getNowDate());
+        String[] attachmentUrls = supplier.getAttachmentUrls().split(",");
+        String[] originalFileNames = supplier.getOriginalFileNames().split(",");
+        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,supplier.getCreateBy());
+        supplier.setAttachmentIds(attachmentIds);
         int result = supplierMapper.insertSupplier(supplier);
         if(CollectionUtils.isNotEmpty(supplier.getServiceIds())){
             companyServiceService.insertBatch(supplier.getServiceIds(),supplier.getSupplierId());
         }
+
         return result;
     }
 
@@ -89,6 +99,13 @@ public class SupplierServiceImpl implements ISupplierService
     public int updateSupplier(Supplier supplier)
     {
         supplier.setUpdateTime(DateUtils.getNowDate());
+        if(StringUtils.isNotEmpty(supplier.getAttachmentUrls())){
+            String[] attachmentUrls = supplier.getAttachmentUrls().split(",");
+            String[] originalFileNames = supplier.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    supplier.getUpdateBy());
+            supplier.setAttachmentIds(attachmentIds);
+        }
         companyServiceService.insertBatch(supplier.getServiceIds(),supplier.getSupplierId());
         return supplierMapper.updateSupplier(supplier);
     }
@@ -124,5 +141,16 @@ public class SupplierServiceImpl implements ISupplierService
             return UserConstants.NAME_UNIQUE;
         }
         return UserConstants.NAME_NOT_UNIQUE;
+    }
+
+    @Override
+    public int updateAttachment(Supplier supplier) {
+        if(StringUtils.isNotEmpty(supplier.getAttachmentUrls())){
+            String[] attachmentUrls = supplier.getAttachmentUrls().split(",");
+            String[] originalFileNames = supplier.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,supplier.getCreateBy());
+            supplier.setAttachmentIds(attachmentIds);
+        }
+        return supplierMapper.updateSupplier(supplier);
     }
 }

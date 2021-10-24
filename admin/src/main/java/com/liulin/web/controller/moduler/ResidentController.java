@@ -6,8 +6,10 @@ import java.util.List;
 
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.StringUtils;
 import com.liulin.system.domain.*;
 import com.liulin.system.service.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,6 +49,9 @@ public class ResidentController extends BaseController
 
     @Autowired
     private ICarPlateService carPlateService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     @RequiresPermissions("data:resident:view")
     @GetMapping()
@@ -124,6 +129,16 @@ public class ResidentController extends BaseController
         query.setResidentId(residentId);
         List<CarSpace> carSpaces = carSpaceService.selectCarSpaceList(query);
         mmap.put("carSpaces", carSpaces);
+        String attachmentIds = resident.getAttachmentIds();
+        if(StringUtils.isNotEmpty(attachmentIds)){
+            String[] attachmentIdStrArray = attachmentIds.split(",");
+            int [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+            if(CollectionUtils.isNotEmpty(attachments)){
+                mmap.put("attachments",attachments);
+            }
+        }
         return prefix + "/edit";
     }
 
@@ -184,5 +199,18 @@ public class ResidentController extends BaseController
     {
         carPlate.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         return carPlateService.checkCarPlateNumberUnique(carPlate);
+    }
+
+    /**
+     * 删除附件
+     */
+    @Log(title = "删除resident附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("data:resident:remove")
+    @PostMapping("/attachment/remove")
+    @ResponseBody
+    public AjaxResult remove(Resident resident)
+    {
+        resident.setCreateBy(ShiroUtils.getLoginName());
+        return toAjax(residentService.updateAttachment(resident));
     }
 }

@@ -62,4 +62,6 @@ public interface IServizeService
     int generateDefaultService(Long companyId,String createBy);
 
     String checkServiceNameUnique(Long companyId,String serviceName,Long serviceId);
+
+    public int updateAttachment(Servize servize);
 }

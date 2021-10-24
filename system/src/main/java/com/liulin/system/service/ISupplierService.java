@@ -62,4 +62,6 @@ public interface ISupplierService
     public int deleteSupplierById(Long supplierId);
 
     String checkSupplierNameUnique(Supplier supplier);
+
+    public int updateAttachment(Supplier supplier);
 }

@@ -60,4 +60,6 @@ public interface IResidentService
     public int deleteResidentById(Long residentId);
 
     String checkUnitNumberUnique(Resident resident);
+
+    public int updateAttachment(Resident resident);
 }

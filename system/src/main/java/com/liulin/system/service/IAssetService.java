@@ -2,6 +2,7 @@ package com.liulin.system.service;
 
 import java.util.List;
 import com.liulin.system.domain.Asset;
+import com.liulin.system.domain.Defects;
 
 /**
  * AssetService接口
@@ -61,4 +62,6 @@ public interface IAssetService
 
 
     String checkAssetNameUnique(Asset asset);
+
+    public int updateAttachment(Asset asset);
 }

@@ -1,11 +1,17 @@
 package com.liulin.web.controller.moduler;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Attachment;
 import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.domain.Defects;
+import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.IBuildingLevelService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +47,9 @@ public class AssetController extends BaseController
 
     @Autowired
     private IBuildingLevelService buildingLevelService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     @RequiresPermissions("data:asset:view")
     @GetMapping()
@@ -113,6 +122,16 @@ public class AssetController extends BaseController
         mmap.put("buildingLevels",buildingLevels);
         Asset asset = assetService.selectAssetById(assetId);
         mmap.put("asset", asset);
+        String attachmentIds = asset.getAttachmentIds();
+        if(StringUtils.isNotEmpty(attachmentIds)){
+            String[] attachmentIdStrArray = attachmentIds.split(",");
+            int [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+            if(CollectionUtils.isNotEmpty(attachments)){
+                mmap.put("attachments",attachments);
+            }
+        }
         return prefix + "/edit";
     }
 
@@ -150,5 +169,18 @@ public class AssetController extends BaseController
     {
         asset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         return assetService.checkAssetNameUnique(asset);
+    }
+
+    /**
+     * 删除附件
+     */
+    @Log(title = "删除asset附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("data:asset:remove")
+    @PostMapping("/attachment/remove")
+    @ResponseBody
+    public AjaxResult remove(Asset asset)
+    {
+        asset.setCreateBy(ShiroUtils.getLoginName());
+        return toAjax(assetService.updateAttachment(asset));
     }
 }

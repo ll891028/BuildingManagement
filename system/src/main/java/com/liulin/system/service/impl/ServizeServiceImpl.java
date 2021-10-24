@@ -5,6 +5,8 @@ import java.util.List;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Resident;
+import com.liulin.system.service.IAttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.ServizeMapper;
@@ -28,6 +30,9 @@ public class ServizeServiceImpl implements IServizeService
 
     @Autowired
     private ServizeMapper servizeMapper;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     /**
      * 查询service
@@ -63,6 +68,12 @@ public class ServizeServiceImpl implements IServizeService
     public int insertServize(Servize servize)
     {
         servize.setCreateTime(DateUtils.getNowDate());
+        if(StringUtils.isNotEmpty(servize.getAttachmentUrls())){
+            String[] attachmentUrls = servize.getAttachmentUrls().split(",");
+            String[] originalFileNames = servize.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,servize.getCreateBy());
+            servize.setAttachmentIds(attachmentIds);
+        }
         return servizeMapper.insertServize(servize);
     }
 
@@ -76,6 +87,12 @@ public class ServizeServiceImpl implements IServizeService
     public int updateServize(Servize servize)
     {
         servize.setUpdateTime(DateUtils.getNowDate());
+        if(StringUtils.isNotEmpty(servize.getAttachmentUrls())){
+            String[] attachmentUrls = servize.getAttachmentUrls().split(",");
+            String[] originalFileNames = servize.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,servize.getCreateBy());
+            servize.setAttachmentIds(attachmentIds);
+        }
         return servizeMapper.updateServize(servize);
     }
 
@@ -123,5 +140,16 @@ public class ServizeServiceImpl implements IServizeService
             return UserConstants.NAME_UNIQUE;
         }
         return UserConstants.NAME_NOT_UNIQUE;
+    }
+
+    @Override
+    public int updateAttachment(Servize servize) {
+        if(StringUtils.isNotEmpty(servize.getAttachmentUrls())){
+            String[] attachmentUrls = servize.getAttachmentUrls().split(",");
+            String[] originalFileNames = servize.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,servize.getCreateBy());
+            servize.setAttachmentIds(attachmentIds);
+        }
+        return servizeMapper.updateServize(servize);
     }
 }

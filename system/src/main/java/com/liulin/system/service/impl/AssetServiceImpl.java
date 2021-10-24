@@ -5,6 +5,7 @@ import java.util.List;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.service.IAttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.AssetMapper;
@@ -23,6 +24,9 @@ public class AssetServiceImpl implements IAssetService
 {
     @Autowired
     private AssetMapper assetMapper;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     /**
      * 查询Asset
@@ -58,6 +62,12 @@ public class AssetServiceImpl implements IAssetService
     public int insertAsset(Asset asset)
     {
         asset.setCreateTime(DateUtils.getNowDate());
+        if(StringUtils.isNotEmpty(asset.getAttachmentUrls())){
+            String[] attachmentUrls = asset.getAttachmentUrls().split(",");
+            String[] originalFileNames = asset.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,asset.getCreateBy());
+            asset.setAttachmentIds(attachmentIds);
+        }
         return assetMapper.insertAsset(asset);
     }
 
@@ -71,6 +81,13 @@ public class AssetServiceImpl implements IAssetService
     public int updateAsset(Asset asset)
     {
         asset.setUpdateTime(DateUtils.getNowDate());
+        if(StringUtils.isNotEmpty(asset.getAttachmentUrls())){
+            String[] attachmentUrls = asset.getAttachmentUrls().split(",");
+            String[] originalFileNames = asset.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    asset.getUpdateBy());
+            asset.setAttachmentIds(attachmentIds);
+        }
         return assetMapper.updateAsset(asset);
     }
 
@@ -105,5 +122,16 @@ public class AssetServiceImpl implements IAssetService
             return UserConstants.NAME_UNIQUE;
         }
         return UserConstants.NAME_NOT_UNIQUE;
+    }
+
+    @Override
+    public int updateAttachment(Asset asset) {
+        if(StringUtils.isNotEmpty(asset.getAttachmentUrls())){
+            String[] attachmentUrls = asset.getAttachmentUrls().split(",");
+            String[] originalFileNames = asset.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,asset.getCreateBy());
+            asset.setAttachmentIds(attachmentIds);
+        }
+        return assetMapper.updateAsset(asset);
     }
 }

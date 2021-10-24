@@ -1,9 +1,15 @@
 package com.liulin.web.controller.moduler;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.StringUtils;
 import com.liulin.system.domain.Asset;
+import com.liulin.system.domain.Attachment;
+import com.liulin.system.domain.Resident;
+import com.liulin.system.service.IAttachmentService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,6 +42,9 @@ public class ServizeController extends BaseController
 
     @Autowired
     private IServizeService servizeService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     @RequiresPermissions("data:service:view")
     @GetMapping()
@@ -102,6 +111,17 @@ public class ServizeController extends BaseController
     {
         Servize servize = servizeService.selectServizeById(serviceId);
         mmap.put("servize", servize);
+
+        String attachmentIds = servize.getAttachmentIds();
+        if(StringUtils.isNotEmpty(attachmentIds)){
+            String[] attachmentIdStrArray = attachmentIds.split(",");
+            int [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+            if(CollectionUtils.isNotEmpty(attachments)){
+                mmap.put("attachments",attachments);
+            }
+        }
         return prefix + "/edit";
     }
 
@@ -138,5 +158,18 @@ public class ServizeController extends BaseController
     {
         return servizeService.checkServiceNameUnique(ShiroUtils.getSysUser().getCompany().getDeptId(),
                 servize.getServiceName(),servize.getServiceId());
+    }
+
+    /**
+     * 删除附件
+     */
+    @Log(title = "删除servize附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("data:service:remove")
+    @PostMapping("/attachment/remove")
+    @ResponseBody
+    public AjaxResult remove(Servize servize)
+    {
+        servize.setCreateBy(ShiroUtils.getLoginName());
+        return toAjax(servizeService.updateAttachment(servize));
     }
 }

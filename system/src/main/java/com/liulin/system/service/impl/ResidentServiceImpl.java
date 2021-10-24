@@ -8,14 +8,11 @@ import com.liulin.common.core.domain.entity.SysUser;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.common.utils.security.Md5Utils;
-import com.liulin.system.domain.BuildingLevel;
-import com.liulin.system.domain.CarPlate;
-import com.liulin.system.domain.CarSpace;
+import com.liulin.system.domain.*;
 import com.liulin.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.liulin.system.mapper.ResidentMapper;
-import com.liulin.system.domain.Resident;
 import com.liulin.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +42,10 @@ public class ResidentServiceImpl implements IResidentService
 
     @Autowired
     private ICarSpaceService carSpaceService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
+
 
 
     /**
@@ -109,6 +110,14 @@ public class ResidentServiceImpl implements IResidentService
         }
 
         resident.setCreateTime(DateUtils.getNowDate());
+
+        if(StringUtils.isNotEmpty(resident.getAttachmentUrls())){
+            String[] attachmentUrls = resident.getAttachmentUrls().split(",");
+            String[] originalFileNames = resident.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,resident.getCreateBy());
+            resident.setAttachmentIds(attachmentIds);
+        }
+
         int i = residentMapper.insertResident(resident);
         if(StringUtils.isNotEmpty(resident.getCarSpaceNumber1())){
             CarSpace carSpace = new CarSpace();
@@ -244,6 +253,14 @@ public class ResidentServiceImpl implements IResidentService
                 carSpaceService.insertCarSpace(carSpace);
             }
         }
+
+        if(StringUtils.isNotEmpty(resident.getAttachmentUrls())){
+            String[] attachmentUrls = resident.getAttachmentUrls().split(",");
+            String[] originalFileNames = resident.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,resident.getCreateBy());
+            resident.setAttachmentIds(attachmentIds);
+        }
+
         return residentMapper.updateResident(resident);
     }
 
@@ -278,5 +295,16 @@ public class ResidentServiceImpl implements IResidentService
             return UserConstants.NAME_UNIQUE;
         }
         return UserConstants.NAME_NOT_UNIQUE;
+    }
+
+    @Override
+    public int updateAttachment(Resident resident) {
+        if(StringUtils.isNotEmpty(resident.getAttachmentUrls())){
+            String[] attachmentUrls = resident.getAttachmentUrls().split(",");
+            String[] originalFileNames = resident.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,resident.getCreateBy());
+            resident.setAttachmentIds(attachmentIds);
+        }
+        return residentMapper.updateResident(resident);
     }
 }

@@ -4,10 +4,13 @@
     <th:block th:include="include :: header('新增supplier')" />
     <th:block th:include="include :: datetimepicker-css" />
     <th:block th:include="include :: select2-css" />
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-supplier-add">
+            <input id="attachmentUrls" name="attachmentUrls" type="hidden"  />
+            <input id="originalFileNames" name="originalFileNames" type="hidden"  />
             <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Company Name：</label>
                 <div class="col-sm-8">
@@ -76,9 +79,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Attachment：</label>
+                <label class="col-sm-3 control-label">attachment</label>
                 <div class="col-sm-8">
-                    <textarea name="attachmentIds" class="form-control"></textarea>
+                    <input id="multipleFile" name="files" type="file" multiple>
                 </div>
             </div>
             <div class="form-group">    
@@ -92,6 +95,35 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: select2-js" />
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <script>
+
+        $(document).ready(function () {
+            // 多图上传
+            $("#multipleFile").fileinput({
+                uploadUrl: ctx + 'common/uploads',
+                uploadAsync: false,
+                maxFileSize:50*1024, //50MB  单位KB
+                language: 'en',
+            }).on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                var rsp = data.response;
+                var fileJson = rsp.data;
+                var attachmentUrls = $("#attachmentUrls").val();
+                var originalFileNames = $("#originalFileNames").val();
+                for (var i in fileJson) {
+                    log.info("return data.url：" + fileJson[i].url)
+                    log.info("reutrn data.name：" + fileJson[i].name)
+                    log.info("reutrn data.originalFileName：" + fileJson[i].originalFileName)
+                    attachmentUrls+=fileJson[i].url+",";
+                    originalFileNames+=fileJson[i].originalFileName+",";
+                }
+                $("#attachmentUrls").val(attachmentUrls);
+                $("#originalFileNames").val(originalFileNames);
+            }).on('fileremoved', function (event, id, index) {
+                $("input[name='" + event.currentTarget.id + "']").val('')
+            })
+        });
+    </script>
     <script th:inline="javascript">
         var prefix = ctx + "data/supplier"
         $("#form-supplier-add").validate({
