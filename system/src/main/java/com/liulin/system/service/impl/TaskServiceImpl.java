@@ -5,8 +5,10 @@ import java.util.List;
 import com.liulin.common.constant.Constants;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Servize;
 import com.liulin.system.domain.TaskAsset;
 import com.liulin.system.domain.TaskQuote;
+import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.ITaskAssetService;
 import com.liulin.system.service.ITaskQuoteService;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,6 +37,9 @@ public class TaskServiceImpl implements ITaskService
 
     @Autowired
     private ITaskQuoteService taskQuoteService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     /**
      * 查询Task
@@ -71,6 +76,13 @@ public class TaskServiceImpl implements ITaskService
     public int insertTask(Task task)
     {
         task.setCreateTime(DateUtils.getNowDate());
+        if(StringUtils.isNotEmpty(task.getAttachmentUrls())){
+            String[] attachmentUrls = task.getAttachmentUrls().split(",");
+            String[] originalFileNames = task.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    task.getCreateBy(),task.getBuildingId(),task.getCompanyId());
+            task.setAttachmentIds(attachmentIds);
+        }
         int result = taskMapper.insertTask(task);
         if(CollectionUtils.isNotEmpty(task.getAssetIds())){
             for (Long assetId : task.getAssetIds()) {
@@ -142,6 +154,13 @@ public class TaskServiceImpl implements ITaskService
                 taskQuoteService.insertTaskQuote(saver);
             }
         }
+        if(StringUtils.isNotEmpty(task.getAttachmentUrls())){
+            String[] attachmentUrls = task.getAttachmentUrls().split(",");
+            String[] originalFileNames = task.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    task.getUpdateBy(), task.getCompanyId(),task.getCompanyId() );
+            task.setAttachmentIds(attachmentIds);
+        }
         return taskMapper.updateTask(task);
     }
 
@@ -167,5 +186,17 @@ public class TaskServiceImpl implements ITaskService
     public int deleteTaskById(Long taskId)
     {
         return taskMapper.deleteTaskById(taskId);
+    }
+
+    @Override
+    public int updateAttachment(Task task) {
+        if(StringUtils.isNotEmpty(task.getAttachmentUrls())){
+            String[] attachmentUrls = task.getAttachmentUrls().split(",");
+            String[] originalFileNames = task.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    task.getCreateBy(), task.getBuildingId(),task.getCompanyId() );
+            task.setAttachmentIds(attachmentIds);
+        }
+        return taskMapper.updateTask(task);
     }
 }

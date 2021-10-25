@@ -98,6 +98,8 @@ public class DefectsController extends BaseController
     public AjaxResult addSave(Defects defects)
     {
         defects.setCreateBy(ShiroUtils.getLoginName());
+        defects.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        defects.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(defectsService.insertDefects(defects));
     }
 
@@ -134,6 +136,8 @@ public class DefectsController extends BaseController
     {
 
         defects.setUpdateBy(ShiroUtils.getLoginName());
+        defects.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        defects.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(defectsService.updateDefects(defects));
     }
 
@@ -159,6 +163,8 @@ public class DefectsController extends BaseController
     public AjaxResult remove(Defects defects)
     {
         defects.setCreateBy(ShiroUtils.getLoginName());
+        defects.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        defects.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(defectsService.updateDefectsAttachment(defects));
     }
 }

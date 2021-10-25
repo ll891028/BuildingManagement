@@ -63,5 +63,6 @@ public interface IAttachmentService
 
     List<Attachment> selectAttachmentByIds(int[] ids);
 
-    String insertAttachments(String[] attachmentUrls, String[] originalFileNames,String createBy);
+    String insertAttachments(String[] attachmentUrls, String[] originalFileNames,String createBy,Long buildingId,
+                             Long companyId);
 }

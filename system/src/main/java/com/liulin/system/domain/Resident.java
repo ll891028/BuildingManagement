@@ -90,6 +90,16 @@ public class Resident extends BaseEntity
 
     private Long buildingId;
 
+    private Long companyId;
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
     public String getCarSpaceNumber1() {
         return carSpaceNumber1;
     }

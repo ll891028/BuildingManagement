@@ -2,6 +2,7 @@ package com.liulin.web.controller.moduler;
 
 import java.util.List;
 
+import com.liulin.common.utils.ShiroUtils;
 import com.liulin.system.domain.ScheduleDetail;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,7 +145,9 @@ public class SafetyCheckAssetController extends BaseController
     @ResponseBody
     public AjaxResult attachRemove(SafetyCheckAsset safetyCheckAsset)
     {
-
+        safetyCheckAsset.setCreateBy(ShiroUtils.getLoginName());
+        safetyCheckAsset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        safetyCheckAsset.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(safetyCheckAssetService.updateAssetAttachment(safetyCheckAsset));
     }
 }

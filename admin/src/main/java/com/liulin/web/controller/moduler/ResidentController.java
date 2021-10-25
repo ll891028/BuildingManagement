@@ -112,6 +112,8 @@ public class ResidentController extends BaseController
     public AjaxResult addSave(Resident resident)
     {
         resident.setCreateBy(ShiroUtils.getLoginName());
+        resident.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        resident.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(residentService.insertResident(resident));
     }
 
@@ -151,7 +153,9 @@ public class ResidentController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Resident resident)
     {
-
+        resident.setUpdateBy(ShiroUtils.getLoginName());
+        resident.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        resident.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(residentService.updateResident(resident));
     }
 
@@ -211,6 +215,8 @@ public class ResidentController extends BaseController
     public AjaxResult remove(Resident resident)
     {
         resident.setCreateBy(ShiroUtils.getLoginName());
+        resident.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        resident.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(residentService.updateAttachment(resident));
     }
 }

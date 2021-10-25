@@ -1,21 +1,14 @@
 package com.liulin.system.service.impl;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.liulin.common.config.LiulinConfig;
 import com.liulin.common.config.ServerConfig;
-import com.liulin.common.constant.Constants;
 import com.liulin.common.utils.ShiroUtils;
-import com.liulin.common.utils.file.FileTypeUtils;
-import com.liulin.common.utils.security.Md5Utils;
-import com.liulin.system.domain.Attachment;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.IBuildingLevelService;
 import com.liulin.system.service.IServizeService;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -232,7 +225,8 @@ public class SysDeptServiceImpl implements ISysDeptService
         dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
         String[] attachmentUrls = dept.getAttachmentUrls().split(",");
         String[] originalFileNames = dept.getOriginalFileNames().split(",");
-        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,dept.getCreateBy());
+        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                dept.getCreateBy(),dept.getDeptId(),info.getDeptId() );
         dept.setAttachmentIds(attachmentIds);
         int result = deptMapper.insertDept(dept);
         if(dept.getIfGroundFloor()!=null && dept.getLevels()!=null && dept.getBasements()!=null){
@@ -270,7 +264,8 @@ public class SysDeptServiceImpl implements ISysDeptService
         if(StringUtils.isNotEmpty(dept.getAttachmentUrls())){
             String[] attachmentUrls = dept.getAttachmentUrls().split(",");
             String[] originalFileNames = dept.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,dept.getUpdateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    dept.getUpdateBy(), dept.getDeptId(),newParentDept.getDeptId() );
             dept.setAttachmentIds(attachmentIds);
         }
 
@@ -288,15 +283,22 @@ public class SysDeptServiceImpl implements ISysDeptService
     public int updateDeptAttachment(SysDept dept) {
         Integer attachmentId = dept.getAttachmentId();
         SysDept sysDept = selectDeptById(dept.getDeptId());
-        String attachmentIds = sysDept.getAttachmentIds();
-        String[] attachmentIdArray = attachmentIds.split(",");
-        String newAttachmentIds="";
-        for (String s : attachmentIdArray) {
-            if(!s.equals(String.valueOf(attachmentId))){
-                newAttachmentIds += s+",";
-            }
+//        String attachmentIds = sysDept.getAttachmentIds();
+//        String[] attachmentIdArray = attachmentIds.split(",");
+//        String newAttachmentIds="";
+//        for (String s : attachmentIdArray) {
+//            if(!s.equals(String.valueOf(attachmentId))){
+//                newAttachmentIds += s+",";
+//            }
+//        }
+        if(StringUtils.isNotEmpty(sysDept.getAttachmentUrls())){
+            String[] attachmentUrls = sysDept.getAttachmentUrls().split(",");
+            String[] originalFileNames = sysDept.getOriginalFileNames().split(",");
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    sysDept.getCreateBy(),sysDept.getDeptId(), sysDept.getParentId());
+            sysDept.setAttachmentIds(attachmentIds);
         }
-        sysDept.setAttachmentIds(newAttachmentIds);
+//        sysDept.setAttachmentIds(newAttachmentIds);
         return deptMapper.updateDept(sysDept);
     }
 

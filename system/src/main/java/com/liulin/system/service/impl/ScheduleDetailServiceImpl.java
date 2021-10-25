@@ -3,7 +3,6 @@ package com.liulin.system.service.impl;
 import java.util.List;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
-import com.liulin.system.domain.Schedule;
 import com.liulin.system.service.IAttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,7 +82,7 @@ public class ScheduleDetailServiceImpl implements IScheduleDetailService
             String[] attachmentUrls = scheduleDetail.getAttachmentUrls().split(",");
             String[] originalFileNames = scheduleDetail.getOriginalFileNames().split(",");
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
-                    scheduleDetail.getUpdateBy());
+                    scheduleDetail.getUpdateBy(),scheduleDetail.getBuildingId() ,scheduleDetail.getCompanyId() );
             scheduleDetail.setAttachmentIds(attachmentIds);
         }
         return scheduleDetailMapper.updateScheduleDetail(scheduleDetail);
@@ -124,7 +123,8 @@ public class ScheduleDetailServiceImpl implements IScheduleDetailService
         if(StringUtils.isNotEmpty(scheduleDetail.getAttachmentUrls())){
             String[] attachmentUrls = scheduleDetail.getAttachmentUrls().split(",");
             String[] originalFileNames = scheduleDetail.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,scheduleDetail.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    scheduleDetail.getCreateBy(),scheduleDetail.getBuildingId() ,scheduleDetail.getCompanyId() );
             scheduleDetail.setAttachmentIds(attachmentIds);
         }
         return scheduleDetailMapper.updateScheduleDetail(scheduleDetail);

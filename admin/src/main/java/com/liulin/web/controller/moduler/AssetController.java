@@ -109,6 +109,8 @@ public class AssetController extends BaseController
     public AjaxResult addSave(Asset asset)
     {
         asset.setCreateBy(ShiroUtils.getLoginName());
+        asset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        asset.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(assetService.insertAsset(asset));
     }
 
@@ -144,6 +146,9 @@ public class AssetController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Asset asset)
     {
+        asset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        asset.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        asset.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(assetService.updateAsset(asset));
     }
 
@@ -181,6 +186,8 @@ public class AssetController extends BaseController
     public AjaxResult remove(Asset asset)
     {
         asset.setCreateBy(ShiroUtils.getLoginName());
+        asset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        asset.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(assetService.updateAttachment(asset));
     }
 }

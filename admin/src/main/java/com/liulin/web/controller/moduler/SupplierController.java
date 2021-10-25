@@ -5,9 +5,7 @@ import java.util.List;
 
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
-import com.liulin.system.domain.Attachment;
-import com.liulin.system.domain.CompanyService;
-import com.liulin.system.domain.Servize;
+import com.liulin.system.domain.*;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.ICompanyServiceService;
 import com.liulin.system.service.IServizeService;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.liulin.common.annotation.Log;
 import com.liulin.common.enums.BusinessType;
-import com.liulin.system.domain.Supplier;
 import com.liulin.system.service.ISupplierService;
 import com.liulin.common.core.controller.BaseController;
 import com.liulin.common.core.domain.AjaxResult;
@@ -167,6 +164,7 @@ public class SupplierController extends BaseController
     public AjaxResult editSave(Supplier supplier)
     {
         supplier.setUpdateBy(ShiroUtils.getLoginName());
+        supplier.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(supplierService.updateSupplier(supplier));
     }
 
@@ -191,5 +189,19 @@ public class SupplierController extends BaseController
     {
         supplier.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return supplierService.checkSupplierNameUnique(supplier);
+    }
+
+    /**
+     * 删除附件
+     */
+    @Log(title = "删除supplier附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("data:supplier:remove")
+    @PostMapping("/attachment/remove")
+    @ResponseBody
+    public AjaxResult remove(Supplier supplier)
+    {
+        supplier.setCreateBy(ShiroUtils.getLoginName());
+        supplier.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        return toAjax(supplierService.updateAttachment(supplier));
     }
 }

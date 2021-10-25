@@ -1,15 +1,11 @@
 package com.liulin.system.service.impl;
 
-import java.io.File;
 import java.util.List;
 
 import com.liulin.common.config.LiulinConfig;
 import com.liulin.common.config.ServerConfig;
-import com.liulin.common.constant.Constants;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
-import com.liulin.common.utils.file.FileUtils;
-import com.liulin.common.utils.security.Md5Utils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,8 +13,6 @@ import com.liulin.system.mapper.AttachmentMapper;
 import com.liulin.system.domain.Attachment;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.common.core.text.Convert;
-
-import javax.naming.directory.Attributes;
 
 /**
  * attachmentService业务层处理
@@ -122,7 +116,7 @@ public class AttachmentServiceImpl implements IAttachmentService
     }
 
     @Override
-    public String insertAttachments(String[] attachmentUrls, String[] originalFileNames,String createBy) {
+    public String insertAttachments(String[] attachmentUrls, String[] originalFileNames, String createBy, Long buildingId, Long companyId) {
         String attachmentIds="";
         if(attachmentUrls!=null && attachmentUrls.length>0){
             for (int i = 0; i < attachmentUrls.length; i++) {
@@ -146,6 +140,8 @@ public class AttachmentServiceImpl implements IAttachmentService
                 saver.setFileName(originalFileNames[i]);
 //                saver.setMd5(md5);
                 saver.setCreateBy(createBy);
+                saver.setBuildingId(buildingId);
+                saver.setCompanyId(companyId);
                 insertAttachment(saver);
                 attachmentIds += saver.getAttachmentId() + ",";
             }

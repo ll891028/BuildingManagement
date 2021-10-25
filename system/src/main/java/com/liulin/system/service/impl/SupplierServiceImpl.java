@@ -2,14 +2,11 @@ package com.liulin.system.service.impl;
 
 import java.util.List;
 
-import com.liulin.common.constant.Constants;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
-import com.liulin.system.domain.Asset;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.ICompanyServiceService;
-import com.liulin.system.service.IServizeService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,7 +76,7 @@ public class SupplierServiceImpl implements ISupplierService
         supplier.setCreateTime(DateUtils.getNowDate());
         String[] attachmentUrls = supplier.getAttachmentUrls().split(",");
         String[] originalFileNames = supplier.getOriginalFileNames().split(",");
-        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,supplier.getCreateBy());
+        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,supplier.getCreateBy(),null ,supplier.getCompanyId());
         supplier.setAttachmentIds(attachmentIds);
         int result = supplierMapper.insertSupplier(supplier);
         if(CollectionUtils.isNotEmpty(supplier.getServiceIds())){
@@ -103,7 +100,7 @@ public class SupplierServiceImpl implements ISupplierService
             String[] attachmentUrls = supplier.getAttachmentUrls().split(",");
             String[] originalFileNames = supplier.getOriginalFileNames().split(",");
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
-                    supplier.getUpdateBy());
+                    supplier.getUpdateBy(),null ,supplier.getCompanyId() );
             supplier.setAttachmentIds(attachmentIds);
         }
         companyServiceService.insertBatch(supplier.getServiceIds(),supplier.getSupplierId());
@@ -148,7 +145,7 @@ public class SupplierServiceImpl implements ISupplierService
         if(StringUtils.isNotEmpty(supplier.getAttachmentUrls())){
             String[] attachmentUrls = supplier.getAttachmentUrls().split(",");
             String[] originalFileNames = supplier.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,supplier.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,supplier.getCreateBy(),null ,supplier.getCompanyId() );
             supplier.setAttachmentIds(attachmentIds);
         }
         return supplierMapper.updateSupplier(supplier);

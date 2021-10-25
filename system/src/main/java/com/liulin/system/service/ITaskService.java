@@ -58,4 +58,6 @@ public interface ITaskService
      * @return 结果
      */
     public int deleteTaskById(Long taskId);
+
+    public int updateAttachment(Task task);
 }

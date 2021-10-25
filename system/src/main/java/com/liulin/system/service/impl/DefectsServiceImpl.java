@@ -62,7 +62,7 @@ public class DefectsServiceImpl implements IDefectsService
         defects.setCreateTime(DateUtils.getNowDate());
         String[] attachmentUrls = defects.getAttachmentUrls().split(",");
         String[] originalFileNames = defects.getOriginalFileNames().split(",");
-        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,defects.getCreateBy());
+        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,defects.getCreateBy(),defects.getBuildingId() ,defects.getCompanyId() );
         defects.setAttachmentIds(attachmentIds);
         return defectsMapper.insertDefects(defects);
     }
@@ -81,7 +81,7 @@ public class DefectsServiceImpl implements IDefectsService
             String[] attachmentUrls = defects.getAttachmentUrls().split(",");
             String[] originalFileNames = defects.getOriginalFileNames().split(",");
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
-                    defects.getUpdateBy());
+                    defects.getUpdateBy(),defects.getBuildingId() ,defects.getCompanyId());
             defects.setAttachmentIds(attachmentIds);
         }
 
@@ -117,7 +117,8 @@ public class DefectsServiceImpl implements IDefectsService
         if(StringUtils.isNotEmpty(defects.getAttachmentUrls())){
             String[] attachmentUrls = defects.getAttachmentUrls().split(",");
             String[] originalFileNames = defects.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,defects.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    defects.getCreateBy(),defects.getBuildingId() ,defects.getCompanyId() );
             defects.setAttachmentIds(attachmentIds);
         }
         return defectsMapper.updateDefects(defects);

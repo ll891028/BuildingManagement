@@ -40,6 +40,26 @@ public class SafetyCheckAsset extends BaseEntity
 
     private Integer inGoodCondition;
 
+    private Long buildingId;
+
+    private Long companyId;
+
+    public Long getBuildingId() {
+        return buildingId;
+    }
+
+    public void setBuildingId(Long buildingId) {
+        this.buildingId = buildingId;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
     public Integer getInGoodCondition() {
         return inGoodCondition;
     }

@@ -1,11 +1,14 @@
 package com.liulin.web.controller.moduler;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.StringUtils;
 import com.liulin.system.domain.*;
 import com.liulin.system.service.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,6 +57,9 @@ public class TaskController extends BaseController
 
     @Autowired
     private IBuildingLevelService buildingLevelService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     @RequiresPermissions("event:task:view")
     @GetMapping(value = {"/{taskType}",""})
@@ -121,6 +127,7 @@ public class TaskController extends BaseController
     public AjaxResult addSave(Task task)
     {
         task.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        task.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         task.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(taskService.insertTask(task));
     }
@@ -148,6 +155,17 @@ public class TaskController extends BaseController
         quoteQuery.setTaskId(taskId);
         List<TaskQuote> taskQuotes = taskQuoteService.selectTaskQuoteList(quoteQuery);
         mmap.put("taskQuotes",taskQuotes);
+
+        String attachmentIds = task.getAttachmentIds();
+        if(StringUtils.isNotEmpty(attachmentIds)){
+            String[] attachmentIdStrArray = attachmentIds.split(",");
+            int [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+            if(CollectionUtils.isNotEmpty(attachments)){
+                mmap.put("attachments",attachments);
+            }
+        }
         return prefix + "/edit";
     }
 
@@ -160,6 +178,8 @@ public class TaskController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Task task)
     {
+        task.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        task.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(taskService.updateTask(task));
     }
 
@@ -357,6 +377,21 @@ public class TaskController extends BaseController
         List<TaskQuote> taskQuotes = taskQuoteService.selectTaskQuoteList(quoteQuery);
         mmap.put("taskQuotes",taskQuotes);
         return prefix + "/detail";
+    }
+
+    /**
+     * 删除附件
+     */
+    @Log(title = "删除task附件", businessType = BusinessType.DELETE)
+    @RequiresPermissions("event:task:remove")
+    @PostMapping("/attachment/remove")
+    @ResponseBody
+    public AjaxResult remove(Task task)
+    {
+        task.setCreateBy(ShiroUtils.getLoginName());
+        task.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        task.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        return toAjax(taskService.updateAttachment(task));
     }
 
 }

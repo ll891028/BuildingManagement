@@ -65,7 +65,8 @@ public class AssetServiceImpl implements IAssetService
         if(StringUtils.isNotEmpty(asset.getAttachmentUrls())){
             String[] attachmentUrls = asset.getAttachmentUrls().split(",");
             String[] originalFileNames = asset.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,asset.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    asset.getCreateBy(),asset.getBuildingId(), asset.getCompanyId());
             asset.setAttachmentIds(attachmentIds);
         }
         return assetMapper.insertAsset(asset);
@@ -85,7 +86,7 @@ public class AssetServiceImpl implements IAssetService
             String[] attachmentUrls = asset.getAttachmentUrls().split(",");
             String[] originalFileNames = asset.getOriginalFileNames().split(",");
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
-                    asset.getUpdateBy());
+                    asset.getUpdateBy(), asset.getBuildingId(),asset.getCompanyId() );
             asset.setAttachmentIds(attachmentIds);
         }
         return assetMapper.updateAsset(asset);
@@ -129,7 +130,8 @@ public class AssetServiceImpl implements IAssetService
         if(StringUtils.isNotEmpty(asset.getAttachmentUrls())){
             String[] attachmentUrls = asset.getAttachmentUrls().split(",");
             String[] originalFileNames = asset.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,asset.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    asset.getCreateBy(),asset.getBuildingId(), asset.getCompanyId());
             asset.setAttachmentIds(attachmentIds);
         }
         return assetMapper.updateAsset(asset);

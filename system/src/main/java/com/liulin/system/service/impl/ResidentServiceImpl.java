@@ -114,7 +114,7 @@ public class ResidentServiceImpl implements IResidentService
         if(StringUtils.isNotEmpty(resident.getAttachmentUrls())){
             String[] attachmentUrls = resident.getAttachmentUrls().split(",");
             String[] originalFileNames = resident.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,resident.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,resident.getCreateBy(),resident.getBuildingId() ,resident.getCompanyId() );
             resident.setAttachmentIds(attachmentIds);
         }
 
@@ -257,7 +257,7 @@ public class ResidentServiceImpl implements IResidentService
         if(StringUtils.isNotEmpty(resident.getAttachmentUrls())){
             String[] attachmentUrls = resident.getAttachmentUrls().split(",");
             String[] originalFileNames = resident.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,resident.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,resident.getCreateBy(),resident.getBuildingId() ,resident.getCompanyId());
             resident.setAttachmentIds(attachmentIds);
         }
 
@@ -302,7 +302,8 @@ public class ResidentServiceImpl implements IResidentService
         if(StringUtils.isNotEmpty(resident.getAttachmentUrls())){
             String[] attachmentUrls = resident.getAttachmentUrls().split(",");
             String[] originalFileNames = resident.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,resident.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    resident.getCreateBy(),resident.getBuildingId() ,resident.getCompanyId() );
             resident.setAttachmentIds(attachmentIds);
         }
         return residentMapper.updateResident(resident);

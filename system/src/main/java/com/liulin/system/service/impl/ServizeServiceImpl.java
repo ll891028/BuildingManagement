@@ -5,7 +5,6 @@ import java.util.List;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
-import com.liulin.system.domain.Resident;
 import com.liulin.system.service.IAttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,14 +70,15 @@ public class ServizeServiceImpl implements IServizeService
         if(StringUtils.isNotEmpty(servize.getAttachmentUrls())){
             String[] attachmentUrls = servize.getAttachmentUrls().split(",");
             String[] originalFileNames = servize.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,servize.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    servize.getCreateBy(),null,servize.getCompanyId());
             servize.setAttachmentIds(attachmentIds);
         }
         return servizeMapper.insertServize(servize);
     }
 
     /**
-     * 修改service
+     * 修改service¬
      * 
      * @param servize service
      * @return 结果
@@ -90,7 +90,8 @@ public class ServizeServiceImpl implements IServizeService
         if(StringUtils.isNotEmpty(servize.getAttachmentUrls())){
             String[] attachmentUrls = servize.getAttachmentUrls().split(",");
             String[] originalFileNames = servize.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,servize.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,servize.getUpdateBy(),
+                    null,servize.getCompanyId() );
             servize.setAttachmentIds(attachmentIds);
         }
         return servizeMapper.updateServize(servize);
@@ -147,7 +148,7 @@ public class ServizeServiceImpl implements IServizeService
         if(StringUtils.isNotEmpty(servize.getAttachmentUrls())){
             String[] attachmentUrls = servize.getAttachmentUrls().split(",");
             String[] originalFileNames = servize.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,servize.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,servize.getCreateBy(), null,servize.getCompanyId() );
             servize.setAttachmentIds(attachmentIds);
         }
         return servizeMapper.updateServize(servize);

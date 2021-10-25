@@ -59,7 +59,17 @@ public class Asset extends BaseEntity
 
     private Long buildingId;
 
+    private Long companyId;
+
     private String levelName;
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
 
     public String getLevelName() {
         return levelName;

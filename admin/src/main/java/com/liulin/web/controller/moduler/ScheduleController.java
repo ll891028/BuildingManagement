@@ -150,6 +150,7 @@ public class ScheduleController extends BaseController
     public AjaxResult addSave(Schedule schedule)
     {
         schedule.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        schedule.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         schedule.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(scheduleService.insertSchedule(schedule));
     }
@@ -202,6 +203,8 @@ public class ScheduleController extends BaseController
     public AjaxResult editSave(Schedule schedule)
     {
         schedule.setUpdateBy(ShiroUtils.getLoginName());
+        schedule.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        schedule.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(scheduleService.updateSchedule(schedule));
     }
 
@@ -243,7 +246,7 @@ public class ScheduleController extends BaseController
      * 修改保存QuorePrice
      */
     @RequiresPermissions("event:schedule:edit")
-    @Log(title = "Task", businessType = BusinessType.UPDATE)
+    @Log(title = "Schedule", businessType = BusinessType.UPDATE)
     @PostMapping("/saveQuotePrice")
     @ResponseBody
     public AjaxResult saveQuotePrice(ScheduleQuote scheduleQuote)
@@ -401,6 +404,8 @@ public class ScheduleController extends BaseController
     public AjaxResult editDetailSave(ScheduleDetail scheduleDetail)
     {
         scheduleDetail.setUpdateBy(ShiroUtils.getLoginName());
+        scheduleDetail.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        scheduleDetail.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(scheduleDetailService.updateScheduleDetail(scheduleDetail));
     }
 
@@ -413,7 +418,9 @@ public class ScheduleController extends BaseController
     @ResponseBody
     public AjaxResult remove(Schedule schedule)
     {
-
+        schedule.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        schedule.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        schedule.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(scheduleService.updateScheduleAttachment(schedule));
     }
 
@@ -426,7 +433,9 @@ public class ScheduleController extends BaseController
     @ResponseBody
     public AjaxResult scheduleDetailRemove(ScheduleDetail scheduleDetail)
     {
-
+        scheduleDetail.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        scheduleDetail.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        scheduleDetail.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(scheduleDetailService.updateScheduleAttachment(scheduleDetail));
     }
 

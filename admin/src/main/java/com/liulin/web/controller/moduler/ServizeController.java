@@ -134,6 +134,8 @@ public class ServizeController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Servize servize)
     {
+        servize.setUpdateBy(ShiroUtils.getLoginName());
+        servize.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(servizeService.updateServize(servize));
     }
 
@@ -170,6 +172,7 @@ public class ServizeController extends BaseController
     public AjaxResult remove(Servize servize)
     {
         servize.setCreateBy(ShiroUtils.getLoginName());
+        servize.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(servizeService.updateAttachment(servize));
     }
 }

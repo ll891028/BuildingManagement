@@ -38,6 +38,26 @@ public class Attachment extends BaseEntity
 
     private int[] attachmentIds;
 
+    private Long buildingId;
+
+    private Long companyId;
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    public Long getBuildingId() {
+        return buildingId;
+    }
+
+    public void setBuildingId(Long buildingId) {
+        this.buildingId = buildingId;
+    }
+
     public int[] getAttachmentIds() {
         return attachmentIds;
     }

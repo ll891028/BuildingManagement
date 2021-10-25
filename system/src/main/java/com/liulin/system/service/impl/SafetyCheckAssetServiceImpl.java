@@ -108,7 +108,8 @@ public class SafetyCheckAssetServiceImpl implements ISafetyCheckAssetService
         if(StringUtils.isNotEmpty(safetyCheckAsset.getAttachmentUrls())){
             String[] attachmentUrls = safetyCheckAsset.getAttachmentUrls().split(",");
             String[] originalFileNames = safetyCheckAsset.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,safetyCheckAsset.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    safetyCheckAsset.getCreateBy(),safetyCheckAsset.getBuildingId() ,safetyCheckAsset.getCompanyId() );
             safetyCheckAsset.setAttachmentIds(attachmentIds);
         }
         return safetyCheckAssetMapper.updateSafetyCheckAsset(safetyCheckAsset);

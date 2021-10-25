@@ -82,7 +82,8 @@ public class ScheduleServiceImpl implements IScheduleService
 
         String[] attachmentUrls = schedule.getAttachmentUrls().split(",");
         String[] originalFileNames = schedule.getOriginalFileNames().split(",");
-        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,schedule.getCreateBy());
+        String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                schedule.getCreateBy(),schedule.getBuildingId() ,schedule.getCompanyId() );
         schedule.setAttachmentIds(attachmentIds);
         int result = scheduleMapper.insertSchedule(schedule);
         if(CollectionUtils.isNotEmpty(schedule.getAssetIds())){
@@ -129,7 +130,7 @@ public class ScheduleServiceImpl implements IScheduleService
             String[] attachmentUrls = schedule.getAttachmentUrls().split(",");
             String[] originalFileNames = schedule.getOriginalFileNames().split(",");
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
-                    schedule.getUpdateBy());
+                    schedule.getUpdateBy(),schedule.getBuildingId() ,schedule.getCompanyId() );
             schedule.setAttachmentIds(attachmentIds);
         }
 
@@ -184,7 +185,7 @@ public class ScheduleServiceImpl implements IScheduleService
         if(StringUtils.isNotEmpty(schedule.getAttachmentUrls())){
             String[] attachmentUrls = schedule.getAttachmentUrls().split(",");
             String[] originalFileNames = schedule.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,schedule.getCreateBy());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,schedule.getCreateBy(),schedule.getBuildingId() ,schedule.getCompanyId());
             schedule.setAttachmentIds(attachmentIds);
         }
         return scheduleMapper.updateSchedule(schedule);
