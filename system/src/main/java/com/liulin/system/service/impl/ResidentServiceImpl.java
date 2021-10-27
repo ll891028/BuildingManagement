@@ -257,7 +257,8 @@ public class ResidentServiceImpl implements IResidentService
         if(StringUtils.isNotEmpty(resident.getAttachmentUrls())){
             String[] attachmentUrls = resident.getAttachmentUrls().split(",");
             String[] originalFileNames = resident.getOriginalFileNames().split(",");
-            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,resident.getCreateBy(),resident.getBuildingId() ,resident.getCompanyId());
+            String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
+                    resident.getUpdateBy(),resident.getBuildingId() ,resident.getCompanyId());
             resident.setAttachmentIds(attachmentIds);
         }
 

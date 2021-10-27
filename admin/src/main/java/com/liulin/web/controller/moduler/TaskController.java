@@ -178,6 +178,7 @@ public class TaskController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Task task)
     {
+        task.setUpdateBy(ShiroUtils.getLoginName());
         task.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         task.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         return toAjax(taskService.updateTask(task));
