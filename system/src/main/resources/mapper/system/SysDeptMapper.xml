@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liulin.system.mapper.SysDeptMapper">
 
-	<resultMap type="SysDept" id="SysDeptResult">
+	<resultMap type="com.liulin.common.core.domain.entity.SysDept" id="SysDeptResult">
 		<id     property="deptId"     column="dept_id"     />
 		<result property="parentId"   column="parent_id"   />
 		<result property="ancestors"  column="ancestors"   />
@@ -29,12 +29,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="levels" column="levels" />
 		<result property="ifGroundFloor" column="if_ground_floor" />
 		<result property="basements" column="basements" />
+		<result property="multiBuilding" column="multi_building" />
 	</resultMap>
 	
 	<sql id="selectDeptVo">
         select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status,
 			   d.del_flag, d.create_by, d.create_time,d.description,d.spn,d.address,d.suburb,d.type,d.attachment_ids,
-				levels,if_ground_floor,basements
+				levels,if_ground_floor,basements,multi_building
         from sys_dept d
     </sql>
     
@@ -88,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectDeptById" parameterType="Long" resultMap="SysDeptResult">
 		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email,
 			   d.status,d.type,d.description,d.spn,d.address,d.suburb,d.attachment_ids,
-			   d.levels,d.if_ground_floor,d.basements,
+			   d.levels,d.if_ground_floor,d.basements,d.multi_building,
 			(select dept_name from sys_dept where dept_id = d.parent_id) parent_name
 		from sys_dept d
 		where d.dept_id = #{deptId}
@@ -105,7 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectChildrenDeptByIdAndType" parameterType="SysDept" resultMap="SysDeptResult">
 		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader,
 		d.phone, d.email, d.status, d.del_flag, d.create_by, d.create_time,d.description,d.spn,d.address,d.suburb,d.type,d.attachment_ids,
-		levels,if_ground_floor,basements from sys_dept d where d.del_flag = '0'
+		levels,if_ground_floor,basements,multi_building from sys_dept d where d.del_flag = '0'
 		AND (d.dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} or find_in_set( #{deptId} , ancestors ) ))
 		and d.type in
 		<foreach collection="typeList" item="item" open="(" close=")" separator=",">
@@ -135,6 +136,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="levels != null">levels,</if>
  			<if test="ifGroundFloor != null">if_ground_floor,</if>
  			<if test="basements != null">basements,</if>
+ 			<if test="multiBuilding != null">multi_building,</if>
  			create_time
  		)values(
  			<if test="deptId != null and deptId != 0">#{deptId},</if>
@@ -156,6 +158,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="levels != null">#{levels},</if>
 			<if test="ifGroundFloor != null">#{ifGroundFloor},</if>
 			<if test="basements != null">#{basements},</if>
+			<if test="multiBuilding != null">#{multiBuilding},</if>
  			sysdate()
  		)
 	</insert>
@@ -180,6 +183,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="levels != null">levels = #{levels},</if>
 			<if test="ifGroundFloor != null">if_ground_floor = #{ifGroundFloor},</if>
 			<if test="basements != null">basements = #{basements},</if>
+			<if test="multiBuilding != null">multi_building = #{multiBuilding},</if>
  			update_time = sysdate()
  		</set>
  		where dept_id = #{deptId}

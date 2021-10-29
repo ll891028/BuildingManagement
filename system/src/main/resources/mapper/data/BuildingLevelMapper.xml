@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liulin.system.mapper.BuildingLevelMapper">
     
-    <resultMap type="BuildingLevel" id="BuildingLevelResult">
+    <resultMap type="com.liulin.system.domain.BuildingLevel" id="BuildingLevelResult">
         <result property="levelId"    column="level_id"    />
         <result property="buildingId"    column="building_id"    />
         <result property="levelName"    column="level_name"    />
@@ -13,10 +13,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="areaName"    column="area_name"    />
     </resultMap>
 
     <sql id="selectBuildingLevelVo">
-        select level_id, building_id, level_name, seq, create_by, create_time, update_by, update_time from building_level
+        select level_id, building_id, level_name, seq, create_by, create_time, update_by, update_time,area_name from building_level
     </sql>
 
     <select id="selectBuildingLevelList" parameterType="BuildingLevel" resultMap="BuildingLevelResult">
@@ -44,6 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="areaName != null and areaName !='' ">area_name,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="buildingId != null">#{buildingId},</if>
@@ -53,6 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="areaName != null and areaName !='' ">#{areaName},</if>
          </trim>
     </insert>
 
@@ -66,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="areaName != null and areaName !='' ">area_name = #{areaName},</if>
         </trim>
         where level_id = #{levelId}
     </update>

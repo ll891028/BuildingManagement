@@ -1,9 +1,12 @@
 package com.liulin.common.core.domain.entity;
 
-import javax.validation.constraints.*;
+import com.liulin.common.core.domain.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import com.liulin.common.core.domain.BaseEntity;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -85,6 +88,16 @@ public class SysDept extends BaseEntity
     private Integer basements;
 
     private List<Long> typeList;
+
+    private Integer multiBuilding;
+
+    public Integer getMultiBuilding() {
+        return multiBuilding;
+    }
+
+    public void setMultiBuilding(Integer multiBuilding) {
+        this.multiBuilding = multiBuilding;
+    }
 
     public List<Long> getTypeList() {
         return typeList;

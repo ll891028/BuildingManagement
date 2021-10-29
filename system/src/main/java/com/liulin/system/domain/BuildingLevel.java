@@ -46,7 +46,17 @@ public class BuildingLevel extends BaseEntity
     @Excel(name = "order")
     private Long seq;
 
-    public void setLevelId(Long levelId) 
+    private String areaName;
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
+
+    public void setLevelId(Long levelId)
     {
         this.levelId = levelId;
     }
