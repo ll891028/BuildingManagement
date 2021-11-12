@@ -1,12 +1,5 @@
 package com.liulin.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.liulin.common.annotation.DataScope;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.core.domain.entity.SysRole;
@@ -16,15 +9,21 @@ import com.liulin.common.exception.BusinessException;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.common.utils.security.Md5Utils;
 import com.liulin.system.domain.SysPost;
+import com.liulin.system.domain.SysUserDept;
 import com.liulin.system.domain.SysUserPost;
 import com.liulin.system.domain.SysUserRole;
-import com.liulin.system.mapper.SysPostMapper;
-import com.liulin.system.mapper.SysRoleMapper;
-import com.liulin.system.mapper.SysUserMapper;
-import com.liulin.system.mapper.SysUserPostMapper;
-import com.liulin.system.mapper.SysUserRoleMapper;
+import com.liulin.system.mapper.*;
 import com.liulin.system.service.ISysConfigService;
 import com.liulin.system.service.ISysUserService;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户 业务层处理
@@ -53,6 +52,9 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private SysUserDeptMapper sysUserDeptMapper;
 
     /**
      * 根据条件分页查询用户列表
@@ -243,6 +245,17 @@ public class SysUserServiceImpl implements ISysUserService
         userPostMapper.deleteUserPostByUserId(userId);
         // 新增用户与岗位管理
         insertUserPost(user);
+        sysUserDeptMapper.deleteSysUserDeptByUserId(user.getUserId());
+        if(CollectionUtils.isNotEmpty(user.getDeptIds())){
+            for (Long deptId : user.getDeptIds()) {
+                if(deptId!=null){
+                    SysUserDept sysUserDept = new SysUserDept();
+                    sysUserDept.setUserId(user.getUserId());
+                    sysUserDept.setDeptId(deptId);
+                    sysUserDeptMapper.insertSysUserDept(sysUserDept);
+                }
+            }
+        }
         return userMapper.updateUser(user);
     }
 

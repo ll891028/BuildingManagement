@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.SysUserDeptMapper">
+    
+    <resultMap type="com.liulin.system.domain.SysUserDept" id="SysUserDeptResult">
+        <result property="userDeptId"    column="user_dept_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_Name"    />
+    </resultMap>
+
+    <sql id="selectSysUserDeptVo">
+        select user_dept_id, user_id, dept_id from sys_user_dept
+    </sql>
+
+    <select id="selectSysUserDeptList" parameterType="com.liulin.system.domain.SysUserDept" resultMap="SysUserDeptResult">
+        select t1.user_dept_id, t1.user_id, t1.dept_id,t2.dept_name from sys_user_dept t1 left join sys_dept t2 on t1.dept_id = t2.dept_id
+        <where>  
+            <if test="userId != null "> and t1.user_id = #{userId}</if>
+            <if test="deptId != null "> and t1.dept_id = #{deptId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysUserDeptById" parameterType="Long" resultMap="SysUserDeptResult">
+        <include refid="selectSysUserDeptVo"/>
+        where user_dept_id = #{userDeptId}
+    </select>
+        
+    <insert id="insertSysUserDept" parameterType="com.liulin.system.domain.SysUserDept" useGeneratedKeys="true" keyProperty="userDeptId">
+        insert into sys_user_dept
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysUserDept" parameterType="com.liulin.system.domain.SysUserDept">
+        update sys_user_dept
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where user_dept_id = #{userDeptId}
+    </update>
+
+    <delete id="deleteSysUserDeptById" parameterType="Long">
+        delete from sys_user_dept where user_dept_id = #{userDeptId}
+    </delete>
+    <delete id="deleteSysUserDeptByUserId" parameterType="Long">
+        delete from sys_user_dept where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteSysUserDeptByIds" parameterType="String">
+        delete from sys_user_dept where user_dept_id in 
+        <foreach item="userDeptId" collection="array" open="(" separator="," close=")">
+            #{userDeptId}
+        </foreach>
+    </delete>
+
+</mapper>

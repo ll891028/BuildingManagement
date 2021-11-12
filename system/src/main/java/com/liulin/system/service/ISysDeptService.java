@@ -1,9 +1,10 @@
 package com.liulin.system.service;
 
-import java.util.List;
 import com.liulin.common.core.domain.Ztree;
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.core.domain.entity.SysRole;
+
+import java.util.List;
 
 /**
  * 部门管理 服务层
@@ -93,6 +94,8 @@ public interface ISysDeptService
      * @return 部门信息
      */
     public SysDept selectDeptById(Long deptId);
+
+    public List<SysDept> selectDeptByIds(String[] deptIds);
 
     /**
      * 根据ID查询所有子部门（正常状态）

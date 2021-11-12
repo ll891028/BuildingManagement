@@ -1366,6 +1366,12 @@ var table = {
                     }
                     var node = tree.getNodesByParam("id", treeId, null)[0];
                     $.tree.selectByIdName(treeId, node);
+                    if($.common.isNotEmpty(options.deptIds)){
+                        for (let i = 0; i < options.deptIds.length; i++) {
+                            var node = tree.getNodesByParam("id", options.deptIds[i], null)[0];
+                            $.tree.checkById(options.deptIds[i], node);
+                        }
+                    }
                     // 回调tree方法
                     if(typeof(options.callBack) === "function"){
                         options.callBack(tree);
@@ -1396,6 +1402,12 @@ var table = {
         		if ($.common.isNotEmpty(treeId) && node && treeId == node.id) {
         			$._tree.selectNode(node, true);
         		}
+            },
+            // 根据Id和Name选中指定节点
+            checkById: function(treeId, node) {
+                if ($.common.isNotEmpty(treeId) && node && treeId == node.id) {
+                    $._tree.checkNode(node, true);
+                }
             },
             // 显示所有节点
             showAllNode: function(nodes) {

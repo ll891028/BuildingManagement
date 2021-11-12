@@ -1,8 +1,9 @@
 package com.liulin.system.mapper;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 import com.liulin.common.core.domain.entity.SysDept;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 部门管理 数据层
@@ -74,6 +75,8 @@ public interface SysDeptMapper
      * @return 部门信息
      */
     public SysDept selectDeptById(Long deptId);
+
+    public List<SysDept> selectDeptByIds(@Param("deptIds") String[] deptIds);
 
     /**
      * 校验部门名称是否唯一

@@ -1,26 +1,5 @@
 package com.liulin.web.controller.system;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.liulin.common.core.domain.entity.SysUser;
-import com.liulin.common.core.redis.RedisCache;
-import com.liulin.common.utils.CacheUtils;
-import com.liulin.system.domain.Attachment;
-import com.liulin.system.service.IAttachmentService;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import com.liulin.common.annotation.Log;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.core.controller.BaseController;
@@ -28,10 +7,26 @@ import com.liulin.common.core.domain.AjaxResult;
 import com.liulin.common.core.domain.Ztree;
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.core.domain.entity.SysRole;
+import com.liulin.common.core.domain.entity.SysUser;
+import com.liulin.common.core.redis.RedisCache;
 import com.liulin.common.enums.BusinessType;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Attachment;
+import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.ISysDeptService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 部门信息
@@ -52,7 +47,6 @@ public class SysDeptController extends BaseController
 
     @Autowired
     private RedisCache redisCache;
-
 
     @RequiresPermissions("system:dept:view")
     @GetMapping()
@@ -196,6 +190,19 @@ public class SysDeptController extends BaseController
         return deptService.checkDeptNameUnique(dept);
     }
 
+    /**
+     * 选择多选部门树
+     *
+     * @param deptIds 部门ID
+     */
+    @GetMapping(value = { "/selectMultiDeptTree/{deptIds}"})
+    public String selectMultiDeptTree(@PathVariable("deptIds") String deptIds, ModelMap mmap)
+    {
+        String[] deptIdArray = deptIds.split(",");
+        List<SysDept> sysDepts = deptService.selectDeptByIds(deptIdArray);
+        mmap.put("depts",sysDepts);
+        return prefix + "/multiTree";
+    }
     /**
      * 选择部门树
      * 

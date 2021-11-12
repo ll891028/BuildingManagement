@@ -95,6 +95,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where d.dept_id = #{deptId}
 	</select>
 
+	<select id="selectDeptByIds" resultMap="SysDeptResult">
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email,
+			   d.status,d.type,d.description,d.spn,d.address,d.suburb,d.attachment_ids,
+			   d.levels,d.if_ground_floor,d.basements,d.multi_building,
+			(select dept_name from sys_dept where dept_id = d.parent_id) parent_name
+		from sys_dept d
+		where d.dept_id in
+		<foreach collection="deptIds" open="(" close=")" item="deptId" separator=",">
+			#{deptId}
+		</foreach>
+	</select>
+
 	<select id="selectChildrenDeptById" parameterType="Long" resultMap="SysDeptResult">
 		select * from sys_dept where find_in_set(#{deptId}, ancestors)
 	</select>

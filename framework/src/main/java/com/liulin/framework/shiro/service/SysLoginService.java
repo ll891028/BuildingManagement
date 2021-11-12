@@ -3,7 +3,9 @@ package com.liulin.framework.shiro.service;
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.core.redis.RedisCache;
 import com.liulin.common.utils.*;
+import com.liulin.system.domain.SysUserDept;
 import com.liulin.system.service.ISysDeptService;
+import com.liulin.system.service.ISysUserDeptService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,7 @@ import com.liulin.system.service.ISysUserService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 登录校验方法
@@ -45,6 +48,9 @@ public class SysLoginService
 
     @Autowired
     private ISysDeptService sysDeptService;
+
+    @Autowired
+    private ISysUserDeptService sysUserDeptService;
 
     /**
      * 登录
@@ -81,20 +87,20 @@ public class SysLoginService
 
         // 查询用户信息
         SysUser user = userService.selectUserByLoginName(username);
-
+        List<SysUserDept> sysUserDepts = sysUserDeptService.selectSysUserDeptByUserId(user.getUserId());
         //查询用户buildings信息
         SysDept query = new SysDept();
         query.setTypeList(new ArrayList<>(Arrays.asList(2L,3L,4L,5L)));
         List<SysDept> buildings = null;
         if(user.isAdmin()) {
             buildings = sysDeptService.selectDeptList(query);
-        }else if(user.isDirector()){
-            //如果是经理
-            query.setDeptId(user.getDeptId());
-            buildings = sysDeptService.selectChildrenDeptByIdAndType(query);
-        }else{
-            query.setDeptId(user.getDeptId());
-            buildings = sysDeptService.selectChildrenDeptByIdAndType(query);
+        } else{
+            String[] deptIds = new String[sysUserDepts.size()];
+            for (int i = 0; i < sysUserDepts.size(); i++) {
+
+                deptIds[i] =String.valueOf(sysUserDepts.get(i).getDeptId());
+            }
+            buildings = sysDeptService.selectDeptByIds(deptIds);
 
         }
 
@@ -196,5 +202,15 @@ public class SysLoginService
         user.setLoginIp(ShiroUtils.getIp());
         user.setLoginDate(DateUtils.getNowDate());
         userService.updateUserInfo(user);
+    }
+
+    public static void main(String[] args) {
+        SysUser user = new SysUser();
+        SysDept sysDept = new SysDept();
+        sysDept.setDeptId(20L);
+        user.setBuilding(sysDept);
+        Optional.ofNullable(user).map(u -> u.getBuilding()).map(b->b.getDeptId()).ifPresent(deptId->
+                        System.out.println(deptId)
+                );
     }
 }

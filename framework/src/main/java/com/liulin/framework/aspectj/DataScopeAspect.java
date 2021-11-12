@@ -1,6 +1,11 @@
 package com.liulin.framework.aspectj;
 
-import java.lang.reflect.Method;
+import com.liulin.common.annotation.DataScope;
+import com.liulin.common.core.domain.BaseEntity;
+import com.liulin.common.core.domain.entity.SysRole;
+import com.liulin.common.core.domain.entity.SysUser;
+import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;
@@ -8,12 +13,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import com.liulin.common.annotation.DataScope;
-import com.liulin.common.core.domain.BaseEntity;
-import com.liulin.common.core.domain.entity.SysRole;
-import com.liulin.common.core.domain.entity.SysUser;
-import com.liulin.common.utils.ShiroUtils;
-import com.liulin.common.utils.StringUtils;
+
+import java.lang.reflect.Method;
 
 /**
  * 数据过滤处理
@@ -111,8 +112,8 @@ public class DataScopeAspect
             else if (DATA_SCOPE_CUSTOM.equals(dataScope))
             {
                 sqlString.append(StringUtils.format(
-                        " OR {}.dept_id IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = {} ) ", deptAlias,
-                        role.getRoleId()));
+                        " OR {}.dept_id IN ( SELECT dept_id FROM sys_user_dept WHERE user_id = {} ) ", deptAlias,
+                        user.getUserId()));
             }
             else if (DATA_SCOPE_DEPT.equals(dataScope))
             {

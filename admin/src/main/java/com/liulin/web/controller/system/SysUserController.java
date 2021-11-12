@@ -1,18 +1,5 @@
 package com.liulin.web.controller.system;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import com.liulin.common.annotation.Log;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.core.controller.BaseController;
@@ -25,9 +12,21 @@ import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.common.utils.poi.ExcelUtil;
 import com.liulin.framework.shiro.service.SysPasswordService;
+import com.liulin.system.domain.SysUserDept;
 import com.liulin.system.service.ISysPostService;
 import com.liulin.system.service.ISysRoleService;
+import com.liulin.system.service.ISysUserDeptService;
 import com.liulin.system.service.ISysUserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户信息
@@ -51,6 +50,9 @@ public class SysUserController extends BaseController
 
     @Autowired
     private SysPasswordService passwordService;
+
+    @Autowired
+    private ISysUserDeptService sysUserDeptService;
 
     @RequiresPermissions("system:user:view")
     @GetMapping()
@@ -152,6 +154,15 @@ public class SysUserController extends BaseController
         mmap.put("user", userService.selectUserById(userId));
         mmap.put("roles", SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
         mmap.put("posts", postService.selectPostsByUserId(userId));
+        List<SysUserDept> sysUserDepts = sysUserDeptService.selectSysUserDeptByUserId(userId);
+        String deptIds="";
+        String deptNames="";
+        for (SysUserDept sysUserDept : sysUserDepts) {
+            deptIds += sysUserDept.getDeptId()+",";
+            deptNames += sysUserDept.getDeptName()+",";
+        }
+        mmap.put("deptIds", deptIds);
+        mmap.put("deptNames", deptNames);
         return prefix + "/edit";
     }
 

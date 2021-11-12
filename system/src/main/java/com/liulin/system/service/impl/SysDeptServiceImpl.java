@@ -1,28 +1,28 @@
 package com.liulin.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.liulin.common.config.ServerConfig;
-import com.liulin.common.utils.ShiroUtils;
-import com.liulin.system.service.IAttachmentService;
-import com.liulin.system.service.IBuildingLevelService;
-import com.liulin.system.service.IServizeService;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.liulin.common.annotation.DataScope;
+import com.liulin.common.config.ServerConfig;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.core.domain.Ztree;
 import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.core.domain.entity.SysRole;
 import com.liulin.common.core.text.Convert;
 import com.liulin.common.exception.BusinessException;
+import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.system.mapper.SysDeptMapper;
+import com.liulin.system.service.IAttachmentService;
+import com.liulin.system.service.IBuildingLevelService;
+import com.liulin.system.service.IServizeService;
 import com.liulin.system.service.ISysDeptService;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 部门管理 服务实现
@@ -344,6 +344,11 @@ public class SysDeptServiceImpl implements ISysDeptService
     public SysDept selectDeptById(Long deptId)
     {
         return deptMapper.selectDeptById(deptId);
+    }
+
+    @Override
+    public List<SysDept> selectDeptByIds(String[] deptIds) {
+        return deptMapper.selectDeptByIds(deptIds);
     }
 
     /**
