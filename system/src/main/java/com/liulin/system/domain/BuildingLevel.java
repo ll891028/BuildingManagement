@@ -21,6 +21,13 @@ public class BuildingLevel extends BaseEntity
         this.buildingId = buildingId;
     }
 
+    public BuildingLevel(String levelName,Long seq,Long buildingId,String areaName){
+        this.levelName = levelName;
+        this.seq = seq;
+        this.buildingId = buildingId;
+        this.areaName = areaName;
+    }
+
     public BuildingLevel(String levelName,Long seq){
         this.levelName = levelName;
         this.seq = seq;

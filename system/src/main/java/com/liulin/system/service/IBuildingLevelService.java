@@ -1,7 +1,8 @@
 package com.liulin.system.service;
 
-import java.util.List;
 import com.liulin.system.domain.BuildingLevel;
+
+import java.util.List;
 
 /**
  * building_levelService接口
@@ -61,7 +62,7 @@ public interface IBuildingLevelService
      */
     public int deleteBuildingLevelById(Long levelId);
 
-    void generateDefaultLevel(Long buildingId,Integer levels, Integer ifGroundFloor, Integer basements,String createBy);
+    void generateDefaultLevel(Long buildingId,Integer levels, Integer ifGroundFloor, Integer basements,String createBy,String areaName);
 
     void deleteByBuildingId(Long buildingId);
 }

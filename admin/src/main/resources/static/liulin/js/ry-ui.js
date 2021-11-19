@@ -367,13 +367,13 @@ var table = {
             // 导出数据
             exportExcel: function(formId) {
                 table.set();
-                $.modal.confirm("确定导出所有" + table.options.modalName + "吗？", function() {
+                $.modal.confirm("Are you sure to export " + table.options.modalName + " data？", function() {
                     var currentId = $.common.isEmpty(formId) ? $('form').attr('id') : formId;
                     var params = $("#" + table.options.id).bootstrapTable('getOptions');
                     var dataParam = $("#" + currentId).serializeArray();
                     dataParam.push({ "name": "orderByColumn", "value": params.sortName });
                     dataParam.push({ "name": "isAsc", "value": params.sortOrder });
-                    $.modal.loading("正在导出数据，请稍后...");
+                    $.modal.loading("Exporting Data，Please Wait...");
                     $.post(table.options.exportUrl, dataParam, function(result) {
                         if (result.code == web_status.SUCCESS) {
                             window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
@@ -1163,7 +1163,7 @@ var table = {
         	        dataType: "json",
         	        data: data,
         	        beforeSend: function () {
-        	            $.modal.loading("正在处理中，请稍后...");
+        	            $.modal.loading("Processing,Please Wait....");
         	            $.modal.disable();
         	        },
         	        success: function(result) {
@@ -1209,7 +1209,7 @@ var table = {
             	    dataType: "json",
             	    data: data,
             	    beforeSend: function () {
-            	        $.modal.loading("正在处理中，请稍后...");
+            	        $.modal.loading("Processing,Please Wait....");
             	    },
             	    success: function(result) {
             	        if (typeof callback == "function") {

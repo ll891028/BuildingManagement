@@ -41,6 +41,8 @@ public class BuildingLevelController extends BaseController {
     @GetMapping("/{buildingId}")
     public String level(@PathVariable(required = false) Long buildingId, ModelMap mmap) {
         mmap.put("buildingId", buildingId);
+        SysDept building = sysDeptService.selectDeptById(buildingId);
+        mmap.put("building", building);
         return prefix + "/level";
     }
 

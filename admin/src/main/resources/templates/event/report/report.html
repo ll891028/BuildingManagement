@@ -29,7 +29,7 @@
                 </form>
             </div>
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="event:schedule:export">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="event:report:export">
                     <i class="fa fa-download"></i> export
                 </a>
             </div>
@@ -51,7 +51,7 @@
             var options = {
                 url: prefix + "/list",
                 exportUrl: prefix + "/export",
-                modalName: " schedule",
+                modalName: " Activity Report",
                 columns: [{
                     checkbox: true
                 },

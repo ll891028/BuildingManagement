@@ -1,18 +1,15 @@
 package com.liulin.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
-import com.liulin.common.utils.ShiroUtils;
+import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.mapper.BuildingLevelMapper;
+import com.liulin.system.service.IBuildingLevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.BuildingLevelMapper;
-import com.liulin.system.domain.BuildingLevel;
-import com.liulin.system.service.IBuildingLevelService;
-import com.liulin.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.WebUtils;
+
+import java.util.List;
 
 /**
  * building_levelService业务层处理
@@ -105,22 +102,23 @@ public class BuildingLevelServiceImpl implements IBuildingLevelService {
     @Override
     @Transactional
     public void generateDefaultLevel(Long buildingId, Integer levels, Integer ifGroundFloor, Integer basements,
-                                     String createBy) {
+                                     String createBy,String areaName) {
+
         //清空对应building下的所有level数据
-        deleteByBuildingId(buildingId);
+//        deleteByBuildingId(buildingId);
         Long levelCount = Long.valueOf(String.valueOf(levels));
 //        List<BuildingLevel> saver = new ArrayList<>();
         if (levels != null && levels != 0) {
             for (Integer i = levels; i > 0; i--) {
                 BuildingLevel saver =
-                        new BuildingLevel("Level " + (i),levelCount--, buildingId);
+                        new BuildingLevel("Level " + (i),levelCount--, buildingId,areaName);
                 saver.setCreateBy(createBy);
                 buildingLevelMapper.insertBuildingLevel(saver);
             }
         }
         if (ifGroundFloor != null && ifGroundFloor == 1) {
             //有groundFloor
-            BuildingLevel saver = new BuildingLevel("Ground Floor", levelCount, buildingId);
+            BuildingLevel saver = new BuildingLevel("Ground Floor", levelCount, buildingId,areaName);
             saver.setCreateBy(createBy);
             buildingLevelMapper.insertBuildingLevel(saver);
             levelCount++;
@@ -128,7 +126,7 @@ public class BuildingLevelServiceImpl implements IBuildingLevelService {
         Long basementsCount = 0L;
         if (basements != null && basements != 0) {
             for (Integer i = 0; i < basements; i++) {
-                BuildingLevel saver = new BuildingLevel("Basement " + (i + 1), --basementsCount, buildingId);
+                BuildingLevel saver = new BuildingLevel("Basement " + (i + 1), --basementsCount, buildingId,areaName);
                 saver.setCreateBy(createBy);
                 buildingLevelMapper.insertBuildingLevel(saver);
             }

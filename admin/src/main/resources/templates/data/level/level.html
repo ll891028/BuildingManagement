@@ -22,9 +22,10 @@
             <!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="data:level:edit">-->
             <!--                    <i class="fa fa-edit"></i> 修改-->
             <!--                </a>-->
-            <!--                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="data:level:remove">-->
-            <!--                    <i class="fa fa-remove"></i> 删除-->
-            <!--                </a>-->
+            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
+               shiro:hasPermission="data:level:remove">
+                <i class="fa fa-remove"></i> remove
+            </a>
             <!--                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="data:level:export">-->
             <!--                    <i class="fa fa-download"></i> 导出-->
             <!--                </a>-->
@@ -40,8 +41,70 @@
     var removeFlag = [[${@permission.hasPermi('data:level:remove')}]];
     var buildingId = [[${buildingId}]];
     var prefix = ctx + "data/level";
+    var isMulti =  [[${building.multiBuilding}]];
 
     $(function () {
+        var columns;
+        if($.common.isNotEmpty(isMulti) && isMulti==1){
+            columns = [{
+                checkbox: true
+            },
+                {
+                    field: 'levelId',
+                    title: 'Level Id',
+                    visible: false
+                },
+                {
+                    field: 'areaName',
+                    title: 'Building Name'
+                },
+                {
+                    field: 'levelName',
+                    title: 'Level Name'
+                },
+                {
+                    title: 'Action',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag +
+                            '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.levelId +
+                            '\')"><i class="fa fa-edit"></i>edit</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag +
+                            '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.levelId +
+                            '\')"><i class="fa fa-remove"></i>remove</a>');
+                        return actions.join('');
+                    }
+                }];
+
+        }else {
+            columns = [{
+                checkbox: true
+            },
+                {
+                    field: 'levelId',
+                    title: 'Level Id',
+                    visible: false
+                },
+                {
+                    field: 'levelName',
+                    title: 'Level Name'
+                },
+                {
+                    title: 'Action',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag +
+                            '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.levelId +
+                            '\')"><i class="fa fa-edit"></i>edit</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag +
+                            '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.levelId +
+                            '\')"><i class="fa fa-remove"></i>remove</a>');
+                        return actions.join('');
+                    }
+                }];
+        }
         var options = {
             url: prefix + "/list/",
             createUrl: prefix + "/add",
@@ -56,34 +119,7 @@
             showRefresh: false,
             showToggle: false,
             showColumns: false,
-            columns: [
-                {
-                    field: 'areaName',
-                    title: 'Area Name'
-                },
-                {
-                    field: 'levelName',
-                    title: 'Level Name'
-                },
-                // {
-                //     field: 'seq',
-                //     title: 'order',
-                //     sortable: true
-                // },
-                {
-                    title: 'Action',
-                    align: 'center',
-                    formatter: function (value, row, index) {
-                        var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag +
-                            '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.levelId +
-                            '\')"><i class="fa fa-edit"></i>edit</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag +
-                            '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.levelId +
-                            '\')"><i class="fa fa-remove"></i>remove</a>');
-                        return actions.join('');
-                    }
-                }]
+            columns: columns
         };
         $.table.init(options);
     });

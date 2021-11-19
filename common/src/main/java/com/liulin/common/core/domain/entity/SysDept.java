@@ -43,7 +43,7 @@ public class SysDept extends BaseEntity
     private String deptName;
 
     /** 显示顺序 */
-    private String orderNum;
+    private String orderNum="1";
 
     /** 负责人 */
     private String leader;
@@ -90,6 +90,16 @@ public class SysDept extends BaseEntity
     private List<Long> typeList;
 
     private Integer multiBuilding;
+
+    private String areaName;
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
 
     public Integer getMultiBuilding() {
         return multiBuilding;
@@ -245,7 +255,7 @@ public class SysDept extends BaseEntity
         this.deptName = deptName;
     }
 
-    @NotBlank(message = "显示顺序不能为空")
+//    @NotBlank(message = "显示顺序不能为空")
     public String getOrderNum()
     {
         return orderNum;

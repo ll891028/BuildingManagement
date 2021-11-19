@@ -231,7 +231,7 @@ public class SysDeptServiceImpl implements ISysDeptService
         int result = deptMapper.insertDept(dept);
         if(dept.getIfGroundFloor()!=null && dept.getLevels()!=null && dept.getBasements()!=null){
             buildingLevelService.generateDefaultLevel(dept.getDeptId(),dept.getLevels().intValue(),
-                    dept.getIfGroundFloor().intValue(),dept.getBasements(), ShiroUtils.getLoginName());
+                    dept.getIfGroundFloor().intValue(),dept.getBasements(), ShiroUtils.getLoginName(),null);
         }
         if(dept.getType().equals(SysDept.COMPANY)){
             //部门为Company
@@ -390,7 +390,7 @@ public class SysDeptServiceImpl implements ISysDeptService
     public int generateLevel(SysDept dept) {
 
         buildingLevelService.generateDefaultLevel(dept.getDeptId(),dept.getLevels(),dept.getIfGroundFloor(),
-                dept.getBasements(),dept.getCreateBy());
+                dept.getBasements(),dept.getCreateBy(),dept.getAreaName());
         return deptMapper.updateDept(dept);
     }
 

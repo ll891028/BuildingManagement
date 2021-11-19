@@ -2,9 +2,6 @@ package com.liulin.web.controller.moduler;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.URLUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.liulin.common.annotation.Log;
@@ -17,21 +14,13 @@ import com.liulin.common.core.page.TableDataInfo;
 import com.liulin.common.enums.BusinessType;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
-import com.liulin.common.utils.file.FileUploadUtils;
-import com.liulin.common.utils.file.FileUtils;
 import com.liulin.common.utils.uuid.UUID;
-import com.liulin.system.domain.Attachment;
-import com.liulin.system.domain.CarSpace;
 import com.liulin.system.domain.ReportDto;
 import com.liulin.system.domain.Schedule;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.IScheduleService;
 import com.spire.xls.FileFormat;
-import com.spire.xls.VerticalAlignType;
 import com.spire.xls.Workbook;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
@@ -43,10 +32,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: LinLiu
@@ -197,7 +191,7 @@ public class ReportController extends BaseController {
     }
 
     /**
-     * 导出schedule列表
+     * 导出Activity Report列表
      */
     @RequiresPermissions("event:report:export")
     @Log(title = "schedule", businessType = BusinessType.EXPORT)
@@ -319,6 +313,7 @@ public class ReportController extends BaseController {
 
         //Save the resulting document to a specified path
         String pdfName = UUID.fastUUID() + "_report.pdf";
+
         workbookConvert.saveToFile(LiulinConfig.getDownloadPath() + pdfName, FileFormat.PDF);
 
         return AjaxResult.success(pdfName);

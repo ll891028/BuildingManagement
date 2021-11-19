@@ -100,9 +100,9 @@
         function exportSelected() {
         	var userIds = $.table.selectColumns("userId");
         	var dataParam = $("#export-form").serializeArray();
-        	var tipMsg = "确定导出所有数据吗？";
+        	var tipMsg = "Are you sure export all data？";
         	if($.common.isNotEmpty(userIds)){
-        		tipMsg = "确定导出勾选" + userIds.length + "条数据吗？";
+        		tipMsg = "Are you sure export selected " + userIds.length + " data？";
         		dataParam.push({ "name": "userIds", "value": userIds });
         	}
         	$.modal.confirm(tipMsg, function() {
