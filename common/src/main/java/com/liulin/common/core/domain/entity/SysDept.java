@@ -30,6 +30,10 @@ public class SysDept extends BaseEntity
 
     public static Integer DMC = 5;
 
+    public static Integer IS_MULTI_BUILDING = 1;
+
+    public static Integer NOT_MULTI_BUILDING = 0;
+
     /** 部门ID */
     private Long deptId;
 

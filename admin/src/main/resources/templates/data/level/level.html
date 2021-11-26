@@ -6,12 +6,23 @@
 <body class="gray-bg">
 <div class="container-div">
     <div class="row">
-        <!--            <div class="col-sm-12 search-collapse">-->
-        <!--                <form id="formId">-->
-        <!--                    <input type="hidden" th:value="${buildingId}">-->
-        <!--                </form>-->
-        <!--            </div>-->
-
+        <form id="formId">
+            <input type="hidden" th:value="${buildingId}" name="buildingId">
+            <div class="col-sm-12 search-collapse" th:if="${building.multiBuilding==1}">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            Building Name：
+                            <select name="areaName" onchange="$.table.search()">
+                                <option value="">All</option>
+                                <option th:each="buildingName : ${buildingNames}" th:text="${buildingName.areaName}"
+                                        th:value="${buildingName.areaName}"></option>
+                            </select>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
         <div class="btn-group-sm" id="toolbar" role="group">
             <a class="btn btn-success" onclick="add()" shiro:hasPermission="data:level:add">
                 <i class="fa fa-plus"></i> add
@@ -56,11 +67,13 @@
                 },
                 {
                     field: 'areaName',
-                    title: 'Building Name'
+                    title: 'Building Name',
+                    sortable:true
                 },
                 {
                     field: 'levelName',
-                    title: 'Level Name'
+                    title: 'Level Name',
+                    sortable:true
                 },
                 {
                     title: 'Action',
@@ -113,12 +126,12 @@
             exportUrl: prefix + "/export",
             modalName: " building level",
             // dataField:{"buildingId":buildingId},
-            queryParams: {"buildingId": buildingId},
-            pagination: false,
-            showSearch: false,
+            // queryParams: {"buildingId": buildingId},
+            // pagination: false,
+            // showSearch: false,
             showRefresh: false,
             showToggle: false,
-            showColumns: false,
+            // showColumns: false,
             columns: columns
         };
         $.table.init(options);

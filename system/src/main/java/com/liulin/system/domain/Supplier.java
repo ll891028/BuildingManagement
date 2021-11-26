@@ -1,13 +1,14 @@
 package com.liulin.system.domain;
 
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
 import com.liulin.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * supplier对象 supplier
@@ -46,8 +47,9 @@ public class Supplier extends BaseEntity
     private String licenseNumber;
 
     /** Insurance Expired Date */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "Insurance Expired Date", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    @Excel(name = "Insurance Expired Date", width = 30, dateFormat = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date insuraceExpiredDate;
 
     /** Description */

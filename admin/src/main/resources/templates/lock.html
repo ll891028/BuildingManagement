@@ -21,7 +21,7 @@
         </div>
         <form class="lockscreen-credentials" method="post" action="#" onsubmit="return false;">
             <div class="input-group">
-                <input type="password" name="password" autocomplete="off" class="form-control" placeholder="密码">
+                <input type="password" name="password" autocomplete="off" class="form-control" placeholder="password">
                 <div class="input-group-btn">
                     <button type="button" class="btn" onclick="unlock()"><i class="fa fa-arrow-right text-muted"></i></button>
                 </div>
@@ -29,9 +29,9 @@
         </form>
     </div>
     
-    <div class="help-block text-center" style="margin-top: 50px;">系统锁屏,请输入密码登陆!</div>
+    <div class="help-block text-center" style="margin-top: 50px;">Lock Screen,Please enter password to login!</div>
     <div class="text-center">
-        <a th:href="@{logout}">退出重新登陆</a>
+        <a th:href="@{logout}">Logout</a>
     </div>
 </div>
 <script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>

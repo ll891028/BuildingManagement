@@ -16,6 +16,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="areaName"    column="area_name"    />
     </resultMap>
 
+    <resultMap type="com.liulin.system.domain.dto.AreaDto" id="areaResult">
+        <result property="name"    column="area_name"    />
+        <collection property="levels" javaType="java.util.ArrayList" ofType="com.liulin.system.domain.dto.LevelDto">
+            <id column="level_id" property="levelId"  />
+            <result column="level_name" property="name"/>
+        </collection>
+    </resultMap>
+
     <sql id="selectBuildingLevelVo">
         select level_id, building_id, level_name, seq, create_by, create_time, update_by, update_time,area_name from building_level
     </sql>
@@ -24,10 +32,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectBuildingLevelVo"/>
         <where>  
             <if test="buildingId != null "> and building_id = #{buildingId}</if>
+            <if test="areaName != null and areaName!=''"> and area_name = #{areaName}</if>
             <if test="levelName != null  and levelName != ''"> and level_name like concat('%', #{levelName}, '%')</if>
             <if test="seq != null "> and seq = #{seq}</if>
         </where>
         order by seq desc
+    </select>
+
+    <select id="selectAreaNameByBuildingId" parameterType="Long" resultMap="BuildingLevelResult">
+        select area_name from building_level where building_id=#{buildingId} group by area_name
     </select>
     
     <select id="selectBuildingLevelById" parameterType="Long" resultMap="BuildingLevelResult">
@@ -93,4 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select max(seq) from building_level where building_id = #{buildingId}
     </select>
 
+    <select id="selectAreaData" parameterType="Long" resultMap="areaResult">
+        select * from building_level where building_id = #{buildingId}
+    </select>
 </mapper>

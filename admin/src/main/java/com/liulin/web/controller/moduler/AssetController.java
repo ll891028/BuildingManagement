@@ -1,14 +1,18 @@
 package com.liulin.web.controller.moduler;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.liulin.common.annotation.Log;
+import com.liulin.common.core.controller.BaseController;
+import com.liulin.common.core.domain.AjaxResult;
 import com.liulin.common.core.domain.entity.SysDept;
+import com.liulin.common.core.page.TableDataInfo;
+import com.liulin.common.enums.BusinessType;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.common.utils.poi.ExcelUtil;
+import com.liulin.system.domain.Asset;
 import com.liulin.system.domain.Attachment;
 import com.liulin.system.domain.BuildingLevel;
-import com.liulin.system.domain.Defects;
+import com.liulin.system.service.IAssetService;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.IBuildingLevelService;
 import org.apache.commons.collections.CollectionUtils;
@@ -16,19 +20,10 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.liulin.common.annotation.Log;
-import com.liulin.common.enums.BusinessType;
-import com.liulin.system.domain.Asset;
-import com.liulin.system.service.IAssetService;
-import com.liulin.common.core.controller.BaseController;
-import com.liulin.common.core.domain.AjaxResult;
-import com.liulin.common.utils.poi.ExcelUtil;
-import com.liulin.common.core.page.TableDataInfo;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * AssetController
@@ -55,8 +50,12 @@ public class AssetController extends BaseController
     @GetMapping()
     public String asset(ModelMap mp)
     {
-        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
-        mp.put("buildingLevels",buildingLevels);
+        Integer multiBuilding = ShiroUtils.getSysUser().getBuilding().getMultiBuilding();
+        if(multiBuilding.equals(SysDept.NOT_MULTI_BUILDING)){
+            List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+            mp.put("buildingLevels",buildingLevels);
+        }
+        mp.put("multiBuilding",multiBuilding);
         return prefix + "/asset";
     }
 
@@ -94,8 +93,12 @@ public class AssetController extends BaseController
     @GetMapping("/add")
     public String add(ModelMap mp)
     {
-        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
-        mp.put("buildingLevels",buildingLevels);
+        Integer multiBuilding = ShiroUtils.getSysUser().getBuilding().getMultiBuilding();
+        if(multiBuilding.equals(SysDept.NOT_MULTI_BUILDING)){
+            List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+            mp.put("buildingLevels",buildingLevels);
+        }
+        mp.put("multiBuilding",multiBuilding);
         return prefix + "/add";
     }
 
@@ -120,8 +123,12 @@ public class AssetController extends BaseController
     @GetMapping("/edit/{assetId}")
     public String edit(@PathVariable("assetId") Long assetId, ModelMap mmap)
     {
-        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
-        mmap.put("buildingLevels",buildingLevels);
+        Integer multiBuilding = ShiroUtils.getSysUser().getBuilding().getMultiBuilding();
+        if(multiBuilding.equals(SysDept.NOT_MULTI_BUILDING)){
+            List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+            mmap.put("buildingLevels",buildingLevels);
+        }
+        mmap.put("multiBuilding",multiBuilding);
         Asset asset = assetService.selectAssetById(assetId);
         mmap.put("asset", asset);
         String attachmentIds = asset.getAttachmentIds();

@@ -58,13 +58,27 @@
                     <input name="unitNumber" th:field="*{unitNumber}" class="form-control" type="text" required>
                 </div>
             </div>
-            <div class="form-group">    
+            <div id="element1" th:if="${multiBuilding==1}">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label is-required">Building Name：</label>
+                    <div class="col-sm-8">
+                        <select name="areaName" class="areaName form-control m-b" data-first-title="All" data-first-value="" data-json-value="name" required th:data-value="*{areaName}"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label is-required">Level：</label>
+                    <div class="col-sm-8">
+                        <select name="levelId" class="levelName form-control m-b" data-first-title="All" data-first-value="" required th:data-value="*{levelId}"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" th:if="${multiBuilding==0}">
                 <label class="col-sm-3 control-label is-required">Level：</label>
                 <div class="col-sm-8">
                     <select name="levelId" class="form-control m-b" required>
                         <option value="">All</option>
                         <option th:each="level:${buildingLevels}" th:value="${level.levelId}"
-                                th:text="${level.levelName}" th:field="*{levelId}"></option>
+                                th:text="${level.levelName}"></option>
                     </select>
 
                 </div>
@@ -176,9 +190,22 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <th:block th:include="include :: jquery-cxselect-js" />
     <script type="text/javascript" th:inline="javascript">
 
         $(document).ready(function () {
+            var multiBuilding = [[${multiBuilding}]];
+            if(multiBuilding==1) {
+                $('#element1').cxSelect({
+                    url: ctx + 'data/level/levelJsonData',
+                    selects: ['areaName', 'levelName'],  // selects 为数组形式，请注意顺序
+                    // emptyStyle: 'none',
+                    jsonSub: 'levels',
+                    jsonValue: 'levelId',
+                    jsonName: 'name'
+                });
+            }
+
             var attachments = [[${attachments}]];
             var resident = [[${resident}]];
             var initPrevConfig = new Array();

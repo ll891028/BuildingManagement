@@ -106,12 +106,10 @@ public class SysLoginService
 
         user.setBuildingsList(buildings);
         SysDept building = redisCache.getCacheObject("user:building:"+user.getUserId());
-//        SysDept building = (SysDept) CacheUtils.get("user:building:" + user.getUserId());
         if(building==null){
             if(CollectionUtils.isNotEmpty(buildings)){
                 user.setBuilding(buildings.get(0));
                 redisCache.setCacheObject("user:building:"+user.getUserId(),user.getBuilding());
-//                CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
             }
 
         }else{
@@ -123,7 +121,9 @@ public class SysLoginService
                 redisCache.setCacheObject("user:building:"+user.getUserId(),user.getBuilding());
 //                CacheUtils.put("user:building:"+user.getUserId(),user.getBuilding());
             }else{
-                user.setBuilding(building);
+                building.getDeptId();
+                Optional<SysDept> first = buildings.stream().filter(b -> b.getDeptId() .equals(building.getDeptId()) ).findFirst();
+                user.setBuilding(first.get());
             }
         }
         if(building!=null){

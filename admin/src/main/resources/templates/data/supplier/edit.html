@@ -69,7 +69,7 @@
                 <label class="col-sm-3 control-label">Insurance Expired Date：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="insuraceExpiredDate" th:value="${#dates.format(supplier.insuraceExpiredDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="insuraceExpiredDate" th:value="${#dates.format(supplier.insuraceExpiredDate, 'dd-MM-yyyy')}" class="form-control" placeholder="dd-MM-yyyy" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -190,7 +190,8 @@
         }
 
         $("input[name='insuraceExpiredDate']").datetimepicker({
-            format: "yyyy-mm-dd",
+            language:"en",
+            format: "dd-mm-yyyy",
             minView: "month",
             autoclose: true
         });

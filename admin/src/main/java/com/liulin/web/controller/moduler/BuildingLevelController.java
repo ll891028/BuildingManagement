@@ -1,5 +1,6 @@
 package com.liulin.web.controller.moduler;
 
+import com.alibaba.fastjson.JSONObject;
 import com.liulin.common.annotation.Log;
 import com.liulin.common.core.controller.BaseController;
 import com.liulin.common.core.domain.AjaxResult;
@@ -9,6 +10,7 @@ import com.liulin.common.enums.BusinessType;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.poi.ExcelUtil;
 import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.domain.dto.AreaDto;
 import com.liulin.system.service.IBuildingLevelService;
 import com.liulin.system.service.ISysDeptService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -43,6 +45,8 @@ public class BuildingLevelController extends BaseController {
         mmap.put("buildingId", buildingId);
         SysDept building = sysDeptService.selectDeptById(buildingId);
         mmap.put("building", building);
+        List<BuildingLevel> buildingNames = buildingLevelService.selectAreaNameByBuildingId(buildingId);
+        mmap.put("buildingNames", buildingNames);
         return prefix + "/level";
     }
 
@@ -174,5 +178,16 @@ public class BuildingLevelController extends BaseController {
     @ResponseBody
     public AjaxResult remove(String ids) {
         return toAjax(buildingLevelService.deleteBuildingLevelByIds(ids));
+    }
+
+
+    @GetMapping("/levelJsonData")
+    @ResponseBody
+    public String cityData()
+    {
+        Long buildingId = ShiroUtils.getSysUser().getBuilding().getDeptId();
+        SysDept building = sysDeptService.selectDeptById(buildingId);
+        List<AreaDto> data = buildingLevelService.selectAreaData(building.getDeptId());
+        return JSONObject.toJSONString(data);
     }
 }

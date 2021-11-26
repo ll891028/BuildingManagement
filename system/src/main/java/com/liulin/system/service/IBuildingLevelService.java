@@ -1,6 +1,7 @@
 package com.liulin.system.service;
 
 import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.domain.dto.AreaDto;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public interface IBuildingLevelService
      * @return building_level集合
      */
     public List<BuildingLevel> selectBuildingLevelList(BuildingLevel buildingLevel);
+
+    public List<BuildingLevel> selectAreaNameByBuildingId(Long buildingId);
 
     public List<BuildingLevel> selectBuildingLevelListByBuildingId(Long buildingId);
 
@@ -65,4 +68,6 @@ public interface IBuildingLevelService
     void generateDefaultLevel(Long buildingId,Integer levels, Integer ifGroundFloor, Integer basements,String createBy,String areaName);
 
     void deleteByBuildingId(Long buildingId);
+
+    List<AreaDto> selectAreaData(Long buildingId);
 }

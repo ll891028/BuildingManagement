@@ -1,11 +1,13 @@
 package com.liulin.system.domain;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
 import com.liulin.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * Asset对象 asset
@@ -45,8 +47,9 @@ public class Asset extends BaseEntity
     private Integer status;
 
     /** Installed Date */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "Installed Date", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    @Excel(name = "Installed Date", width = 30, dateFormat = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date installedDate;
 
     /** Description */
@@ -62,6 +65,16 @@ public class Asset extends BaseEntity
     private Long companyId;
 
     private String levelName;
+
+    private String areaName;
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
 
     public Long getCompanyId() {
         return companyId;

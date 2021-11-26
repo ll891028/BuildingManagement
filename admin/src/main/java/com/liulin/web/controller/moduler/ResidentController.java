@@ -1,12 +1,14 @@
 package com.liulin.web.controller.moduler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.liulin.common.annotation.Log;
+import com.liulin.common.core.controller.BaseController;
+import com.liulin.common.core.domain.AjaxResult;
 import com.liulin.common.core.domain.entity.SysDept;
+import com.liulin.common.core.page.TableDataInfo;
+import com.liulin.common.enums.BusinessType;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.common.utils.poi.ExcelUtil;
 import com.liulin.system.domain.*;
 import com.liulin.system.service.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -14,17 +16,10 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.liulin.common.annotation.Log;
-import com.liulin.common.enums.BusinessType;
-import com.liulin.common.core.controller.BaseController;
-import com.liulin.common.core.domain.AjaxResult;
-import com.liulin.common.utils.poi.ExcelUtil;
-import com.liulin.common.core.page.TableDataInfo;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * residentController
@@ -57,9 +52,12 @@ public class ResidentController extends BaseController
     @GetMapping()
     public String resident(ModelMap mp)
     {
-
-        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
-        mp.put("buildingLevels",buildingLevels);
+        Integer multiBuilding = ShiroUtils.getSysUser().getBuilding().getMultiBuilding();
+        if(multiBuilding.equals(SysDept.NOT_MULTI_BUILDING)){
+            List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+            mp.put("buildingLevels",buildingLevels);
+        }
+        mp.put("multiBuilding",multiBuilding);
         return prefix + "/resident";
     }
 
@@ -97,8 +95,12 @@ public class ResidentController extends BaseController
     @GetMapping("/add")
     public String add(ModelMap mp)
     {
-        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
-        mp.put("buildingLevels",buildingLevels);
+        Integer multiBuilding = ShiroUtils.getSysUser().getBuilding().getMultiBuilding();
+        if(multiBuilding.equals(SysDept.NOT_MULTI_BUILDING)){
+            List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+            mp.put("buildingLevels",buildingLevels);
+        }
+        mp.put("multiBuilding",multiBuilding);
         return prefix + "/add";
     }
 
@@ -123,8 +125,12 @@ public class ResidentController extends BaseController
     @GetMapping("/edit/{residentId}")
     public String edit(@PathVariable("residentId") Long residentId, ModelMap mmap)
     {
-        List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
-        mmap.put("buildingLevels",buildingLevels);
+        Integer multiBuilding = ShiroUtils.getSysUser().getBuilding().getMultiBuilding();
+        if(multiBuilding.equals(SysDept.NOT_MULTI_BUILDING)){
+            List<BuildingLevel> buildingLevels = buildingLevelService.selectBuildingLevelListByBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+            mmap.put("buildingLevels",buildingLevels);
+        }
+        mmap.put("multiBuilding",multiBuilding);
         Resident resident = residentService.selectResidentById(residentId);
         mmap.put("resident", resident);
         CarSpace query = new CarSpace();

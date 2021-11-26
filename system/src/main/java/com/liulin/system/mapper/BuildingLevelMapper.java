@@ -1,7 +1,9 @@
 package com.liulin.system.mapper;
 
-import java.util.List;
 import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.domain.dto.AreaDto;
+
+import java.util.List;
 
 /**
  * building_levelMapper接口
@@ -26,6 +28,8 @@ public interface BuildingLevelMapper
      * @return building_level集合
      */
     public List<BuildingLevel> selectBuildingLevelList(BuildingLevel buildingLevel);
+
+    List<BuildingLevel> selectAreaNameByBuildingId(Long buildingId);
 
     /**
      * 新增building_level
@@ -62,4 +66,6 @@ public interface BuildingLevelMapper
     public int deleteBuildingLevelByIds(String[] levelIds);
 
     Integer findMaxSeqByBuildingId(Long buildingId);
+
+    List<AreaDto> selectAreaData(Long buildingId);
 }

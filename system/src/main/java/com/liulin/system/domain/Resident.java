@@ -92,6 +92,16 @@ public class Resident extends BaseEntity
 
     private Long companyId;
 
+    private String areaName;
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
+
     public Long getCompanyId() {
         return companyId;
     }

@@ -3,6 +3,7 @@ package com.liulin.system.service.impl;
 import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.domain.dto.AreaDto;
 import com.liulin.system.mapper.BuildingLevelMapper;
 import com.liulin.system.service.IBuildingLevelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,11 @@ public class BuildingLevelServiceImpl implements IBuildingLevelService {
     @Override
     public List<BuildingLevel> selectBuildingLevelList(BuildingLevel buildingLevel) {
         return buildingLevelMapper.selectBuildingLevelList(buildingLevel);
+    }
+
+    @Override
+    public List<BuildingLevel> selectAreaNameByBuildingId(Long buildingId) {
+        return buildingLevelMapper.selectAreaNameByBuildingId(buildingId);
     }
 
     @Override
@@ -138,5 +144,10 @@ public class BuildingLevelServiceImpl implements IBuildingLevelService {
     @Override
     public void deleteByBuildingId(Long buildingId) {
         buildingLevelMapper.deleteBuildingLevelByBuildingId(buildingId);
+    }
+
+    @Override
+    public List<AreaDto> selectAreaData(Long buildingId) {
+        return buildingLevelMapper.selectAreaData(buildingId);
     }
 }

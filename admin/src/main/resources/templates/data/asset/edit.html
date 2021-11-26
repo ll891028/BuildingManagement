@@ -17,7 +17,31 @@
                     <input name="assetName" th:field="*{assetName}" class="form-control" type="text" required>
                 </div>
             </div>
-            <div class="form-group">    
+<!--            <div class="form-group">    -->
+<!--                <label class="col-sm-3 control-label is-required">Level：</label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <select name="levelId" class="form-control m-b" required>-->
+<!--                        <option value="">All</option>-->
+<!--                        <option th:each="level:${buildingLevels}" th:value="${level.levelId}"-->
+<!--                                th:text="${level.levelName}" th:field="*{levelId}"></option>-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--            </div>-->
+            <div id="element1" th:if="${multiBuilding==1}">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label is-required">Building Name：</label>
+                    <div class="col-sm-8">
+                        <select name="areaName" class="areaName form-control m-b" data-first-title="All" data-first-value="" data-json-value="name" required th:data-value="*{areaName}"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label is-required">Level：</label>
+                    <div class="col-sm-8">
+                        <select name="levelId" class="levelName form-control m-b" data-first-title="All" data-first-value="" required th:data-value="*{levelId}"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" th:if="${multiBuilding==0}">
                 <label class="col-sm-3 control-label is-required">Level：</label>
                 <div class="col-sm-8">
                     <select name="levelId" class="form-control m-b" required>
@@ -64,7 +88,7 @@
                 <label class="col-sm-3 control-label">Installed Date：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="installedDate" th:value="${#dates.format(asset.installedDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="installedDate" th:value="${#dates.format(asset.installedDate, 'dd-MM-yyyy')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -86,9 +110,22 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <th:block th:include="include :: jquery-cxselect-js" />
     <script type="text/javascript" th:inline="javascript">
-
+        var multiBuilding = [[${multiBuilding}]];
         $(document).ready(function () {
+            if(multiBuilding==1){
+                $('#element1').cxSelect({
+                    url: ctx +'data/level/levelJsonData',
+                    selects: ['areaName', 'levelName'],  // selects 为数组形式，请注意顺序
+                    // emptyStyle: 'none',
+                    jsonSub:'levels',
+                    jsonValue:'levelId',
+                    jsonName:'name'
+                });
+            }
+
+
             var attachments = [[${attachments}]];
             var asset = [[${asset}]];
             var initPrevConfig = new Array();
@@ -178,7 +215,8 @@
         }
 
         $("input[name='installedDate']").datetimepicker({
-            format: "yyyy-mm-dd",
+            language:"en",
+            format: "dd-mm-yyyy",
             minView: "month",
             autoclose: true
         });
