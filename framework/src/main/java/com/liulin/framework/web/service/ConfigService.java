@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.liulin.system.service.ISysConfigService;
 
 /**
- * liulin首创 html调用 thymeleaf 实现参数管理
+ * 首创 html调用 thymeleaf 实现参数管理
  * 
  * @author liulin
  */

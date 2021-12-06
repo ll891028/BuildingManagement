@@ -1,8 +1,9 @@
 package com.liulin.system.mapper;
 
-import java.util.List;
 import com.liulin.system.domain.Resident;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * residentMapper接口
@@ -62,4 +63,6 @@ public interface ResidentMapper
 
     Resident checkUnitNumberUnique(@Param("buildingId") Long buildingId,@Param("unitNumber") String unitNumber,@Param(
             "residentId") Long residentId);
+
+    List<Resident> selectResidentByIds(@Param("residentIdList")List<Long> residentIdList);
 }

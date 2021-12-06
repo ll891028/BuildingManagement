@@ -1,7 +1,8 @@
 package com.liulin.system.service;
 
-import java.util.List;
 import com.liulin.system.domain.Resident;
+
+import java.util.List;
 
 /**
  * residentService接口
@@ -62,4 +63,6 @@ public interface IResidentService
     String checkUnitNumberUnique(Resident resident);
 
     public int updateAttachment(Resident resident);
+
+    List<Resident> selectResidentByIds(List<Long> residentIdList);
 }

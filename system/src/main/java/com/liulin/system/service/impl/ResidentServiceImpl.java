@@ -1,20 +1,23 @@
 package com.liulin.system.service.impl;
 
-import java.util.List;
-
 import com.liulin.common.constant.Constants;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.core.domain.entity.SysUser;
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.common.utils.security.Md5Utils;
-import com.liulin.system.domain.*;
+import com.liulin.system.domain.BuildingLevel;
+import com.liulin.system.domain.CarPlate;
+import com.liulin.system.domain.CarSpace;
+import com.liulin.system.domain.Resident;
+import com.liulin.system.mapper.ResidentMapper;
 import com.liulin.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.ResidentMapper;
-import com.liulin.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * residentService业务层处理
@@ -308,5 +311,10 @@ public class ResidentServiceImpl implements IResidentService
             resident.setAttachmentIds(attachmentIds);
         }
         return residentMapper.updateResident(resident);
+    }
+
+    @Override
+    public List<Resident> selectResidentByIds(List<Long> residentIdList) {
+        return residentMapper.selectResidentByIds(residentIdList);
     }
 }

@@ -7,18 +7,15 @@ import com.liulin.common.utils.StringUtils;
 import com.liulin.framework.web.domain.MailDomain;
 import com.liulin.framework.web.service.MailService;
 import com.liulin.system.domain.Asset;
+import com.liulin.system.domain.Resident;
 import com.liulin.system.domain.Servize;
 import com.liulin.system.domain.Supplier;
-import com.liulin.system.service.IAssetService;
-import com.liulin.system.service.IServizeService;
-import com.liulin.system.service.ISupplierService;
-import com.liulin.system.service.ISysDeptService;
+import com.liulin.system.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +40,9 @@ public class MailController {
 
     @Autowired
     private IServizeService servizeService;
+
+    @Autowired
+    private IResidentService residentService;
 
     @Autowired
     private MailService mailService;
@@ -158,6 +158,29 @@ public class MailController {
         return prefix + "/sendQuote";
     }
 
+    @GetMapping(value = {"/sendResidentMail/{residentIds}"})
+    public String sendResidentMail(@PathVariable String residentIds, ModelMap mmp){
+        String[] split = residentIds.split(",");
+        List<Long> residentIdList = new ArrayList<>();
+        Arrays.stream(split).forEach(s -> {
+            residentIdList.add(Long.valueOf(s));
+        });
+
+        SysDept building = sysDeptService.selectDeptById(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        List<Resident> residents = residentService.selectResidentByIds(residentIdList);
+
+        mmp.put("receiver",ShiroUtils.getSysUser().getEmail());
+        StringBuffer bcc = new StringBuffer();
+        residents.stream().forEach(resident -> {
+            bcc.append(resident.getEmail()+";");
+        });
+        mmp.put("bcc",bcc.toString());
+        mmp.put("residentIds",residentIds);
+        mmp.put("building",building);
+        mmp.put("content","");
+        return prefix + "/sendResident";
+    }
+
     @RequestMapping("sendEmail")
     @ResponseBody
     public AjaxResult sendEmail(MailDomain mailDomain) throws Exception {
@@ -185,4 +208,26 @@ public class MailController {
 
         return  AjaxResult.success();
     }
+
+    @PostMapping("sendResidentEmail/{residentIds}")
+    @ResponseBody
+    public AjaxResult sendResidentEmail(@PathVariable String residentIds, MailDomain mailDomain) throws Exception {
+        String[] split = residentIds.split(",");
+        List<Long> residentIdList = new ArrayList<>();
+        Arrays.stream(split).forEach(s -> {
+            residentIdList.add(Long.valueOf(s));
+        });
+
+        List<Resident> residents = residentService.selectResidentByIds(residentIdList);
+        for (Resident resident : residents) {
+            MailDomain mailTemp = new MailDomain();
+            BeanUtils.copyProperties(mailDomain,mailTemp);
+            mailTemp.setBcc(resident.getEmail());
+            mailTemp.setContent(mailDomain.getContent());
+            mailService.sendMail(mailTemp);
+        }
+
+        return  AjaxResult.success();
+    }
+
 }

@@ -113,6 +113,9 @@
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="data:resident:export">
                     <i class="fa fa-download"></i> export
                 </a>
+                <a class="btn btn-success" onclick="sendEmail()" shiro:hasPermission="data:resident:email">
+                    <i class="fa fa-envelope"></i> email
+                </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
@@ -121,6 +124,20 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: jquery-cxselect-js" />
+     <script>
+         function sendEmail(){
+             var url = ctx + "mail/sendResidentMail/";
+             table.set();
+             var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+             if (rows.length == 0) {
+                 $.modal.alertWarning("At least select one record");
+                 return;
+             }
+             var residentIds = rows.join();
+             $.modal.open("send work order",
+                 url+residentIds);
+         }
+     </script>
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('data:resident:edit')}]];
         var removeFlag = [[${@permission.hasPermi('data:resident:remove')}]];
