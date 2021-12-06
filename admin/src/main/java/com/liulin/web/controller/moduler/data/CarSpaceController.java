@@ -1,23 +1,20 @@
-package com.liulin.web.controller.moduler;
+package com.liulin.web.controller.moduler.data;
 
-import java.util.List;
+import com.liulin.common.annotation.Log;
+import com.liulin.common.core.controller.BaseController;
+import com.liulin.common.core.domain.AjaxResult;
+import com.liulin.common.core.page.TableDataInfo;
+import com.liulin.common.enums.BusinessType;
+import com.liulin.common.utils.poi.ExcelUtil;
+import com.liulin.system.domain.CarSpace;
+import com.liulin.system.service.ICarSpaceService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.liulin.common.annotation.Log;
-import com.liulin.common.enums.BusinessType;
-import com.liulin.system.domain.CarSpace;
-import com.liulin.system.service.ICarSpaceService;
-import com.liulin.common.core.controller.BaseController;
-import com.liulin.common.core.domain.AjaxResult;
-import com.liulin.common.utils.poi.ExcelUtil;
-import com.liulin.common.core.page.TableDataInfo;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * CarSpaceController

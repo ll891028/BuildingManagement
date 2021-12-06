@@ -1,4 +1,4 @@
-package com.liulin.web.controller.moduler;
+package com.liulin.web.controller.moduler.event;
 
 import com.liulin.common.annotation.Log;
 import com.liulin.common.core.controller.BaseController;

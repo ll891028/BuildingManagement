@@ -1,4 +1,4 @@
-package com.liulin.web.controller.moduler;
+package com.liulin.web.controller.moduler.data;
 
 import com.alibaba.fastjson.JSONObject;
 import com.liulin.common.annotation.Log;

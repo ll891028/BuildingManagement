@@ -1,4 +1,4 @@
-package com.liulin.web.controller.moduler;
+package com.liulin.web.controller.moduler.event;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;

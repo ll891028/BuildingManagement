@@ -1,4 +1,4 @@
-package com.liulin.web.controller.moduler;
+package com.liulin.web.controller.moduler.data;
 
 import java.util.List;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
