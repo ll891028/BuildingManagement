@@ -138,8 +138,17 @@ public class TaskController extends BaseController
         List<Servize> servizes = servizeService.selectServizeList(query);
         mmap.put("servizes",servizes);
 
+
+
         Task task = taskService.selectTaskById(taskId);
         mmap.put("task", task);
+
+        for (Servize servize : servizes) {
+            if (servize.getServiceId().equals(task.getServiceId())) {
+                servize.setSelected(true);
+                break;
+            }
+        }
 
         TaskAsset assetQuery = new TaskAsset();
         assetQuery.setTaskId(taskId);

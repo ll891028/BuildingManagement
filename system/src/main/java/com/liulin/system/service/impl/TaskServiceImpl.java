@@ -1,24 +1,22 @@
 package com.liulin.system.service.impl;
 
-import java.util.List;
-
-import com.liulin.common.constant.Constants;
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
-import com.liulin.system.domain.Servize;
+import com.liulin.system.domain.Task;
 import com.liulin.system.domain.TaskAsset;
 import com.liulin.system.domain.TaskQuote;
+import com.liulin.system.mapper.TaskMapper;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.ITaskAssetService;
 import com.liulin.system.service.ITaskQuoteService;
+import com.liulin.system.service.ITaskService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.TaskMapper;
-import com.liulin.system.domain.Task;
-import com.liulin.system.service.ITaskService;
-import com.liulin.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * TaskService业务层处理

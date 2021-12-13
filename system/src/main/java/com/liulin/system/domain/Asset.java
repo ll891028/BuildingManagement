@@ -68,6 +68,16 @@ public class Asset extends BaseEntity
 
     private String areaName;
 
+    private Integer quantity;
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     public String getAreaName() {
         return areaName;
     }

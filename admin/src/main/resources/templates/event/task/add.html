@@ -77,7 +77,7 @@
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <input name="dateComplete" id="dateComplete" class="form-control"
-                               placeholder="dd-mm-yyyy" type="text" autocomplete="off">
+                               placeholder="dd-mm-yyyy" type="text" autocomplete="off" oninput="dateCompleteChangeStatus(this)" onchange="dateCompleteChangeStatus(this)">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -383,6 +383,14 @@
             var actionRequired = $(obj).val();
             $("#orderInstruction").val(actionRequired);
             $("#quoteInstruction").val(actionRequired);
+        }
+
+        function dateCompleteChangeStatus(obj){
+            if($.common.isNotEmpty($(obj).val())){
+                $("#taskStatus").val(3).trigger("change");
+            }else{
+                $("#taskStatus").val(2).trigger("change");
+            }
         }
     </script>
 </body>

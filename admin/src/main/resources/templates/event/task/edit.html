@@ -49,7 +49,7 @@
                 <label class="col-sm-3 control-label is-required">Service：</label>
                 <div class="col-sm-8">
                     <select name="serviceId" id="serviceId" class="form-control m-b" required>
-                        <option th:value="${service.serviceId}" th:each="service :${ servizes}">
+                        <option th:value="${service.serviceId}" th:each="service :${ servizes}" th:selected="${service.selected}">
                             [[${service.serviceName}]]</option>
                     </select>
                 </div>
@@ -80,7 +80,7 @@
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <input name="dateComplete" id="dateComplete" class="form-control"
-                               placeholder="dd-mm-yyyy" type="text" autocomplete="off" th:value="${#dates.format(task.dateComplete, 'dd-MM-yyyy')}">
+                               placeholder="dd-mm-yyyy" type="text" autocomplete="off" oninput="dateCompleteChangeStatus(this)" onchange="dateCompleteChangeStatus(this)" th:value="${#dates.format(task.dateComplete, 'dd-MM-yyyy')}">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -433,6 +433,14 @@
             var actionRequired = $(obj).val();
             $("#orderInstruction").val(actionRequired);
             $("#quoteInstruction").val(actionRequired);
+        }
+
+        function dateCompleteChangeStatus(obj){
+            if($.common.isNotEmpty($(obj).val())){
+                $("#taskStatus").val(3).trigger("change");
+            }else{
+                $("#taskStatus").val(2).trigger("change");
+            }
         }
     </script>
 </body>

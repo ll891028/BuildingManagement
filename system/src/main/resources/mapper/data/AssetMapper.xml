@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="assetId"    column="asset_id"    />
         <result property="assetName"    column="asset_name"    />
         <result property="levelId"    column="level_id"    />
+        <result property="quantity"    column="quantity"    />
         <result property="brand"    column="brand"    />
         <result property="needSaftyCheck"    column="need_safty_check"    />
         <result property="canBeBooked"    column="can_be_booked"    />
@@ -25,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectAssetVo">
-        select asset_id, asset_name, level_id, brand, need_safty_check, can_be_booked, status, installed_date, description, attachment_ids, create_by, create_time, update_by, update_time from asset
+        select asset_id, asset_name, quantity,level_id, brand, need_safty_check, can_be_booked, status, installed_date, description, attachment_ids, create_by, create_time, update_by, update_time from asset
     </sql>
 
     <select id="selectAssetList" parameterType="Asset" resultMap="AssetResult">
@@ -71,6 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="quantity != null">quantity,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="assetId != null">#{assetId},</if>
@@ -87,6 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="quantity != null">#{quantity},</if>
          </trim>
     </insert>
 
@@ -106,6 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
         </trim>
         where asset_id = #{assetId}
     </update>

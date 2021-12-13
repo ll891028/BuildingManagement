@@ -50,7 +50,7 @@
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <input name="dateComplete" th:value="${#dates.format(safetyCheck.dateComplete, 'dd-MM-yyyy')}"
-                               class="form-control" placeholder="dd-MM-yyyy" type="text">
+                               class="form-control" placeholder="dd-MM-yyyy" type="text" autocomplete="off" oninput="dateCompleteChangeStatus(this)" onchange="dateCompleteChangeStatus(this)">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -116,7 +116,13 @@
         function assetList(){
             $.modal.open("Asset List", prefix + "/asset");
         }
-
+        function dateCompleteChangeStatus(obj){
+            if($.common.isNotEmpty($(obj).val())){
+                $("#status").val(3).trigger("change");
+            }else{
+                $("#status").val(2).trigger("change");
+            }
+        }
     </script>
 </body>
 </html>

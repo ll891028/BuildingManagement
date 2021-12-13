@@ -49,7 +49,7 @@
                 <label class="col-sm-3 control-label is-required">Service：</label>
                 <div class="col-sm-8">
                     <select name="serviceId" id="serviceId" class="form-control m-b" required>
-                        <option th:value="${service.serviceId}" th:each="service :${ servizes}">
+                        <option th:value="${service.serviceId}" th:each="service :${ servizes}" th:selected="${service.selected}">
                             [[${service.serviceName}]]</option>
                     </select>
                 </div>

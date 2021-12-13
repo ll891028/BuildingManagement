@@ -42,7 +42,7 @@
                 <label class="col-sm-3 control-label">Date Complete：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="dateComplete" class="form-control" placeholder="dd-MM-yyyy" type="text">
+                        <input name="dateComplete" class="form-control" placeholder="dd-MM-yyyy" type="text" oninput="dateCompleteChangeStatus(this)" onchange="dateCompleteChangeStatus(this)" autocomplete="off">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -107,6 +107,14 @@
 
         function assetList(){
             $.modal.open("Asset List", prefix + "/asset");
+        }
+
+        function dateCompleteChangeStatus(obj){
+            if($.common.isNotEmpty($(obj).val())){
+                $("#status").val(3).trigger("change");
+            }else{
+                $("#status").val(2).trigger("change");
+            }
         }
     </script>
 </body>

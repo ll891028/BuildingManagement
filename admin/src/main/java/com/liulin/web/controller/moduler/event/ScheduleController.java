@@ -1,28 +1,26 @@
 package com.liulin.web.controller.moduler.event;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-
+import com.liulin.common.annotation.Log;
 import com.liulin.common.config.ServerConfig;
-import com.liulin.common.core.domain.entity.SysDept;
+import com.liulin.common.core.controller.BaseController;
+import com.liulin.common.core.domain.AjaxResult;
+import com.liulin.common.core.page.TableDataInfo;
+import com.liulin.common.enums.BusinessType;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.common.utils.poi.ExcelUtil;
 import com.liulin.system.domain.*;
 import com.liulin.system.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import com.liulin.common.annotation.Log;
-import com.liulin.common.enums.BusinessType;
-import com.liulin.common.core.controller.BaseController;
-import com.liulin.common.core.domain.AjaxResult;
-import com.liulin.common.utils.poi.ExcelUtil;
-import com.liulin.common.core.page.TableDataInfo;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * scheduleController
@@ -169,7 +167,12 @@ public class ScheduleController extends BaseController
 
         Schedule schedule = scheduleService.selectScheduleById(schId);
         mmap.put("schedule", schedule);
-
+        for (Servize servize : servizes) {
+            if (servize.getServiceId().equals(schedule.getServiceId())) {
+                servize.setSelected(true);
+                break;
+            }
+        }
         ScheduleAsset assetQuery = new ScheduleAsset();
         assetQuery.setSchId(schId);
         List<ScheduleAsset> taskAssets = scheduleAssetService.selectScheduleAssetList(assetQuery);

@@ -36,4 +36,9 @@ public class MailTest {
         System.out.println(JSONObject.toJSONString(list ));
     }
 
+    @Test
+    public void TestSMTP(){
+        mailService.sendSMTPMailTest();
+    }
+
 }
