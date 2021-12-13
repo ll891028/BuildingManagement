@@ -292,26 +292,26 @@ public class ScheduleController extends BaseController
         String prefixUrl = new ServerConfig().getUrl();
         if(CollectionUtils.isNotEmpty(list)){
             for (ScheduleDetail schedule : list) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(schedule.getSchDate());
-                cal.add(Calendar.DATE,1);
-                Date end =cal.getTime();
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTime(schedule.getSchDate());
+//                cal.add(Calendar.DATE,1);
+//                Date end =cal.getTime();
                 Map<String ,String> map = new HashMap<>();
                 map.put("id", String.valueOf(schedule.getSchId()));
                 map.put("title",schedule.getSchName());
                 map.put("url", prefixUrl+"/event/schedule/detail/"+schedule.getSchId());
                 map.put("class","event-success");
                 map.put("start", String.valueOf(schedule.getSchDate().getTime()));
-                map.put("end",String.valueOf(end.getTime()));
+                map.put("end",String.valueOf(schedule.getSchDate().getTime()));
                 eventList.add(map);
             }
         }
         if(CollectionUtils.isNotEmpty(tasks)){
             for (Task task : tasks) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(task.getTimeScheduled());
-                cal.add(Calendar.DATE,1);
-                Date end =cal.getTime();
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTime(task.getTimeScheduled());
+//                cal.add(Calendar.DATE,1);
+//                Date end =cal.getTime();
                 Map<String ,String> map = new HashMap<>();
                 map.put("id", String.valueOf(task.getTaskId()));
                 map.put("title",task.getTaskName()+" "+ DateUtils.parseDateToStr("dd-MM-yyyy HH:mm",
@@ -324,17 +324,17 @@ public class ScheduleController extends BaseController
                 }
 
                 map.put("start", String.valueOf(task.getTimeScheduled().getTime()));
-                map.put("end",String.valueOf(end.getTime()));
+                map.put("end",String.valueOf(task.getTimeScheduled().getTime()));
                 eventList.add(map);
             }
         }
 
         if(CollectionUtils.isNotEmpty(safetyChecks)){
             for (SafetyCheck safetyCheck : safetyChecks) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(safetyCheck.getDateSchedule());
-                cal.add(Calendar.DATE,1);
-                Date end =cal.getTime();
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTime(safetyCheck.getDateSchedule());
+//                cal.add(Calendar.DATE,1);
+//                Date end =cal.getTime();
                 Map<String ,String> map = new HashMap<>();
                 map.put("id", String.valueOf(safetyCheck.getSafetyCheckId()));
                 map.put("title","Safety Check "+ DateUtils.parseDateToStr("dd-MM-yyyy",
@@ -342,7 +342,7 @@ public class ScheduleController extends BaseController
                 map.put("url",prefixUrl+"/event/safetyCheck/detail/"+safetyCheck.getSafetyCheckId());
                 map.put("class","event-warning");
                 map.put("start", String.valueOf(safetyCheck.getDateSchedule().getTime()));
-                map.put("end",String.valueOf(end.getTime()));
+                map.put("end",String.valueOf(safetyCheck.getDateSchedule().getTime()));
                 eventList.add(map);
             }
         }

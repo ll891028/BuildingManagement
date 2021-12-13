@@ -180,7 +180,7 @@ public class SysProfileController extends BaseController
         }
         catch (Exception e)
         {
-            log.error("修改头像失败！", e);
+            log.error("change avatar error！", e);
             return error(e.getMessage());
         }
     }

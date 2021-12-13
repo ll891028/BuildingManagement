@@ -17,7 +17,7 @@
                 <div class="ibox-content">
                     <div class="text-center">
                         <p class="user-info-head" onclick="avatar()"><img class="img-circle img-lg" th:src="(${#strings.isEmpty(user.avatar)}) ? @{/img/profile.jpg} : @{${user.avatar}}" th:onerror="'this.src=\'' + @{'/img/profile.jpg'} + '\''"></p>
-                        <p><a href="javascript:avatar()">change avatar</a></p>
+                        <p><a href="javascript:avatar()">Change Avatar</a></p>
                     </div>
                     <ul class="list-group list-group-striped">
                         <li class="list-group-item"><i class="fa fa-user"></i>
@@ -176,9 +176,9 @@
         		//不固定
         		maxmin: true,
         		shade: 0.3,
-        		title: "修改头像",
+        		title: "Change Avatar",
         		content: url,
-        		btn: ['确定', '关闭'],
+        		btn: ['ok', 'close'],
         	    // 弹层外区域关闭
         		shadeClose: true,
         		yes: function(index, layero) {
