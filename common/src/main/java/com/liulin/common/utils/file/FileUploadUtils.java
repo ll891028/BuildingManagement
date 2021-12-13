@@ -1,9 +1,5 @@
 package com.liulin.common.utils.file;
 
-import java.io.File;
-import java.io.IOException;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.web.multipart.MultipartFile;
 import com.liulin.common.config.LiulinConfig;
 import com.liulin.common.constant.Constants;
 import com.liulin.common.exception.file.FileNameLengthLimitExceededException;
@@ -12,6 +8,11 @@ import com.liulin.common.exception.file.InvalidExtensionException;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.common.utils.uuid.IdUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * 文件上传工具类
@@ -114,7 +115,9 @@ public class FileUploadUtils
         file.transferTo(desc);
         
         String pathFileName = getPathFileName(baseDir, fileName);
-        return pathFileName;
+        AwsFileUtils.putObject("/avatar/"+fileName,desc);
+        desc.delete();
+        return AwsFileUtils.getUrl("avatar/"+fileName);
     }
 
     /**

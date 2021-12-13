@@ -96,7 +96,7 @@ public class SysProfileController extends BaseController
         user.setPwdUpdateDate(DateUtils.getNowDate());
         if (userService.resetUserPwd(user) > 0)
         {
-            ShiroUtils.setSysUser(userService.selectUserById(user.getUserId()));
+            ShiroUtils.setSysUser(user);
             return success();
         }
         return error("修改密码异常，请联系管理员");
@@ -172,7 +172,7 @@ public class SysProfileController extends BaseController
                 currentUser.setAvatar(avatar);
                 if (userService.updateUserInfo(currentUser) > 0)
                 {
-                    ShiroUtils.setSysUser(userService.selectUserById(currentUser.getUserId()));
+                    ShiroUtils.setSysUser(currentUser);
                     return success();
                 }
             }

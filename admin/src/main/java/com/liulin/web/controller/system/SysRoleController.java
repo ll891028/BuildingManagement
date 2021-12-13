@@ -1,16 +1,5 @@
 package com.liulin.web.controller.system;
 
-import java.util.List;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import com.liulin.common.annotation.Log;
 import com.liulin.common.constant.UserConstants;
 import com.liulin.common.core.controller.BaseController;
@@ -25,6 +14,14 @@ import com.liulin.framework.shiro.util.AuthorizationUtils;
 import com.liulin.system.domain.SysUserRole;
 import com.liulin.system.service.ISysRoleService;
 import com.liulin.system.service.ISysUserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 角色信息
@@ -159,7 +156,7 @@ public class SysRoleController extends BaseController
         role.setUpdateBy(ShiroUtils.getLoginName());
         if (roleService.authDataScope(role) > 0)
         {
-            ShiroUtils.setSysUser(userService.selectUserById(ShiroUtils.getSysUser().getUserId()));
+//            ShiroUtils.setSysUser(userService.selectUserById(ShiroUtils.getSysUser().getUserId()));
             return success();
         }
         return error();
