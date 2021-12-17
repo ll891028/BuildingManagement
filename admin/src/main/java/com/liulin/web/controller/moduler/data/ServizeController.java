@@ -173,6 +173,6 @@ public class ServizeController extends BaseController
     {
         servize.setCreateBy(ShiroUtils.getLoginName());
         servize.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
-        return toAjax(servizeService.updateAttachment(servize));
+        return  AjaxResult.success();
     }
 }

@@ -201,6 +201,6 @@ public class SupplierController extends BaseController
     {
         supplier.setCreateBy(ShiroUtils.getLoginName());
         supplier.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
-        return toAjax(supplierService.updateAttachment(supplier));
+        return  AjaxResult.success();
     }
 }

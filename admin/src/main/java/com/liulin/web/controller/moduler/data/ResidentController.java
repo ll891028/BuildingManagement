@@ -223,6 +223,6 @@ public class ResidentController extends BaseController
         resident.setCreateBy(ShiroUtils.getLoginName());
         resident.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         resident.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
-        return toAjax(residentService.updateAttachment(resident));
+        return  AjaxResult.success();
     }
 }

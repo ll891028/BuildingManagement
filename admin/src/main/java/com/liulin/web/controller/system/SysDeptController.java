@@ -177,7 +177,7 @@ public class SysDeptController extends BaseController
     public AjaxResult remove(SysDept dept)
     {
 
-        return toAjax(deptService.updateDeptAttachment(dept));
+        return  AjaxResult.success();
     }
 
     /**

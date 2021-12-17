@@ -424,7 +424,7 @@ public class ScheduleController extends BaseController
         schedule.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         schedule.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         schedule.setCreateBy(ShiroUtils.getLoginName());
-        return toAjax(scheduleService.updateScheduleAttachment(schedule));
+        return AjaxResult.success();
     }
 
     /**

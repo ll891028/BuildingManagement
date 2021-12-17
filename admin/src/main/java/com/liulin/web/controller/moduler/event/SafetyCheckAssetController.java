@@ -143,6 +143,6 @@ public class SafetyCheckAssetController extends BaseController
         safetyCheckAsset.setCreateBy(ShiroUtils.getLoginName());
         safetyCheckAsset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         safetyCheckAsset.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
-        return toAjax(safetyCheckAssetService.updateAssetAttachment(safetyCheckAsset));
+        return  AjaxResult.success();
     }
 }

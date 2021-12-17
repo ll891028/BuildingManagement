@@ -162,6 +162,6 @@ public class DefectsController extends BaseController
         defects.setCreateBy(ShiroUtils.getLoginName());
         defects.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         defects.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
-        return toAjax(defectsService.updateDefectsAttachment(defects));
+        return  AjaxResult.success();
     }
 }

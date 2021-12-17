@@ -195,6 +195,6 @@ public class AssetController extends BaseController
         asset.setCreateBy(ShiroUtils.getLoginName());
         asset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         asset.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
-        return toAjax(assetService.updateAttachment(asset));
+        return  AjaxResult.success();
     }
 }

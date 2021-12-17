@@ -45,11 +45,12 @@
 
         $(document).ready(function () {
             var attachments = [[${attachments}]];
-            var servize = [[${servize}]];
+            var schedule = [[${schedule}]];
             var initPrevConfig = new Array();
             var imgUrls = new Array();
             var attachmentUrls="";
             var originalFileNames="";
+            var fileMap = new Map();
             $(attachments).each(function (index,item) {
                 initPrevConfig[index] = {
                     caption: item.fileName, /*文件标题*/
@@ -58,9 +59,10 @@
                     downloadUrl: item.attachmentUrl,   //这个是显示下载按钮的关键，如果没有此属性，下载按钮是不会显示的。
                     url: prefix +"/attachment/remove",   /* 预览中的删除按钮的url*/
                     // key: item.attachmentId,             /* 删除时ajax携带的参数*/
-                    extra: {attachmentId: item.attachmentId,serviceId:servize.serviceId}  /*删除文件携带的参数*/
+                    extra: {attachmentId: item.attachmentId,schId:schedule.schId}  /*删除文件携带的参数*/
                 };
                 imgUrls.push(item.attachmentUrl);
+                fileMap.set(item.attachmentId,item.attachmentUrl);
                 attachmentUrls+=item.attachmentUrl+",";
                 originalFileNames+=item.fileName+",";
             });
@@ -73,7 +75,7 @@
                 initialPreview: imgUrls,                         //你的变量
                 initialPreviewConfig: initPrevConfig,
                 showPreview: true,
-                initialPreviewAsData: true,
+                // initialPreviewAsData: true,
                 overwriteInitial: false, //不覆盖已存在的图片
                 maxFileSize:50*1024, //50MB  单位KB
                 language: 'en'
@@ -91,8 +93,23 @@
                 $("#attachmentUrls").val(attachmentUrls);
                 $("#originalFileNames").val(originalFileNames);
             }).on('fileremoved', function (event, id, index) {
+                console.info()
                 $("input[name='" + event.currentTarget.id + "']").val('')
-            })
+            }).on("filesuccessremove", function (event, data, previewId, index) {
+                console.info("data:"+data);
+            }).on('filedeleted', function(event, key, jqXHR, data) {
+                console.log('Key = ' + key);
+                console.log('data = ' + data);
+                fileMap.delete(data.attachmentId);
+                var urls = "";
+                var keys = fileMap.keys();
+                let arr = Array.from(keys);
+                for (let i = 0; i < arr.length; i++) {
+                    var key  = arr[i];
+                    urls += fileMap.get(key);
+                }
+                $("#attachmentUrls").val(urls);
+            });
         });
     </script>
     <script th:inline="javascript">

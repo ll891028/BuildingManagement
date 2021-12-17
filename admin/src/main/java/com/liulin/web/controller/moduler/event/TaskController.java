@@ -396,7 +396,7 @@ public class TaskController extends BaseController
         task.setCreateBy(ShiroUtils.getLoginName());
         task.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         task.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
-        return toAjax(taskService.updateAttachment(task));
+        return  AjaxResult.success();
     }
 
 }
