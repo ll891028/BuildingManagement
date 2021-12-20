@@ -161,7 +161,8 @@
             // 多图上传
             $("#multipleFile").fileinput({
                 uploadUrl: ctx + 'common/uploads',
-                uploadAsync: false,
+                uploadAsync: true,
+                showUpload: false,
                 initialPreview: imgUrls,                         //你的变量
                 initialPreviewConfig: initPrevConfig,
                 showPreview: true,
@@ -169,7 +170,9 @@
                 overwriteInitial: false, //不覆盖已存在的图片
                 maxFileSize:50*1024, //50MB  单位KB
                 language: 'en'
-            }).on('filebatchuploadsuccess', function (event, data, previewId, index) {
+            }).on("filebatchselected", function(event, files) {
+                $(this).fileinput("upload");
+            }).on('fileuploaded', function (event, data, previewId, index) {
                 var rsp = data.response;
                 var fileJson = rsp.data;
                 var attachmentUrls = $("#attachmentUrls").val();

@@ -58,7 +58,7 @@
         $("#multipleFile").fileinput({
             uploadUrl: ctx + 'common/uploads',
             uploadAsync: false
-        }).on('filebatchuploadsuccess', function (event, data, previewId, index) {
+        }).on('fileuploaded', function (event, data, previewId, index) {
         	var rsp = data.response;
         	var fileJson = rsp.data;
         	for (var i in fileJson) {
