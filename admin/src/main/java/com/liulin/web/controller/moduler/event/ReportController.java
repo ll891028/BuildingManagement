@@ -1,29 +1,38 @@
 package com.liulin.web.controller.moduler.event;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
+import com.alibaba.fastjson.JSONObject;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.UnitValue;
 import com.liulin.common.annotation.Log;
 import com.liulin.common.config.LiulinConfig;
 import com.liulin.common.config.ServerConfig;
 import com.liulin.common.constant.Constants;
 import com.liulin.common.core.controller.BaseController;
 import com.liulin.common.core.domain.AjaxResult;
+import com.liulin.common.core.domain.entity.SysDept;
 import com.liulin.common.core.page.TableDataInfo;
 import com.liulin.common.enums.BusinessType;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.common.utils.file.AwsFileUtils;
+import com.liulin.common.utils.file.FileTypeUtils;
+import com.liulin.common.utils.pdf.PdfItextUtils;
 import com.liulin.common.utils.uuid.UUID;
+import com.liulin.system.domain.Attachment;
 import com.liulin.system.domain.ReportDto;
 import com.liulin.system.domain.Schedule;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.IScheduleService;
-import com.spire.xls.FileFormat;
-import com.spire.xls.Workbook;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.*;
+import com.spire.xls.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,15 +41,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: LinLiu
@@ -80,125 +91,18 @@ public class ReportController extends BaseController {
         return getDataTable(list);
     }
 
-
-    /**
-     * 导出schedule列表
-     */
-    @RequiresPermissions("event:report:export")
-    @Log(title = "schedule", businessType = BusinessType.EXPORT)
-    @PostMapping("/export2")
-    @ResponseBody
-    public AjaxResult export2(ReportDto reportDto) {
-        reportDto.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
-        List<ReportDto> list = scheduleService.selectReportList(reportDto);
-        //通过工具类创建writer
-        String prefix = serverConfig.getUrl() + Constants.RESOURCE_PREFIX + "/upload";
-        String url = prefix + "/report.xlsx";
-        // 上传文件路径
-//        String filePath = LiulinConfig.getUploadPath();
-
-
-        String fileName = UUID.fastUUID() + "_report.xlsx";
-        String downloadPath = LiulinConfig.getDownloadPath() + fileName;
-        ExcelWriter writer = ExcelUtil.getWriter(downloadPath);
-        CellStyle cellStyle = writer.getHeadCellStyle();
-        cellStyle.setFillBackgroundColor(IndexedColors.RED.getIndex());
-        String lastService = "";
-        ArrayList<Map<String, Object>> rows = new ArrayList<>();
-        int i = 0;
-        for (ReportDto dto : list) {
-            if (!lastService.equals(dto.getService())) {
-                if (StringUtils.isNotEmpty(lastService)) {
-                    writer.write(rows, true);
-                    rows = new ArrayList<>();
-                }
-                i++;
-                lastService = dto.getService();
-                List<String> row1 = CollUtil.newArrayList("Row", "Issues", "description", "Date Raised", "Status");
-                writer.setColumnStyle(i, cellStyle);
-                writer.merge(row1.size() - 1, lastService);
-
-            }
-            Map<String, Object> row = new LinkedHashMap<>();
-            row.put("Row", dto.getRow());
-            row.put("Issues", dto.getName());
-            row.put("description", dto.getDescription());
-            row.put("Date Raised", DateUtil.format(dto.getDateRaised(), "dd-MM-yyyy"));
-            row.put("Status", dto.getStatus() == Schedule.PENDING ? "Pending" : "Closed");
-
-            String attachmentUrls = "";
-//            if(StringUtils.isNotEmpty(dto.getAttachmentIds())){
-//                String[] attachmentIdStrArray = dto.getAttachmentIds().split(",");
-//                int [] attachmentIdArray =
-//                        Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
-//                List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
-//                if(CollectionUtils.isNotEmpty(attachments)){
-//
-//                    for (Attachment attachment : attachments) {
-//
-////                            InputStream stream = URLUtil.getStream(new URL(attachment.getAttachmentUrl()));
-////                            OutputStream os = new FileOutputStream("/Users/liulin/upload/upload/2021/08/03/5b992ed8-fcba-4ef7-90f2");
-//                        String fileNameTemp =attachment.getFileName();
-//                        String downloadPathTemp = LiulinConfig.getDownloadPath();
-////                        downloadFromUrl(attachment.getAttachmentUrl(),downloadPathTemp);
-//                        File f = new File(downloadPathTemp+getFileNameFromUrl(attachment.getAttachmentUrl()));
-//                        URL httpurl = null;
-//                        System.out.println(attachment.getAttachmentUrl());
-//                        try {
-//                            httpurl = new URL("https://pic.ntimg.cn/20110811/8029346_082444436000_2.jpg");
-//                            org.apache.commons.io.FileUtils
-//                                    .copyURLToFile(httpurl, f);
-//                        } catch (MalformedURLException e) {
-//                            e.printStackTrace();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//
-//
-//                        byte[] bytes1 = FileUtil.readBytes(f);
-////                            byte[] bytes = IoUtil.write(os);
-//                        writePic(writer, 5, i+2, bytes1, HSSFWorkbook.PICTURE_TYPE_PNG);
-//
-//
-//                    }
-//                }
-//            }
-//            row.put("Attachments", dto.getAttachmentIds());
-            rows.add(row);
-            i++;
-        }
-
-        //一次性写出内容，强制输出标题
-        writer.write(rows, true);
-        writer.autoSizeColumnAll();
-        writer.close();
-//        String url = serverConfig.getUrl() + fileName;
-        //关闭writer，释放内存
-
-        //转换excel到pdf
-        Workbook workbook = new Workbook();
-
-        workbook.loadFromFile(downloadPath);
-
-        //Set worksheets to fit to page when converting
-
-        workbook.getConverterSetting().setSheetFitToPage(true);
-
-        //Save the resulting document to a specified path
-        String pdfName = UUID.fastUUID() + "_report.pdf";
-        workbook.saveToFile(LiulinConfig.getDownloadPath() + pdfName, FileFormat.PDF);
-
-        return AjaxResult.success(pdfName);
-    }
-
     /**
      * 导出Activity Report列表
      */
-    @RequiresPermissions("event:report:export")
-    @Log(title = "schedule", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    @ResponseBody
-    public AjaxResult export(ReportDto reportDto) {
+//    @RequiresPermissions("event:report:export")
+//    @Log(title = "schedule", businessType = BusinessType.EXPORT)
+//    @PostMapping("/export")
+//    @ResponseBody
+    public AjaxResult exportReMake(ReportDto reportDto) {
+        Long startTime =DateUtil.current();
         reportDto.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        String logoUrl = ShiroUtils.getSysUser().getBuilding().getLogo();
+        SysDept building = ShiroUtils.getSysUser().getBuilding();
         List<ReportDto> list = scheduleService.selectReportList(reportDto);
         //通过工具类创建writer
         String prefix = serverConfig.getUrl() + Constants.RESOURCE_PREFIX + "/upload";
@@ -206,101 +110,138 @@ public class ReportController extends BaseController {
         // 上传文件路径
 //        String filePath = LiulinConfig.getUploadPath();
 
-
+        Workbook workbook = new Workbook();
+        List<File> needDeleteFile = new ArrayList<>();
         String fileName = UUID.fastUUID() + "_report.xlsx";
         String downloadPath = LiulinConfig.getDownloadPath() + fileName;
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet();
-        sheet.setColumnWidth(0,5*256);
-        sheet.setColumnWidth(1,10*256);
-        sheet.setColumnWidth(2,15*256);
-        sheet.setColumnWidth(3,20*256);
-        sheet.setColumnWidth(4,10*256);
-        sheet.setColumnWidth(5,10*256);
-
-        String lastService = "";
-
-        int i = 0;
-        XSSFCellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        setBorder(workbook,cellStyle);
-        for (ReportDto dto : list) {
-            if (!lastService.equals(dto.getService())) {
-                lastService = dto.getService();
-                XSSFRow row = sheet.createRow(i);
-                XSSFCell cell = row.createCell(0);
-                cell.setCellValue(lastService);
-                XSSFCellStyle titleStyle = workbook.createCellStyle();
-                setTitleStyle(workbook, titleStyle,(short)(11+i));
-                cell.setCellStyle(titleStyle);
-                XSSFCell cell1 = row.createCell(1);
-                cell1.setCellStyle(titleStyle);
-                XSSFCell cell2 = row.createCell(2);
-                cell2.setCellStyle(titleStyle);
-                XSSFCell cell3 = row.createCell(3);
-                cell3.setCellStyle(titleStyle);
-                XSSFCell cell4 = row.createCell(4);
-                cell4.setCellStyle(titleStyle);
-                XSSFCell cell5 = row.createCell(5);
-                cell5.setCellStyle(titleStyle);
-
-                CellRangeAddress region = new CellRangeAddress(i, i, 0, 5);
-                sheet.addMergedRegion(region);
-                i++;
-
-                XSSFRow rowTitle = sheet.createRow(i);
-                XSSFCell Row = rowTitle.createCell(0);
-                Row.setCellStyle(cellStyle);
-                Row.setCellValue("Row");
-                XSSFCell Issues = rowTitle.createCell(1);
-                Issues.setCellStyle(cellStyle);
-                Issues.setCellValue("Issues");
-                XSSFCell Task_Type = rowTitle.createCell(2);
-                Task_Type.setCellStyle(cellStyle);
-                Task_Type.setCellValue("Task Type");
-                XSSFCell Description = rowTitle.createCell(3);
-                Description.setCellStyle(cellStyle);
-                Description.setCellValue("Description");
-                XSSFCell Date_Raised = rowTitle.createCell(4);
-                Date_Raised.setCellStyle(cellStyle);
-                Date_Raised.setCellValue("Date Raised");
-                XSSFCell Status = rowTitle.createCell(5);
-                Status.setCellStyle(cellStyle);
-                Status.setCellValue("Status");
-                i++;
-            }
-
-            XSSFRow rowTitle = sheet.createRow(i);
-            XSSFCell Row = rowTitle.createCell(0);
-            Row.setCellStyle(cellStyle);
-            Row.setCellValue(dto.getRow());
-            XSSFCell Issues = rowTitle.createCell(1);
-            Issues.setCellStyle(cellStyle);
-            Issues.setCellValue(dto.getName());
-            XSSFCell Task_Type = rowTitle.createCell(2);
-            Task_Type.setCellStyle(cellStyle);
-            Task_Type.setCellValue(dto.getTaskTypeText());
-            XSSFCell Description = rowTitle.createCell(3);
-            Description.setCellStyle(cellStyle);
-            Description.setCellValue(dto.getDescription());
-            XSSFCell Date_Raised = rowTitle.createCell(4);
-            Date_Raised.setCellStyle(cellStyle);
-            Date_Raised.setCellValue(DateUtil.format(dto.getDateRaised(), "dd-MM-yyyy"));
-            XSSFCell Status = rowTitle.createCell(5);
-            Status.setCellStyle(cellStyle);
-            Status.setCellValue(dto.getStatus() == Schedule.PENDING ? "Pending" : "Closed");
-            i++;
-        }
+//        XSSFWorkbook workbook = new XSSFWorkbook();
+//        XSSFSheet sheet = workbook.createSheet();
+        //获取第一张工作表（新建的Workbook默认包含3张工作表）
+        Worksheet sheet = workbook.getWorksheets().get(0);
+        String localPath = LiulinConfig.getProfile()+"/aws/";
+        String logoFilePath = AwsFileUtils.amazonS3DownloadingByUrl(logoUrl, localPath);
+        File logoFile = new File(logoFilePath);
+        needDeleteFile.add(logoFile);
+        //加载图片
+        BufferedImage image = null;
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(downloadPath);
-            workbook.write(fileOutputStream);
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            image = ImageIO.read(logoFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        //设置图片页眉
+        sheet.getPageSetup().setLeftHeaderImage(image);
+        sheet.getPageSetup().setLeftHeader("&G");
+        sheet.getPageSetup().setLeftHeaderPictureHeight(60);
+        sheet.getPageSetup().setLeftHeaderPictureWidth(200);
+        StringBuffer rhsb = new StringBuffer();
+        rhsb.append("&\"Tahoma\"&9 ");
+        rhsb.append(building.getSpn()+" ");
+        rhsb.append(building.getDeptName()+"\n");
+        rhsb.append("BM Monthly Report"+"\n");
+        if(StringUtils.isNotEmpty((String) reportDto.getParams().get("beginStartDate"))||StringUtils.isNotEmpty((String) reportDto.getParams().get("endStartDate"))){
+            rhsb.append("("+reportDto.getParams().get("beginStartDate")+"-"+reportDto.getParams().get("endStartDate")+")");
+        }
+
+        sheet.getPageSetup().setRightHeader(rhsb.toString());
+
+        //设置显示样式
+        sheet.setViewMode(ViewMode.Layout);
+
+        //为第一张工作表设置名称
+        sheet.setName("Report");
+//        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        sheet.setColumnWidth(1,5);
+        sheet.setColumnWidth(2,10);
+        sheet.setColumnWidth(3,10);
+        sheet.setColumnWidth(4,10);
+        sheet.setColumnWidth(5,10);
+        sheet.setColumnWidth(6,10);
+        sheet.setColumnWidth(7,20);
+
+        String lastService = "";
+//        byte[] bytes = ImageUtils.readFileFromAws(logoUrl);
+//        byte[] bytes = ImageUtils.getImage("C:\\image\\profile\\69152d83-a2d0-4cdb-aa16-7bb4de006236.png");
+        int rowNum = 1;
+        int column = 7;
+        CellStyle cellStyle = workbook.getStyles().addStyle("data style");
+        setBorder(cellStyle);
+
+        CellStyle titleStyle = workbook.getStyles().addStyle("title style");
+        titleStyle.setHorizontalAlignment(HorizontalAlignType.Center);
+        titleStyle.setVerticalAlignment(VerticalAlignType.Center);
+        titleStyle.setColor(Color.gray);
+        for (ReportDto dto : list) {
+            if (!lastService.equals(dto.getService())) {
+                lastService = dto.getService();
+                setTitleStyle(sheet,rowNum,column,dto.getService(),titleStyle);
+                rowNum+=2;
+            }
+            sheet.setRowHeight(rowNum,40);
+
+            CellRange Row = sheet.getCellRange(rowNum, 1);
+            Row.setStyle(cellStyle);
+            Row.setText(String.valueOf(dto.getRow()));
+
+            CellRange Issues = sheet.getCellRange(rowNum, 2);
+            Issues.setStyle(cellStyle);
+            Issues.setText(dto.getName());
+
+            CellRange Task_Type = sheet.getCellRange(rowNum, 3);
+            Task_Type.setStyle(cellStyle);
+            Task_Type.setText(dto.getTaskTypeText());
+
+            CellRange Description = sheet.getCellRange(rowNum, 4);
+            Description.setStyle(cellStyle);
+            Description.setText(dto.getDescription());
+
+
+            CellRange Date_Raised = sheet.getCellRange(rowNum, 5);
+            Date_Raised.setStyle(cellStyle);
+            Date_Raised.setText(DateUtil.format(dto.getDateRaised(), "dd-MM-yyyy"));
+
+            CellRange Status = sheet.getCellRange(rowNum, 6);
+            Status.setStyle(cellStyle);
+            Status.setText(dto.getStatus() == Schedule.PENDING ? "Pending" : "Closed");
+
+            int count = 0;
+            //添加图片到工作表的指定位置
+            if(StringUtils.isNotEmpty(reportDto.getAttachmentIds())){
+                String[] attachmentIds = reportDto.getAttachmentIds().split(",");
+                long [] attachmentIdArray =
+                        Arrays.asList(attachmentIds).stream().mapToLong(Long::parseLong).toArray();
+                List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+                for (Attachment attachment : attachments) {
+                    if(count==2){
+                        break;
+                    }
+                    if(FileTypeUtils.getFileTypeByExt(attachment.getExt()).equals("image")){
+                        String filePathPrefix = LiulinConfig.getProfile()+"/aws/";
+                        String filePath = AwsFileUtils.amazonS3DownloadingByUrl(logoUrl, filePathPrefix);
+                        File file = new File(filePath);
+                        needDeleteFile.add(file);
+                        ExcelPicture pic = sheet.getPictures().add(rowNum, 7,filePath);
+                        pic.setWidth(40);
+                        pic.setHeight(40);
+                        pic.setLeftColumnOffset(75+325*count);
+                        pic.setTopRowOffset(20);
+                        count++;
+                    }
+                }
+            }
+            rowNum++;
+        }
+        CellRange cellRange = sheet.getCellRange(sheet.getFirstRow(), sheet.getFirstColumn(), sheet.getLastRow(), sheet.getLastColumn());
+        cellRange.getBorders().setLineStyle(LineStyleType.Thin);
+        cellRange.getBorders().getByBordersLineType(BordersLineType.DiagonalDown).setLineStyle(LineStyleType.None);
+        cellRange.getBorders().getByBordersLineType(BordersLineType.DiagonalUp).setLineStyle(LineStyleType.None);
+        cellRange.getBorders().setColor(Color.black);
+
+        //保存结果文档
+        workbook.saveToFile(downloadPath, FileFormat.Version2013);
+        long excelEnd = DateUtil.current();
+        logger.info("Excel生成耗时:{}ms",excelEnd-startTime);
 
         //转换excel到pdf
         Workbook workbookConvert = new Workbook();
@@ -309,13 +250,123 @@ public class ReportController extends BaseController {
 
         //Set worksheets to fit to page when converting
 
-        workbookConvert.getConverterSetting().setSheetFitToPage(false);
+        workbookConvert.getConverterSetting().setSheetFitToPage(true);
 
         //Save the resulting document to a specified path
         String pdfName = UUID.fastUUID() + "_report.pdf";
 
         workbookConvert.saveToFile(LiulinConfig.getDownloadPath() + pdfName, FileFormat.PDF);
+        logger.info("Excel转PDF耗时:{}ms",DateUtil.current()-excelEnd);
+        //删除临时文件
+        if(CollectionUtils.isNotEmpty(needDeleteFile)){
+            needDeleteFile.forEach(file->{
+                file.delete();
+            });
+        }
 
+
+        return AjaxResult.success(pdfName);
+    }
+
+
+    /**
+     * 导出Activity Report列表
+     */
+    @RequiresPermissions("event:report:export")
+    @Log(title = "schedule", businessType = BusinessType.EXPORT)
+    @PostMapping("/export")
+    @ResponseBody
+    public AjaxResult exportItextEdition(ReportDto reportDto) throws MalformedURLException {
+        String prefix = serverConfig.getUrl() + Constants.RESOURCE_PREFIX + "/upload";
+        String pdfName = UUID.fastUUID() + "_report.pdf";
+        String pdfSavePath = LiulinConfig.getDownloadPath() + pdfName;
+        //需要删除的临时文件
+        List<File> needDeleteFile = new ArrayList<>();
+        File pdfFile = new File(pdfSavePath);
+        Document doc = null;
+        PdfWriter writer = null;
+        try {
+            writer = new PdfWriter(pdfFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        PdfDocument pdfDoc = new PdfDocument(writer);
+        doc = new Document(pdfDoc);
+        Long startTime =DateUtil.current();
+        reportDto.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        String logoUrl = ShiroUtils.getSysUser().getBuilding().getLogo();
+        SysDept building = ShiroUtils.getSysUser().getBuilding();
+        List<ReportDto> list = scheduleService.selectReportList(reportDto);
+        //通过工具类创建writer
+
+        String localPath = LiulinConfig.getProfile()+"/aws/";
+        String logoFilePath = AwsFileUtils.amazonS3DownloadingByUrl(logoUrl, localPath);
+        File logoFile = new File(logoFilePath);
+        needDeleteFile.add(logoFile);
+
+        UnitValue[] unitValue = new UnitValue[]{
+                UnitValue.createPercentValue((float) 5),
+                UnitValue.createPercentValue((float) 20),
+                UnitValue.createPercentValue((float) 10),
+                UnitValue.createPercentValue((float) 20),
+                UnitValue.createPercentValue((float) 15),
+                UnitValue.createPercentValue((float) 10),
+                UnitValue.createPercentValue((float) 10),
+                UnitValue.createPercentValue((float) 10)};
+        Table table = new Table(unitValue);
+
+        String lastService = "";
+        StringBuffer rhsb = new StringBuffer();
+        rhsb.append(building.getSpn()+" ");
+        rhsb.append(building.getDeptName()+"\n");
+        rhsb.append("BM Monthly Report"+"\n");
+
+        Float titleFontSize = 10f;
+        for (ReportDto dto : list) {
+            if (!lastService.equals(dto.getService())) {
+                lastService = dto.getService();
+                PdfItextUtils.addTitle(titleFontSize,table,lastService);
+            }
+            JSONObject data = (JSONObject) JSONObject.toJSON(dto);
+
+            int count=1;
+            //添加图片到工作表的指定位置
+            if(StringUtils.isNotEmpty(dto.getAttachmentIds())){
+                String[] attachmentIds = dto.getAttachmentIds().split(",");
+                long [] attachmentIdArray =
+                        Arrays.asList(attachmentIds).stream().mapToLong(Long::parseLong).toArray();
+                List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+                for (Attachment attachment : attachments) {
+                    if(count==3){
+                        break;
+                    }
+                    if(FileTypeUtils.getFileTypeByExt(attachment.getExt()).equals("image")){
+                        String filePathPrefix = LiulinConfig.getProfile()+"/aws/";
+                        String filePath = AwsFileUtils.amazonS3DownloadingByUrl(attachment.getAttachmentUrl(), filePathPrefix);
+                        File file = new File(filePath);
+                        data.put("image"+count,filePath);
+                        needDeleteFile.add(file);
+                        count++;
+                    }
+                }
+            }
+            PdfItextUtils.addContent(titleFontSize,table,data);
+
+        }
+        PdfItextUtils.addHeaderToPdf(pdfDoc,logoFilePath,rhsb.toString());
+        pdfDoc.addNewPage();
+        doc.add(table);
+        logger.info("Excel转PDF耗时:{}ms",DateUtil.current()-startTime);
+
+        if (doc != null) {
+            doc.close();
+        }
+        //删除临时文件
+        if(CollectionUtils.isNotEmpty(needDeleteFile)){
+            needDeleteFile.forEach(file->{
+                file.delete();
+            });
+        }
         return AjaxResult.success(pdfName);
     }
 
@@ -358,30 +409,40 @@ public class ReportController extends BaseController {
         return name;
     }
 
-    private void setBorder(XSSFWorkbook workbook,XSSFCellStyle style) {
-        style.setVerticalAlignment(VerticalAlignment.CENTER);
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        style.setBorderTop(BorderStyle.THIN);
-        style.setAlignment(HorizontalAlignment.CENTER);
+    private void setBorder(CellStyle style) {
+        style.setVerticalAlignment(VerticalAlignType.Center);
         style.setWrapText(true);
     }
 
-    private void setTitleStyle(XSSFWorkbook workbook, XSSFCellStyle style,Short i) {
-        style.setVerticalAlignment(VerticalAlignment.CENTER);
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        style.setBorderTop(BorderStyle.THIN);
+    private void setTitleStyle(Worksheet sheet,Integer row,Integer column,String title,CellStyle cellStyle) {
+        //合并单元格
+        sheet.getRange().get(row,1,row,column).merge();
+        //给指定单元格区域设置背景颜色
+        sheet.getCellRange(row,1,row,column).getStyle().setColor(Color.gray);
+        CellRange cellRange = sheet.getCellRange(row, 1, row, column);
+        cellRange.setText(title);
+        cellRange.setStyle(cellStyle);
 
-        style.setFillForegroundColor(i);
-        style.setAlignment(HorizontalAlignment.CENTER);
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        XSSFFont font = workbook.createFont();
-        font.setFontHeightInPoints((short) 16);
-        style.setFont(font);
+        row++;
+        CellRange Row = sheet.getCellRange(row, 1);
+        Row.setText("Row");
 
+        CellRange Issues = sheet.getCellRange(row, 2);
+        Issues.setText("Issues");
 
+        CellRange Task_Type = sheet.getCellRange(row, 3);
+        Task_Type.setText("Task Type");
+
+        CellRange Description = sheet.getCellRange(row, 4);
+        Description.setText("Description");
+
+        CellRange Date_Raised = sheet.getCellRange(row, 5);
+        Date_Raised.setText("Date Raised");
+
+        CellRange Status = sheet.getCellRange(row, 6);
+        Status.setText("Status");
+
+        CellRange Photos = sheet.getCellRange(row, 7);
+        Photos.setText("Photos");
     }
 }

@@ -154,6 +154,12 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-dynamodb</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext7-core</artifactId>
+            <version>7.1.11</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
 
 </project>

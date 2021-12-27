@@ -134,8 +134,8 @@ public class AssetController extends BaseController
         String attachmentIds = asset.getAttachmentIds();
         if(StringUtils.isNotEmpty(attachmentIds)){
             String[] attachmentIdStrArray = attachmentIds.split(",");
-            int [] attachmentIdArray =
-                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+            long [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToLong(Long::parseLong).toArray();
             List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
             if(CollectionUtils.isNotEmpty(attachments)){
                 mmap.put("attachments",attachments);

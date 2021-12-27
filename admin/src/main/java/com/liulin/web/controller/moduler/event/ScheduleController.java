@@ -186,8 +186,8 @@ public class ScheduleController extends BaseController
         String attachmentIds = schedule.getAttachmentIds();
         if(StringUtils.isNotEmpty(attachmentIds)){
             String[] attachmentIdStrArray = attachmentIds.split(",");
-            int [] attachmentIdArray =
-                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+           long [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToLong(Long::parseLong).toArray();
             List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
             if(CollectionUtils.isNotEmpty(attachments)){
                 mmap.put("attachments",attachments);
@@ -387,8 +387,8 @@ public class ScheduleController extends BaseController
         String attachmentIds = detail.getAttachmentIds();
         if(StringUtils.isNotEmpty(attachmentIds)){
             String[] attachmentIdStrArray = attachmentIds.split(",");
-            int [] attachmentIdArray =
-                    Arrays.asList(attachmentIdStrArray).stream().mapToInt(Integer::parseInt).toArray();
+           long [] attachmentIdArray =
+                    Arrays.asList(attachmentIdStrArray).stream().mapToLong(Long::parseLong).toArray();
             List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
             if(CollectionUtils.isNotEmpty(attachments)){
                 mmap.put("attachments",attachments);

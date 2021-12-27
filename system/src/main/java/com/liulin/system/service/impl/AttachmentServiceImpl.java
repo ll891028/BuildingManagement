@@ -1,18 +1,18 @@
 package com.liulin.system.service.impl;
 
-import java.util.List;
-
 import com.liulin.common.config.LiulinConfig;
 import com.liulin.common.config.ServerConfig;
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Attachment;
+import com.liulin.system.mapper.AttachmentMapper;
+import com.liulin.system.service.IAttachmentService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.AttachmentMapper;
-import com.liulin.system.domain.Attachment;
-import com.liulin.system.service.IAttachmentService;
-import com.liulin.common.core.text.Convert;
+
+import java.util.List;
 
 /**
  * attachmentService业务层处理
@@ -109,7 +109,7 @@ public class AttachmentServiceImpl implements IAttachmentService
     }
 
     @Override
-    public List<Attachment> selectAttachmentByIds(int[] ids) {
+    public List<Attachment> selectAttachmentByIds(long[] ids) {
         Attachment query = new Attachment();
         query.setAttachmentIds(ids);
         return attachmentMapper.selectAttachmentList(query);

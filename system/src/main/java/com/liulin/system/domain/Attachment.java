@@ -1,5 +1,7 @@
 package com.liulin.system.domain;
 
+import com.liulin.common.utils.StringUtils;
+import com.liulin.common.utils.file.FileTypeUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
@@ -36,7 +38,7 @@ public class Attachment extends BaseEntity
 
     private String fileName;
 
-    private int[] attachmentIds;
+    private long[] attachmentIds;
 
     private Long buildingId;
 
@@ -58,11 +60,11 @@ public class Attachment extends BaseEntity
         this.buildingId = buildingId;
     }
 
-    public int[] getAttachmentIds() {
+    public long[] getAttachmentIds() {
         return attachmentIds;
     }
 
-    public void setAttachmentIds(int[] attachmentIds) {
+    public void setAttachmentIds(long[] attachmentIds) {
         this.attachmentIds = attachmentIds;
     }
 
@@ -85,7 +87,10 @@ public class Attachment extends BaseEntity
     }
 
     public String getType() {
-        return type;
+        if(StringUtils.isNotEmpty(ext)){
+            return FileTypeUtils.getFileTypeByExt(this.ext);
+        }
+        return null;
     }
 
     public void setType(String type) {

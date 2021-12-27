@@ -1,7 +1,8 @@
 package com.liulin.system.service;
 
-import java.util.List;
 import com.liulin.system.domain.Attachment;
+
+import java.util.List;
 
 /**
  * attachmentService接口
@@ -61,7 +62,7 @@ public interface IAttachmentService
 
     public Attachment getAttachmentByMd5(String md5);
 
-    List<Attachment> selectAttachmentByIds(int[] ids);
+    List<Attachment> selectAttachmentByIds(long[] ids);
 
     String insertAttachments(String[] attachmentUrls, String[] originalFileNames,String createBy,Long buildingId,
                              Long companyId);
