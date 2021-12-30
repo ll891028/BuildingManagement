@@ -135,7 +135,7 @@ public class SafetyCheckAssetController extends BaseController
      * 删除asset附件
      */
     @Log(title = "删除asset附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("event:safetyCheckAsset:remove")
+    @RequiresPermissions("event:safetyCheckAsset:edit")
     @PostMapping("/attachment/remove")
     @ResponseBody
     public AjaxResult attachRemove(SafetyCheckAsset safetyCheckAsset)

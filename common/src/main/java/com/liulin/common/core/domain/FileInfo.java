@@ -22,6 +22,16 @@ public class FileInfo
 
     private String originalFileName;
 
+    private Long size;
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
     public FileInfo()
     {
 
@@ -33,11 +43,12 @@ public class FileInfo
         this.url = url;
     }
 
-    public FileInfo(String name, String url,String originalFileName)
+    public FileInfo(String name, String url,String originalFileName,Long size)
     {
         this.name = name;
         this.url = url;
         this.originalFileName = originalFileName;
+        this.size = size;
     }
 
     public String getOriginalFileName() {

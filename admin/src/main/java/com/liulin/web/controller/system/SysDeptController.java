@@ -171,7 +171,7 @@ public class SysDeptController extends BaseController
      * 删除附件
      */
     @Log(title = "删除building附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("system:dept:remove")
+    @RequiresPermissions("system:dept:edit")
     @PostMapping("/attachment/remove")
     @ResponseBody
     public AjaxResult remove(SysDept dept)

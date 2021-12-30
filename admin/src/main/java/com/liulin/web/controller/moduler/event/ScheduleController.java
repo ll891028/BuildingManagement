@@ -416,7 +416,7 @@ public class ScheduleController extends BaseController
      * 删除附件
      */
     @Log(title = "删除attachment附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("event:schedule:remove")
+    @RequiresPermissions("event:schedule:edit")
     @PostMapping("/attachment/remove")
     @ResponseBody
     public AjaxResult remove(Schedule schedule)
@@ -431,7 +431,7 @@ public class ScheduleController extends BaseController
      * 删除detail附件
      */
     @Log(title = "删除detail附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("event:schedule:remove")
+    @RequiresPermissions("event:schedule:edit")
     @PostMapping("/scheduleDetail/attachment/remove")
     @ResponseBody
     public AjaxResult scheduleDetailRemove(ScheduleDetail scheduleDetail)

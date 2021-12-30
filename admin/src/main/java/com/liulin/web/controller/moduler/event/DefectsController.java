@@ -154,7 +154,7 @@ public class DefectsController extends BaseController
      * 删除附件
      */
     @Log(title = "删除defects附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("event:defects:remove")
+    @RequiresPermissions("event:defects:edit")
     @PostMapping("/attachment/remove")
     @ResponseBody
     public AjaxResult remove(Defects defects)

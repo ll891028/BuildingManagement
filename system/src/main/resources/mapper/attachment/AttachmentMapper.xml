@@ -17,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="buildingId"    column="building_id"    />
         <result property="companyId"    column="company_id"    />
+        <result property="fileSize"    column="file_size"    />
     </resultMap>
 
     <sql id="selectAttachmentVo">
@@ -60,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time,</if>
             <if test="buildingId != null">building_id,</if>
             <if test="companyId != null">company_id,</if>
+            <if test="fileSize != null">file_size,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="type != null">#{type},</if>
@@ -73,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">#{updateTime},</if>
             <if test="buildingId != null">#{buildingId},</if>
             <if test="companyId != null">#{companyId},</if>
+            <if test="fileSize != null">#{fileSize},</if>
          </trim>
 
     </insert>

@@ -194,7 +194,7 @@ public class SupplierController extends BaseController
      * 删除附件
      */
     @Log(title = "删除supplier附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("data:supplier:remove")
+    @RequiresPermissions("data:supplier:edit")
     @PostMapping("/attachment/remove")
     @ResponseBody
     public AjaxResult remove(Supplier supplier)

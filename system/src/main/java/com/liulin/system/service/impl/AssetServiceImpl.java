@@ -1,17 +1,17 @@
 package com.liulin.system.service.impl;
 
-import java.util.List;
-
 import com.liulin.common.constant.UserConstants;
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Asset;
+import com.liulin.system.mapper.AssetMapper;
+import com.liulin.system.service.IAssetService;
 import com.liulin.system.service.IAttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.AssetMapper;
-import com.liulin.system.domain.Asset;
-import com.liulin.system.service.IAssetService;
-import com.liulin.common.core.text.Convert;
+
+import java.util.List;
 
 /**
  * AssetService业务层处理
@@ -88,6 +88,8 @@ public class AssetServiceImpl implements IAssetService
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
                     asset.getUpdateBy(), asset.getBuildingId(),asset.getCompanyId() );
             asset.setAttachmentIds(attachmentIds);
+        }else {
+            asset.setAttachmentIds("");
         }
         return assetMapper.updateAsset(asset);
     }

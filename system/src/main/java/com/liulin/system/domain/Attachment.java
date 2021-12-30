@@ -44,6 +44,16 @@ public class Attachment extends BaseEntity
 
     private Long companyId;
 
+    private Long fileSize;
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+
     public Long getCompanyId() {
         return companyId;
     }

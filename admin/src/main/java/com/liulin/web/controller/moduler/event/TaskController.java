@@ -388,7 +388,7 @@ public class TaskController extends BaseController
      * 删除附件
      */
     @Log(title = "删除task附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("event:task:remove")
+    @RequiresPermissions("event:task:edit")
     @PostMapping("/attachment/remove")
     @ResponseBody
     public AjaxResult remove(Task task)

@@ -1,14 +1,15 @@
 package com.liulin.web.controller.common;
 
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.liulin.common.config.LiulinConfig;
+import com.liulin.common.config.ServerConfig;
+import com.liulin.common.constant.Constants;
+import com.liulin.common.core.domain.AjaxResult;
+import com.liulin.common.core.domain.FileInfo;
+import com.liulin.common.core.domain.entity.SysDept;
+import com.liulin.common.utils.ShiroUtils;
+import com.liulin.common.utils.StringUtils;
 import com.liulin.common.utils.file.AwsFileUtils;
-import com.liulin.common.utils.security.Md5Utils;
-import com.liulin.system.domain.Attachment;
+import com.liulin.common.utils.file.FileUtils;
 import com.liulin.system.service.IAttachmentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +20,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import com.liulin.common.config.LiulinConfig;
-import com.liulin.common.config.ServerConfig;
-import com.liulin.common.constant.Constants;
-import com.liulin.common.core.domain.AjaxResult;
-import com.liulin.common.core.domain.FileInfo;
-import com.liulin.common.utils.StringUtils;
-import com.liulin.common.utils.file.FileUploadUtils;
-import com.liulin.common.utils.file.FileUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 通用请求处理
@@ -76,6 +75,7 @@ public class CommonController {
     @ResponseBody
     public AjaxResult uploadFile(MultipartFile file) throws Exception {
         try {
+            SysDept building = ShiroUtils.getSysUser().getBuilding();
             String fileName = "";
             String url = "";
             String fileOriName = file.getOriginalFilename().replace(" ", "");
@@ -88,11 +88,11 @@ public class CommonController {
                 // 上传文件路径
                 String filePath = LiulinConfig.getUploadPath();
                 // 上传并返回新文件名称
-//                fileName = FileUploadUtils.upload(filePath, file);
+//              fileName = FileUploadUtils.upload(filePath, file);
                 File savedFile = new File(filePath+"/"+fileName);
                 file.transferTo(savedFile);
-                String keyName = "attachments/"+fileName;
-                AwsFileUtils.putObject("attachments/"+fileName,savedFile);
+                String keyName = "attachments/"+building.getDeptId()+"/"+fileName;
+                AwsFileUtils.putObject(keyName,savedFile);
                 savedFile.delete();
                 url = AwsFileUtils.getUrl(keyName);
 //            }
@@ -102,6 +102,7 @@ public class CommonController {
             ajax.put("fileName", fileName);
             ajax.put("originalFileName", fileOriName);
             ajax.put("url", url);
+            ajax.put("fileSize", file.getSize());
             return ajax;
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());
@@ -114,6 +115,7 @@ public class CommonController {
     @PostMapping("/common/uploads")
     @ResponseBody
     public AjaxResult uploadFiles(List<MultipartFile> files) throws Exception {
+        SysDept building = ShiroUtils.getSysUser().getBuilding();
         try {
             // 上传文件路径
             String filePath = LiulinConfig.getUploadPath();
@@ -130,12 +132,12 @@ public class CommonController {
 //                    fileName = fileOriName;
 //                } else {
                     // 上传并返回新文件名称
-                    String keyName = "attachments/"+fileOriName;
-                    AwsFileUtils.putObject("attachments/"+fileOriName,tempFile);
+                    String keyName = "attachments/"+building.getDeptId()+"/"+fileOriName;
+                    AwsFileUtils.putObject(keyName,tempFile);
                     url = AwsFileUtils.getUrl(keyName);
 //                }
                 tempFile.delete();
-                fileInfos.add(new FileInfo(fileName, url, fileOriName));
+                fileInfos.add(new FileInfo(fileName, url, fileOriName,file.getSize()));
             }
             return AjaxResult.success(fileInfos);
         } catch (Exception e) {

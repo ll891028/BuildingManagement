@@ -1,18 +1,18 @@
 package com.liulin.system.service.impl;
 
-import java.util.List;
-
 import com.liulin.common.constant.UserConstants;
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Servize;
+import com.liulin.system.mapper.ServizeMapper;
 import com.liulin.system.service.IAttachmentService;
+import com.liulin.system.service.IServizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.ServizeMapper;
-import com.liulin.system.domain.Servize;
-import com.liulin.system.service.IServizeService;
-import com.liulin.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * serviceService业务层处理
@@ -93,6 +93,8 @@ public class ServizeServiceImpl implements IServizeService
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,servize.getUpdateBy(),
                     null,servize.getCompanyId() );
             servize.setAttachmentIds(attachmentIds);
+        }else {
+            servize.setAttachmentIds("");
         }
         return servizeMapper.updateServize(servize);
     }

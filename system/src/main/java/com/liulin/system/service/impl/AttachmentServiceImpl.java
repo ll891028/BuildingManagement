@@ -5,6 +5,7 @@ import com.liulin.common.config.ServerConfig;
 import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.common.utils.file.AwsFileUtils;
 import com.liulin.system.domain.Attachment;
 import com.liulin.system.mapper.AttachmentMapper;
 import com.liulin.system.service.IAttachmentService;
@@ -63,6 +64,7 @@ public class AttachmentServiceImpl implements IAttachmentService
     public int insertAttachment(Attachment attachment)
     {
         attachment.setCreateTime(DateUtils.getNowDate());
+        attachment.setFileSize(AwsFileUtils.getObjectSize(attachment.getAttachmentUrl()));
         return attachmentMapper.insertAttachment(attachment);
     }
 

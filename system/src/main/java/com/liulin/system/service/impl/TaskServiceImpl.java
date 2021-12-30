@@ -158,6 +158,8 @@ public class TaskServiceImpl implements ITaskService
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
                     task.getUpdateBy(), task.getCompanyId(),task.getCompanyId() );
             task.setAttachmentIds(attachmentIds);
+        }else {
+            task.setAttachmentIds("");
         }
         return taskMapper.updateTask(task);
     }

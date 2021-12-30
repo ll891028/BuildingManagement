@@ -263,6 +263,8 @@ public class ResidentServiceImpl implements IResidentService
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
                     resident.getUpdateBy(),resident.getBuildingId() ,resident.getCompanyId());
             resident.setAttachmentIds(attachmentIds);
+        }else {
+            resident.setAttachmentIds("");
         }
 
         return residentMapper.updateResident(resident);

@@ -267,6 +267,8 @@ public class SysDeptServiceImpl implements ISysDeptService
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
                     dept.getUpdateBy(), dept.getDeptId(),newParentDept.getDeptId() );
             dept.setAttachmentIds(attachmentIds);
+        }else{
+            dept.setAttachmentIds("");
         }
 
         int result = deptMapper.updateDept(dept);

@@ -160,7 +160,7 @@ public class ServizeController extends BaseController
      * 删除附件
      */
     @Log(title = "删除servize附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("data:service:remove")
+    @RequiresPermissions("data:service:edit")
     @PostMapping("/attachment/remove")
     @ResponseBody
     public AjaxResult remove(Servize servize)

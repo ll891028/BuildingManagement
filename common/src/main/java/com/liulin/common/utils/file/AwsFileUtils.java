@@ -6,6 +6,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.liulin.common.config.LiulinConfig;
@@ -82,7 +83,7 @@ public class AwsFileUtils {
                 while ((len = input.read(data)) != -1) {
                     fileOutputStream.write(data, 0, len);
                 }
-                System.out.println("下载文件成功");
+                log.info("下载文件成功");
             } catch (IOException e) {
                 e.printStackTrace();
             }finally{
@@ -129,7 +130,7 @@ public class AwsFileUtils {
                 while ((len = input.read(data)) != -1) {
                     fileOutputStream.write(data, 0, len);
                 }
-                System.out.println("下载文件成功");
+                log.info("下载{}文件成功",url);
             } catch (IOException e) {
                 e.printStackTrace();
             }finally{
@@ -152,6 +153,21 @@ public class AwsFileUtils {
         return targetFilePathPrefix+getKey(url);
     }
 
+    public static Long getObjectSize(String url){
+        BasicAWSCredentials awsCreds = new BasicAWSCredentials(LiulinConfig.getAwsKeyId(), LiulinConfig.getAwsSecretId());
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+                .withRegion(clientRegion)
+                .build();
+        S3Object object = s3Client.getObject(new GetObjectRequest(LiulinConfig.getBucketName(),getKey(url)));
+        if(object!=null){
+            ObjectMetadata objectMetadata = object.getObjectMetadata();
+            long contentLength = objectMetadata.getContentLength();
+            log.info("文件{}，大小为:{}",url,contentLength);
+            return contentLength;
+        }
+        return null;
+    }
 
 
 }

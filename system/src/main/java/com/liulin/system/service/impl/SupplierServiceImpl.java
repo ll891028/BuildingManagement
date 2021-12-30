@@ -1,20 +1,20 @@
 package com.liulin.system.service.impl;
 
-import java.util.List;
-
 import com.liulin.common.constant.UserConstants;
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Supplier;
+import com.liulin.system.mapper.SupplierMapper;
 import com.liulin.system.service.IAttachmentService;
 import com.liulin.system.service.ICompanyServiceService;
+import com.liulin.system.service.ISupplierService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.SupplierMapper;
-import com.liulin.system.domain.Supplier;
-import com.liulin.system.service.ISupplierService;
-import com.liulin.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * supplierService业务层处理
@@ -102,6 +102,8 @@ public class SupplierServiceImpl implements ISupplierService
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
                     supplier.getUpdateBy(),null ,supplier.getCompanyId() );
             supplier.setAttachmentIds(attachmentIds);
+        }else {
+            supplier.setAttachmentIds("");
         }
         companyServiceService.insertBatch(supplier.getServiceIds(),supplier.getSupplierId());
         return supplierMapper.updateSupplier(supplier);

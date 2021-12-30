@@ -187,7 +187,7 @@ public class AssetController extends BaseController
      * 删除附件
      */
     @Log(title = "删除asset附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("data:asset:remove")
+    @RequiresPermissions("data:asset:edit")
     @PostMapping("/attachment/remove")
     @ResponseBody
     public AjaxResult remove(Asset asset)

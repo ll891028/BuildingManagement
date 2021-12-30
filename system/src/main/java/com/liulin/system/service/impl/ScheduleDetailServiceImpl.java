@@ -1,15 +1,16 @@
 package com.liulin.system.service.impl;
 
-import java.util.List;
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.ScheduleDetail;
+import com.liulin.system.mapper.ScheduleDetailMapper;
 import com.liulin.system.service.IAttachmentService;
+import com.liulin.system.service.IScheduleDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.ScheduleDetailMapper;
-import com.liulin.system.domain.ScheduleDetail;
-import com.liulin.system.service.IScheduleDetailService;
-import com.liulin.common.core.text.Convert;
+
+import java.util.List;
 
 /**
  * scheduleDetailService业务层处理
@@ -84,6 +85,8 @@ public class ScheduleDetailServiceImpl implements IScheduleDetailService
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
                     scheduleDetail.getUpdateBy(),scheduleDetail.getBuildingId() ,scheduleDetail.getCompanyId() );
             scheduleDetail.setAttachmentIds(attachmentIds);
+        }else {
+            scheduleDetail.setAttachmentIds("");
         }
         return scheduleDetailMapper.updateScheduleDetail(scheduleDetail);
     }

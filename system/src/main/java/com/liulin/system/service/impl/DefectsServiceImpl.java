@@ -1,15 +1,16 @@
 package com.liulin.system.service.impl;
 
-import java.util.List;
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
+import com.liulin.system.domain.Defects;
+import com.liulin.system.mapper.DefectsMapper;
 import com.liulin.system.service.IAttachmentService;
+import com.liulin.system.service.IDefectsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.DefectsMapper;
-import com.liulin.system.domain.Defects;
-import com.liulin.system.service.IDefectsService;
-import com.liulin.common.core.text.Convert;
+
+import java.util.List;
 
 /**
  * Defects RegisterService业务层处理
@@ -83,6 +84,8 @@ public class DefectsServiceImpl implements IDefectsService
             String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,
                     defects.getUpdateBy(),defects.getBuildingId() ,defects.getCompanyId());
             defects.setAttachmentIds(attachmentIds);
+        }else {
+            defects.setAttachmentIds("");
         }
 
         return defectsMapper.updateDefects(defects);

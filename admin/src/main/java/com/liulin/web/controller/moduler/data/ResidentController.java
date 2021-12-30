@@ -215,7 +215,7 @@ public class ResidentController extends BaseController
      * 删除附件
      */
     @Log(title = "删除resident附件", businessType = BusinessType.DELETE)
-    @RequiresPermissions("data:resident:remove")
+    @RequiresPermissions("data:resident:edit")
     @PostMapping("/attachment/remove")
     @ResponseBody
     public AjaxResult remove(Resident resident)
