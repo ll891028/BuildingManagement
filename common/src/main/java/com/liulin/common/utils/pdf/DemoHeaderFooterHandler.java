@@ -17,6 +17,7 @@ import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TabAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.VerticalAlignment;
+import com.liulin.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,20 +63,22 @@ public class DemoHeaderFooterHandler implements IEventHandler {
             headerTable.setWidth(tableWidth);
 
             //页眉图片
+
             final Cell imgCell = new Cell();
             imgCell.setBorder(Border.NO_BORDER);
-            imgCell.add(this.getLogoImage());
+            if(StringUtils.isNotEmpty(imgLogo)) {
+                imgCell.add(this.getLogoImage());
+            }
             imgCell.setVerticalAlignment(VerticalAlignment.TOP);
             imgCell.setHorizontalAlignment(HorizontalAlignment.LEFT);
             headerTable.addCell(imgCell);
+
 
             //添加右边文字信息
             final Paragraph headerRightText = new Paragraph();
             headerRightText.add(rightText);
             headerRightText.setBorder(Border.NO_BORDER);
             headerRightText.setFontSize(7f);
-            imgCell.setVerticalAlignment(VerticalAlignment.TOP);
-//            headerRightText.setHorizontalAlignment(HorizontalAlignment.RIGHT);
             headerRightText.setTextAlignment(TextAlignment.RIGHT);
             headerTable.addCell(new Cell().add(headerRightText).setBorder(Border.NO_BORDER));
 

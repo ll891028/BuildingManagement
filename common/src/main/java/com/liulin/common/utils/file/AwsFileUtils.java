@@ -123,7 +123,7 @@ public class AwsFileUtils {
                 data = new byte[input.available()];
                 int len = 0;
                 File file = new File(targetFilePathPrefix+getKey(url));
-                if(file.getParentFile().exists()){
+                if(!file.getParentFile().exists()){
                     file.getParentFile().mkdirs();
                 }
                 fileOutputStream = new FileOutputStream(targetFilePathPrefix+getKey(url));

@@ -257,7 +257,7 @@ public class ScheduleController extends BaseController
         return toAjax(scheduleQuoteService.updateScheduleQuote(scheduleQuote));
     }
 
-    @RequiresPermissions("event:schedule:list")
+//    @RequiresPermissions("event:schedule:list")
     @GetMapping("/eventList")
     @ResponseBody
     public AjaxResult eventList(@RequestParam Long from,@RequestParam Long to)

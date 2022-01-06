@@ -298,11 +298,13 @@ public class ReportController extends BaseController {
         SysDept building = ShiroUtils.getSysUser().getBuilding();
         List<ReportDto> list = scheduleService.selectReportList(reportDto);
         //通过工具类创建writer
-
-        String localPath = LiulinConfig.getProfile()+"/aws/";
-        String logoFilePath = AwsFileUtils.amazonS3DownloadingByUrl(logoUrl, localPath);
-        File logoFile = new File(logoFilePath);
-        needDeleteFile.add(logoFile);
+        String logoFilePath="";
+        if(StringUtils.isNotEmpty(logoUrl)){
+            String localPath = LiulinConfig.getProfile()+"/aws/";
+            logoFilePath = AwsFileUtils.amazonS3DownloadingByUrl(logoUrl, localPath);
+            File logoFile = new File(logoFilePath);
+            needDeleteFile.add(logoFile);
+        }
 
         UnitValue[] unitValue = new UnitValue[]{
                 UnitValue.createPercentValue((float) 5),
@@ -320,6 +322,9 @@ public class ReportController extends BaseController {
         rhsb.append(building.getSpn()+" ");
         rhsb.append(building.getDeptName()+"\n");
         rhsb.append("BM Monthly Report"+"\n");
+        if(StringUtils.isNotEmpty((String) reportDto.getParams().get("beginStartDate"))||StringUtils.isNotEmpty((String) reportDto.getParams().get("endStartDate"))){
+            rhsb.append("("+reportDto.getParams().get("beginStartDate")+"-"+reportDto.getParams().get("endStartDate")+")");
+        }
 
         Float titleFontSize = 10f;
         for (ReportDto dto : list) {

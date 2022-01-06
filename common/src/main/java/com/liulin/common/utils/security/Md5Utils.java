@@ -1,13 +1,13 @@
 package com.liulin.common.utils.security;
 
+import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
-
-import org.apache.commons.codec.binary.Hex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Md5加密方法
@@ -96,5 +96,10 @@ public class Md5Utils
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void main(String[] args) {
+        String hash = Md5Utils.hash("Ll1028!!");
+        System.out.println(hash);
     }
 }

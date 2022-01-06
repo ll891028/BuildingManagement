@@ -115,7 +115,7 @@ public class FileUploadUtils
         file.transferTo(desc);
         
         String pathFileName = getPathFileName(baseDir, fileName);
-        AwsFileUtils.putObject("/avatar/"+fileName,desc);
+        AwsFileUtils.putObject("avatar/"+fileName,desc);
         desc.delete();
         return AwsFileUtils.getUrl("avatar/"+fileName);
     }
