@@ -36,13 +36,13 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Description：</label>
                 <div class="col-sm-8">
-                    <textarea name="description" class="form-control">[[*{description}]]</textarea>
+                    <textarea id="description" name="description" class="form-control">[[*{description}]]</textarea>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label is-required">Action Required：</label>
                 <div class="col-sm-8">
-                    <textarea name="actionRequired" class="form-control" required>[[*{actionRequired}]]</textarea>
+                    <textarea id="actionRequired" name="actionRequired" class="form-control" required>[[*{actionRequired}]]</textarea>
                 </div>
             </div>
             <div class="form-group">    
@@ -78,7 +78,7 @@
                 <label class="col-sm-3 control-label is-required">Start Date：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="startDate" th:value="${#dates.format(schedule.startDate, 'dd-MM-yyyy')}" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+                        <input id="startDate" name="startDate" th:value="${#dates.format(schedule.startDate, 'dd-MM-yyyy')}" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>

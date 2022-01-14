@@ -1,6 +1,7 @@
 package com.liulin.framework.web.service;
 
 import com.liulin.common.utils.StringUtils;
+import com.liulin.common.utils.mail.AwsMailUtils;
 import com.liulin.framework.web.domain.MailDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class MailService {
     static {
         props = new Properties();
         props.setProperty("mail.transport.protocol", "smtp");
-        props.setProperty("mail.smtp.host", "smtp.qq.com");
+        props.setProperty("mail.smtp.host", "mail.broxy.com.au");
         props.setProperty("mail.smtp.port", "25");
         props.setProperty("mail.smtp.auth", "true");
         props.setProperty("mail.debug","true");
@@ -105,7 +106,7 @@ public class MailService {
 //        } catch (MessagingException e) {
 //            e.printStackTrace();
 //        }
-        sendSMTPMail(mailDomain);
+        sendSMTPMailByAws(mailDomain);
 
     }
 
@@ -113,8 +114,8 @@ public class MailService {
         /*
          *用户名和密码
          */
-//        String SendUser=mailFrom;
-//        String SendPassword=password;
+//        String SendUser="sender@broxy.com.au";
+//        String SendPassword="123456";
         String ReceiveUser=mailDomain.getReceiver();
 
         /*
@@ -128,7 +129,7 @@ public class MailService {
              *远程连接smtp.163.com服务器的25号端口
              *并定义输入流和输出流(输入流读取服务器返回的信息、输出流向服务器发送相应的信息)
              */
-            Socket socket=new Socket("smtp.qq.com", 25);
+            Socket socket=new Socket("smtp.163.com", 25);
             InputStream inputStream=socket.getInputStream();//读取服务器返回信息的流
             InputStreamReader isr=new InputStreamReader(inputStream);//字节解码为字符
             BufferedReader br=new BufferedReader(isr);//字符缓冲
@@ -142,7 +143,7 @@ public class MailService {
              */
 
             //helo
-            pw.println("helo liulin");
+            pw.println("helo sender");
             log.info(br.readLine());
 
             //auth login
@@ -154,7 +155,7 @@ public class MailService {
             log.info(br.readLine());
 
             //Set "mail from" and  "rect to"
-            pw.println("mail from:<"+mailFrom+">");
+            pw.println("mail from:<"+mailDomain.getFrom()+">");
             log.info(br.readLine());
             pw.println("rcpt to:<"+ReceiveUser+">");
             log.info(br.readLine());
@@ -198,15 +199,32 @@ public class MailService {
         }
     }
 
+    public static boolean sendSMTPMailByAws(MailDomain mailDomain) {
+        try {
+            AwsMailUtils.smtpSend(mailDomain.getFrom(),mailDomain.getReceiver(),mailDomain.getFrom(),mailDomain.getSubject(),mailDomain.getContent());
+            if(StringUtils.isNotEmpty(mailDomain.getBcc())){
+                String[] bccs = mailDomain.getBcc().split(",");
+                for (String bcc : bccs) {
+                    AwsMailUtils.smtpSend(mailDomain.getFrom(),bcc,mailDomain.getFrom(),mailDomain.getSubject(),mailDomain.getContent());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public void sendSMTPMailTest(){
         MailDomain mailDomain = new MailDomain();
-        mailDomain.setFrom("liuyi198910@sina.com");
-        mailDomain.setReceiver("ll439637373@163.com");
+        mailDomain.setFrom("Broxy.au@gmail.com");
+        mailDomain.setReceiver("439637373@qq.com");
         mailDomain.setContent("test content");
         mailDomain.setSubject("test subject");
-        mailDomain.setBcc("439637373@qq.com");
-        sendSMTPMail(mailDomain);
+//        mailDomain.setBcc("439637373@qq.com");
+        sendSMTPMailByAws(mailDomain);
     }
+
 
     /**
      * 发送简单的html邮件

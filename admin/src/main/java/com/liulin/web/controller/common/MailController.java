@@ -10,6 +10,7 @@ import com.liulin.system.domain.Asset;
 import com.liulin.system.domain.Resident;
 import com.liulin.system.domain.Servize;
 import com.liulin.system.domain.Supplier;
+import com.liulin.system.domain.dto.ResidentDto;
 import com.liulin.system.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,9 +159,9 @@ public class MailController {
         return prefix + "/sendQuote";
     }
 
-    @GetMapping(value = {"/sendResidentMail/{residentIds}"})
-    public String sendResidentMail(@PathVariable String residentIds, ModelMap mmp){
-        String[] split = residentIds.split(",");
+    @GetMapping(value = {"/sendResidentMail"})
+    public String sendResidentMail(ResidentDto data, ModelMap mmp){
+        String[] split = data.getResidentIds().split(",");
         List<Long> residentIdList = new ArrayList<>();
         Arrays.stream(split).forEach(s -> {
             residentIdList.add(Long.valueOf(s));
@@ -175,7 +176,7 @@ public class MailController {
             bcc.append(resident.getEmail()+";");
         });
         mmp.put("bcc",bcc.toString());
-        mmp.put("residentIds",residentIds);
+        mmp.put("residentIds",data.getResidentIds());
         mmp.put("building",building);
         mmp.put("content","");
         return prefix + "/sendResident";

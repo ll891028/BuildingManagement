@@ -36,6 +36,26 @@ public class LiulinConfig
 
     private static String bucketName;
 
+    private static String awsMailUserName;
+
+    private static String awsMailPassword;
+
+    public static String getAwsMailUserName() {
+        return awsMailUserName;
+    }
+
+    public void setAwsMailUserName(String awsMailUserName) {
+        LiulinConfig.awsMailUserName = awsMailUserName;
+    }
+
+    public static String getAwsMailPassword() {
+        return awsMailPassword;
+    }
+
+    public void setAwsMailPassword(String awsMailPassword) {
+        LiulinConfig.awsMailPassword = awsMailPassword;
+    }
+
     public static String getBucketName() {
         return bucketName;
     }

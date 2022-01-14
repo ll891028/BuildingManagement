@@ -9,6 +9,7 @@
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
                     <div class="select-list">
+                        <input type="hidden" id="checkAll" name="checkAll" value="false">
                         <ul>
                             <div id="element1" th:if="${multiBuilding==1}">
                                 <li>
@@ -125,17 +126,22 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: jquery-cxselect-js" />
      <script>
+
          function sendEmail(){
-             var url = ctx + "mail/sendResidentMail/";
-             table.set();
-             var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+
+             var url = ctx + "mail/sendResidentMail";
+             // table.set();
+             var rows = $.table.selectColumns("residentId");
              if (rows.length == 0) {
                  $.modal.alertWarning("At least select one record");
                  return;
              }
              var residentIds = rows.join();
-             $.modal.open("send work order",
-                 url+residentIds);
+             let data = $("#formId").serialize();
+             data+="&residentIds="+residentIds;
+             $.modal.open("send email",
+                 url+"?"+data);
+
          }
      </script>
     <script th:inline="javascript">
@@ -339,10 +345,19 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 modalName: " Resident",
-                columns: columns
+                columns: columns,
+                onCheckAll:checkAllTrue,
+                onUncheckAll:checkAllFalse
             };
             $.table.init(options);
+
         });
+        function checkAllTrue(){
+            $("#checkAll").val(true);
+        }
+        function checkAllFalse(){
+            $("#checkAll").val(false);
+        }
     </script>
 </body>
 </html>
