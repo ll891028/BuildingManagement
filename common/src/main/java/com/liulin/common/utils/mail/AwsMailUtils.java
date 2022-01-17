@@ -62,7 +62,7 @@ public class AwsMailUtils {
         // Create a Properties object to contain connection configuration information.
         Properties props = System.getProperties();
         props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.port", 25);
+        props.put("mail.smtp.port", 587);
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.auth", "true");
 

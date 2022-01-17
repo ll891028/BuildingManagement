@@ -50,8 +50,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join service t2 on t1.service_id = t2.service_id
         <where>  
             <if test="actionRequired != null  and actionRequired != ''"> and action_required = #{actionRequired}</if>
-            <if test="serviceId != null "> and service_id = #{serviceId}</if>
-            <if test="buildingId != null "> and building_id = #{buildingId}</if>
+            <if test="serviceId != null "> and t1.service_id = #{serviceId}</if>
+            <if test="buildingId != null "> and t1.building_id = #{buildingId}</if>
             <if test="params.beginDateRaised != null and params.beginDateRaised != '' and params.endDateRaised != null and params.endDateRaised != ''"> and date_raised between STR_TO_DATE(#{params.beginDateRaised}, '%d-%m-%Y') and STR_TO_DATE(#{params.endDateRaised}, '%d-%m-%Y')</if>
             <if
                     test="params.beginDateComplete != null and params.beginDateComplete != '' and params.endDateComplete != null and params.endDateComplete != ''"> and date_complete between STR_TO_DATE(#{params.beginDateComplete}, '%d-%m-%Y') and STR_TO_DATE(#{params.endDateComplete}, '%d-%m-%Y')</if>

@@ -201,7 +201,10 @@ public class MailService {
 
     public static boolean sendSMTPMailByAws(MailDomain mailDomain) {
         try {
-            AwsMailUtils.smtpSend(mailDomain.getFrom(),mailDomain.getReceiver(),mailDomain.getFrom(),mailDomain.getSubject(),mailDomain.getContent());
+            if(StringUtils.isNotEmpty(mailDomain.getReceiver())){
+                AwsMailUtils.smtpSend(mailDomain.getFrom(),mailDomain.getReceiver(),mailDomain.getFrom(),mailDomain.getSubject(),mailDomain.getContent());
+            }
+
             if(StringUtils.isNotEmpty(mailDomain.getBcc())){
                 String[] bccs = mailDomain.getBcc().split(",");
                 for (String bcc : bccs) {

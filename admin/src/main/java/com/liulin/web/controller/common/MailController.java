@@ -170,7 +170,7 @@ public class MailController {
         SysDept building = sysDeptService.selectDeptById(ShiroUtils.getSysUser().getBuilding().getDeptId());
         List<Resident> residents = residentService.selectResidentByIds(residentIdList);
 
-        mmp.put("receiver",ShiroUtils.getSysUser().getEmail());
+        mmp.put("from",ShiroUtils.getSysUser().getEmail());
         StringBuffer bcc = new StringBuffer();
         residents.stream().forEach(resident -> {
             bcc.append(resident.getEmail()+";");
