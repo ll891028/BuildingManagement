@@ -85,9 +85,9 @@
             success: function(result) {
 
                 if (result.code == web_status.SUCCESS) {
-                    $.modal.alertSuccess(result.msg)
+                    $.modal.alertSuccess("Email Sent")
                     $.modal.close();
-                    parent.$.modal.msgSuccess(result.msg);
+                    parent.$.modal.msgSuccess("Email Sent");
                 } else if (result.code == web_status.WARNING) {
                     $.modal.alertWarning(result.msg)
                 } else {
@@ -98,15 +98,6 @@
             }
         };
         $.ajax(config)
-        // $.ajax({
-        //     url: prefix + "/sendEmail",
-        //     data: data,
-        //     dataType: "json",
-        //     type: "post",
-        //     success: function(result) {
-        //         $.operate.saveSuccess(result);
-        //     }
-        // })
     }
 </script>
 </body>

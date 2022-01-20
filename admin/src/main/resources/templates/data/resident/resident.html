@@ -31,7 +31,7 @@
                             </li>
                             <li>
                                 Status：
-                                <select name="status" th:with="type=${@dict.getType('resident_status')}">
+                                <select id="status" name="status" th:with="type=${@dict.getType('resident_status')}">
                                     <option value="">All</option>
                                     <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                                 </select>
@@ -126,7 +126,6 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: jquery-cxselect-js" />
      <script>
-
          function sendEmail(){
 
              var url = ctx + "mail/sendResidentMail";
@@ -139,8 +138,20 @@
              var residentIds = rows.join();
              let data = $("#formId").serialize();
              data+="&residentIds="+residentIds;
-             $.modal.open("send email",
-                 url+"?"+data);
+             var options = {
+                 title: "send email",
+                 // width: width,
+                 // height: height,
+                 url: url+"?"+data,
+                 // skin: 'layui-layer-gray',
+                 btn: ['Send'],
+                 yes: function (index, layero) {
+                     $(layero).find("iframe")[0].contentWindow.submitHandler();
+                 }
+             };
+             $.modal.openOptions(options);
+             // $.modal.open("send email",
+             //     url+"?"+data);
 
          }
      </script>

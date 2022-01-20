@@ -171,8 +171,9 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Order Status</label>
                     <div class="col-sm-8">
+                        <input type="hidden" name="orderStatus" id="orderStatusVal" />
                         <select name="orderStatus" id="orderStatus" class="form-control m-b"
-                                th:with="type=${@dict.getType('order_status')}" required >
+                                th:with="type=${@dict.getType('order_status')}" required disabled>
                             <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"
                             ></option>
                         </select>

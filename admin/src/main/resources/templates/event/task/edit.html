@@ -36,7 +36,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label is-required">Description：</label>
                 <div class="col-sm-8">
-                    <textarea name="description" class="form-control" required>[[*{description}]]</textarea>
+                    <textarea name="description" id="description" class="form-control" required>[[*{description}]]</textarea>
                 </div>
             </div>
             <div class="form-group">
@@ -68,7 +68,7 @@
                 <label class="col-sm-3 control-label is-required">Time scheduled：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="timeScheduled"
+                        <input name="timeScheduled" id="timeScheduled"
                                th:value="${#dates.format(task.timeScheduled, 'dd-MM-yyyy HH:mm')}"
                                class="form-control" placeholder="dd-mm-yyyy HH:mm" type="text" required autocomplete="off">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -180,8 +180,9 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Order Status</label>
                     <div class="col-sm-8">
-                        <select name="orderStatus" id="orderStatus" class="form-control m-b"
-                                th:with="type=${@dict.getType('order_status')}" required >
+                        <input type="hidden" name="orderStatus" id="orderStatusVal" th:value="*{orderStatus}"/>
+                        <select  id="orderStatus" class="form-control m-b"
+                                th:with="type=${@dict.getType('order_status')}" required disabled>
                             <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{orderStatus}"
                             ></option>
                         </select>

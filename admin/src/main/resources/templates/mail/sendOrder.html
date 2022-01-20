@@ -52,8 +52,8 @@
 
     $(document).ready(function () {
         var description = parent.$('#description').val();
-        var orderInstruction = parent.$('#actionRequired').val();
-        var timeScheduled = parent.$('#startDate').val();
+        var orderInstruction = $.common.isNotEmpty(parent.$('#actionRequired').val())?parent.$('#actionRequired').val():parent.$('#orderInstruction').val();
+        var timeScheduled = $.common.isNotEmpty(parent.$('#startDate').val())?parent.$('#startDate').val():parent.$('#timeScheduled').val();
         var taskName = parent.$('#taskName').val();
         var content = [[${content}]];
         var subject = [[${subject}]];
@@ -72,6 +72,9 @@
 
     });
     function submitHandler() {
+
+        // $.modal.close();
+        // return;
         var content = $('.summernote').summernote('code');
         $("#content").val(content);
         var data = $('#form-email').serialize();
@@ -89,6 +92,8 @@
             success: function(result) {
 
                 if (result.code == web_status.SUCCESS) {
+                    parent.$('#orderStatus').val(2).select2();
+                    parent.$('#orderStatusVal').val(2);
                     $.modal.alertSuccess(result.msg)
                     $.modal.close();
                     parent.$.modal.msgSuccess(result.msg);
