@@ -1,7 +1,8 @@
 package com.liulin.system.service;
 
-import java.util.List;
 import com.liulin.system.domain.Task;
+
+import java.util.List;
 
 /**
  * TaskService接口
@@ -60,4 +61,6 @@ public interface ITaskService
     public int deleteTaskById(Long taskId);
 
     public int updateAttachment(Task task);
+
+    void updateStatus(Task task);
 }

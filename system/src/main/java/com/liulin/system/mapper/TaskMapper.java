@@ -1,7 +1,8 @@
 package com.liulin.system.mapper;
 
-import java.util.List;
 import com.liulin.system.domain.Task;
+
+import java.util.List;
 
 /**
  * TaskMapper接口
@@ -58,4 +59,6 @@ public interface TaskMapper
      * @return 结果
      */
     public int deleteTaskByIds(String[] taskIds);
+
+    void updateTaskStatus(Task task);
 }

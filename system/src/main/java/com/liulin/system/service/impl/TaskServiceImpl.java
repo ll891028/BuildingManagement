@@ -199,4 +199,9 @@ public class TaskServiceImpl implements ITaskService
         }
         return taskMapper.updateTask(task);
     }
+
+    @Override
+    public void updateStatus(Task task) {
+        taskMapper.updateTaskStatus(task);
+    }
 }

@@ -199,7 +199,12 @@
                         'fa-remove"></i>remove</a> ');
                     actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
                         'onclick="quoteList(\'' + row.taskId + '\')"><i class="fa ' +
-                        'fa-money"> </i> quote price</a>');
+                        'fa-money"> </i> quote price</a> ');
+                    if(row.taskStatus!=3){
+                        actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
+                            'onclick="sendWorkOrder(\'' + row.taskId + '\')"><i class="fa ' +
+                            'fa-money"> </i> send work order</a>');
+                    }
                     return actions.join('');
                 }
             }];
@@ -305,6 +310,10 @@
 
         function quoteList(taskId) {
             $.modal.openTab("Quote List", prefix + "/quotePriceList/"+taskId)
+        }
+
+        function sendWorkOrder(taskId) {
+            $.modal.openTab("Send Work Order", ctx + "mail/sendOrderWithPdf/"+taskId)
         }
     </script>
 </body>

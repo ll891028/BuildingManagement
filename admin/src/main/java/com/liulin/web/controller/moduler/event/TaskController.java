@@ -18,6 +18,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -396,6 +397,21 @@ public class TaskController extends BaseController
         task.setCreateBy(ShiroUtils.getLoginName());
         task.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         task.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
+        return  AjaxResult.success();
+    }
+
+    /**
+     * 改变已发送状态
+     */
+    @Log(title = "改变task状态", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("event:task:edit")
+    @PostMapping("/change/status")
+    @ResponseBody
+    public AjaxResult changeStatus(Task task)
+    {
+        task.setUpdateBy(ShiroUtils.getLoginName());
+        task.setUpdateTime(new Date());
+        taskService.updateTask(task);
         return  AjaxResult.success();
     }
 

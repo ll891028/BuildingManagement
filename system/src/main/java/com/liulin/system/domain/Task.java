@@ -1,14 +1,14 @@
 package com.liulin.system.domain;
 
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
 import com.liulin.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Task对象 task
@@ -287,6 +287,22 @@ public class Task extends BaseEntity
     public Integer getPriority() 
     {
         return priority;
+    }
+
+    public String getPriorityStr(){
+        if(priority!=null){
+            switch (priority){
+                case 1:
+                    return "Low";
+                case 2:
+                    return "Medium";
+                case 3:
+                    return "High";
+                default:
+                    return "";
+            }
+        }
+        return null;
     }
     public void setNeedWorkOrder(Integer needWorkOrder) 
     {

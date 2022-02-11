@@ -169,4 +169,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <update id="updateTaskStatus" parameterType="Task">
+        update task set task_status = #{taskStatus} where task_id = #{taskId}
+    </update>
+
 </mapper>

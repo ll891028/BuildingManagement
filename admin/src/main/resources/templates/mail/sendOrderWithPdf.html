@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('send mail')" />
+    <th:block th:include="include :: summernote-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-email">
+        <input type="hidden" th:value="${taskId}" id="taskId">
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">To:</label>
+            <div class="col-sm-8">
+                <input type="hidden" name="from" id="from" class="form-control"
+                       readonly th:value="${receiver}"/>
+                <input type="text"  class="form-control"
+                       readonly th:value="${bcc}"/>
+            </div>
+        </div>
+        <div class="form-group" style="display: none">
+            <label class="col-sm-3 control-label is-required">bcc:</label>
+            <div class="col-sm-8">
+                <input type="text" name="bcc" id="bcc" class="form-control"
+                       readonly th:value="${bcc}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">Subject:</label>
+            <div class="col-sm-8">
+                <input type="text" name="subject" id="subject" class="form-control" value=""
+                       readonly />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">Attachment:</label>
+            <div class="col-sm-8">
+                <input type="hidden" name="attachmentUrl" id="attachmentUrl" class="form-control"
+                       readonly th:value="${attachmentUrl}"/>
+                <input type="hidden" name="fileName" id="fileName" class="form-control"
+                       readonly th:value="${fileName}"/>
+                <a th:href="${attachmentUrl}" th:text="${fileName}"></a>
+            </div>
+        </div>
+        <textarea id="content" name="content" style="display: none"></textarea>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">Content:</label>
+            <div class="col-sm-8">
+                <div class="summernote" ></div>
+            </div>
+
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label "></label>
+            <button type="button" class="col-sm-8 btn btn-primary btn-lg" onclick="submitHandler()">send</button>
+        </div>
+
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: summernote-js" />
+<script th:inline="javascript">
+    var prefix = ctx + "mail"
+    $("#form-task-add").validate({
+        focusCleanup: true
+    });
+
+    $(document).ready(function () {
+        var description = parent.$('#description').val();
+        var orderInstruction = $.common.isNotEmpty(parent.$('#actionRequired').val())?parent.$('#actionRequired').val():parent.$('#orderInstruction').val();
+        var timeScheduled = $.common.isNotEmpty(parent.$('#startDate').val())?parent.$('#startDate').val():parent.$('#timeScheduled').val();
+        var taskName = parent.$('#taskName').val();
+        var content = [[${content}]];
+        var subject = [[${subject}]];
+        var attachmentUrl = [[${attachmentUrl}]];
+        var fileName = [[${fileName}]];
+
+        content = content
+            .replace("${description}",description)
+            .replace("${instruction}",orderInstruction)
+            .replace("${date}",timeScheduled)
+        subject = subject.replace("${taskName}",taskName);
+        $("#subject").val(subject);
+        $('.summernote').summernote({
+            height:300
+        });
+        $('.summernote').summernote('code', content);
+
+
+    });
+    function submitHandler() {
+
+        // $.modal.close();
+        // return;
+        var content = $('.summernote').summernote('code');
+        $("#content").val(content);
+        var data = $('#form-email').serialize();
+        console.info(data);
+        // $.operate.save(prefix + "/sendEmail", data);
+        var config = {
+            url: prefix + "/sendEmail",
+            type: "post",
+            dataType: "json",
+            data: data,
+            success: function(result) {
+
+                if (result.code == web_status.SUCCESS) {
+                    // $.modal.alertSuccess(result.msg)
+                    // $.modal.close();
+                    var taskId = $("#taskId").val();
+                    var config2 = {
+                        url: ctx+"event/task/" + "/change/status",
+                        type: "post",
+                        dataType: "json",
+                        data: {taskId:taskId,taskStatus:3},
+                        beforeSend: function () {
+                            $.modal.loading("please wait");
+                            $.modal.disable();
+                        },
+                        success: function(result) {
+                            if (result.code == web_status.SUCCESS) {
+                                $.modal.alertSuccess(result.msg)
+                                $.modal.close();
+                            } else if (result.code == web_status.WARNING) {
+                                $.modal.alertWarning(result.msg)
+                            } else {
+                                $.modal.alertError(result.msg);
+                            }
+                            $.modal.closeLoading();
+                            $.modal.enable();
+                        }
+                    };
+                    $.ajax(config2)
+                } else if (result.code == web_status.WARNING) {
+                    $.modal.alertWarning(result.msg)
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
+                $.modal.enable();
+            }
+        };
+        $.ajax(config)
+        // $.ajax({
+        //     url: prefix + "/sendEmail",
+        //     data: data,
+        //     dataType: "json",
+        //     type: "post",
+        //     success: function(result) {
+        //         $.operate.saveSuccess(result);
+        //     }
+        // })
+    }
+</script>
+</body>
+</html>

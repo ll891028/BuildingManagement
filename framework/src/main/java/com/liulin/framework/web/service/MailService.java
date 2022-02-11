@@ -202,13 +202,13 @@ public class MailService {
     public static boolean sendSMTPMailByAws(MailDomain mailDomain) {
         try {
             if(StringUtils.isNotEmpty(mailDomain.getReceiver())){
-                AwsMailUtils.smtpSend(mailDomain.getFrom(),mailDomain.getReceiver(),mailDomain.getFrom(),mailDomain.getSubject(),mailDomain.getContent());
+                AwsMailUtils.smtpSend(mailDomain.getFrom(),mailDomain.getReceiver(),mailDomain.getFrom(),mailDomain.getSubject(),mailDomain.getContent(),mailDomain.getAttachmentUrl(),mailDomain.getFileName());
             }
 
             if(StringUtils.isNotEmpty(mailDomain.getBcc())){
                 String[] bccs = mailDomain.getBcc().split(",");
                 for (String bcc : bccs) {
-                    AwsMailUtils.smtpSend(mailDomain.getFrom(),bcc,mailDomain.getFrom(),mailDomain.getSubject(),mailDomain.getContent());
+                    AwsMailUtils.smtpSend(mailDomain.getFrom(),bcc,mailDomain.getFrom(),mailDomain.getSubject(),mailDomain.getContent(),mailDomain.getAttachmentUrl(),mailDomain.getFileName());
                 }
             }
         } catch (Exception e) {
@@ -224,6 +224,9 @@ public class MailService {
         mailDomain.setReceiver("439637373@qq.com");
         mailDomain.setContent("test content");
         mailDomain.setSubject("test subject");
+//        mailDomain.setAttachementUrl("https://gtech-bucket-sy.s3.ap-southeast-2.amazonaws.com/workOrderPdf/SP93087/2022/02/10/WO-202202100003.pdf");
+        mailDomain.setAttachmentUrl("C:\\image\\profile\\test.pdf");
+        mailDomain.setFileName("test.pdf");
 //        mailDomain.setBcc("439637373@qq.com");
         sendSMTPMailByAws(mailDomain);
     }

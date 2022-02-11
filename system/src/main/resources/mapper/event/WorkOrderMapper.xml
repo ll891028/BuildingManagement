@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liulin.system.mapper.WorkOrderMapper">
+    
+    <resultMap type="com.liulin.system.domain.WorkOrder" id="WorkOrderResult">
+        <result property="workOrderId"    column="work_order_id"    />
+        <result property="workOrderNo"    column="work_order_no"    />
+        <result property="dueBy"    column="due_by"    />
+        <result property="priority"    column="priority"    />
+        <result property="assignedTo"    column="assigned_to"    />
+        <result property="serviceName"    column="service_name"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="contactNumber"    column="contact_number"    />
+        <result property="description"    column="description"    />
+        <result property="media1"    column="media1"    />
+        <result property="media2"    column="media2"    />
+        <result property="spnLogo"    column="spn_logo"    />
+        <result property="spnName"    column="spn_name"    />
+        <result property="spnAddress"    column="spn_address"    />
+        <result property="mangerName"    column="manger_name"    />
+        <result property="contactEmail"    column="contact_email"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="buildingId"    column="building_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="pdfPath"    column="pdf_path"    />
+        <result property="spn"    column="spn"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="supplierContactNumber"    column="supplier_contact_number"    />
+        <result property="supplierEmail"    column="supplier_email"    />
+        <result property="taskId"    column="task_id"    />
+    </resultMap>
+
+    <sql id="selectWorkOrderVo">
+        select work_order_id, work_order_no, due_by, priority, assigned_to, service_name, service_id, contact_number, description, media1, media2, spn_logo, spn_name, spn_address, manger_name, contact_email, create_time, building_id, user_id, task_name, pdf_path, spn, company_name, supplier_name, supplier_contact_number,supplier_email,task_id from work_order
+    </sql>
+
+    <select id="selectWorkOrderList" parameterType="WorkOrder" resultMap="WorkOrderResult">
+        <include refid="selectWorkOrderVo"/>
+        <where>  
+            <if test="workOrderNo != null  and workOrderNo != ''"> and work_order_no = #{workOrderNo}</if>
+            <if test="dueBy != null "> and due_by = #{dueBy}</if>
+            <if test="priority != null  and priority != ''"> and priority = #{priority}</if>
+            <if test="assignedTo != null  and assignedTo != ''"> and assigned_to = #{assignedTo}</if>
+            <if test="serviceName != null  and serviceName != ''"> and service_name like concat('%', #{serviceName}, '%')</if>
+            <if test="mangerName != null  and mangerName != ''"> and manger_name like concat('%', #{mangerName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectWorkOrderById" parameterType="Long" resultMap="WorkOrderResult">
+        <include refid="selectWorkOrderVo"/>
+        where work_order_id = #{workOrderId}
+    </select>
+
+    <select id="selectWorkOrderByTaskId" parameterType="Long" resultMap="WorkOrderResult">
+        <include refid="selectWorkOrderVo"/>
+        where task_id = #{taskId}
+    </select>
+        
+    <insert id="insertWorkOrder" parameterType="WorkOrder">
+        insert into work_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="workOrderId != null">work_order_id,</if>
+            <if test="workOrderNo != null">work_order_no,</if>
+            <if test="dueBy != null">due_by,</if>
+            <if test="priority != null">priority,</if>
+            <if test="assignedTo != null">assigned_to,</if>
+            <if test="serviceName != null">service_name,</if>
+            <if test="serviceId != null">service_id,</if>
+            <if test="contactNumber != null">contact_number,</if>
+            <if test="description != null">description,</if>
+            <if test="media1 != null">media1,</if>
+            <if test="media2 != null">media2,</if>
+            <if test="spnLogo != null">spn_logo,</if>
+            <if test="spnName != null">spn_name,</if>
+            <if test="spnAddress != null">spn_address,</if>
+            <if test="mangerName != null">manger_name,</if>
+            <if test="contactEmail != null">contact_email,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="buildingId != null">building_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="taskName != null">task_name,</if>
+            <if test="pdfPath != null">pdf_path,</if>
+            <if test="spn != null">spn,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="supplierName != null">supplier_name,</if>
+            <if test="supplierContactNumber != null">supplier_contact_number,</if>
+            <if test="supplierEmail != null">supplier_email,</if>
+            <if test="taskId != null">task_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="workOrderId != null">#{workOrderId},</if>
+            <if test="workOrderNo != null">#{workOrderNo},</if>
+            <if test="dueBy != null">#{dueBy},</if>
+            <if test="priority != null">#{priority},</if>
+            <if test="assignedTo != null">#{assignedTo},</if>
+            <if test="serviceName != null">#{serviceName},</if>
+            <if test="serviceId != null">#{serviceId},</if>
+            <if test="contactNumber != null">#{contactNumber},</if>
+            <if test="description != null">#{description},</if>
+            <if test="media1 != null">#{media1},</if>
+            <if test="media2 != null">#{media2},</if>
+            <if test="spnLogo != null">#{spnLogo},</if>
+            <if test="spnName != null">#{spnName},</if>
+            <if test="spnAddress != null">#{spnAddress},</if>
+            <if test="mangerName != null">#{mangerName},</if>
+            <if test="contactEmail != null">#{contactEmail},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="buildingId != null">#{buildingId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="taskName != null">#{taskName},</if>
+            <if test="pdfPath != null">#{pdfPath},</if>
+            <if test="spn != null">#{spn},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="supplierName != null">#{supplierName},</if>
+            <if test="supplierContactNumber != null">#{supplierContactNumber},</if>
+            <if test="supplierEmail != null">#{supplierEmail},</if>
+            <if test="taskId != null">#{taskId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWorkOrder" parameterType="WorkOrder">
+        update work_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="workOrderNo != null">work_order_no = #{workOrderNo},</if>
+            <if test="dueBy != null">due_by = #{dueBy},</if>
+            <if test="priority != null">priority = #{priority},</if>
+            <if test="assignedTo != null">assigned_to = #{assignedTo},</if>
+            <if test="serviceName != null">service_name = #{serviceName},</if>
+            <if test="serviceId != null">service_id = #{serviceId},</if>
+            <if test="contactNumber != null">contact_number = #{contactNumber},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="media1 != null">media1 = #{media1},</if>
+            <if test="media2 != null">media2 = #{media2},</if>
+            <if test="spnLogo != null">spn_logo = #{spnLogo},</if>
+            <if test="spnName != null">spn_name = #{spnName},</if>
+            <if test="spnAddress != null">spn_address = #{spnAddress},</if>
+            <if test="mangerName != null">manger_name = #{mangerName},</if>
+            <if test="contactEmail != null">contact_email = #{contactEmail},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="buildingId != null">building_id = #{buildingId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="taskName != null">task_name = #{taskName},</if>
+            <if test="pdfPath != null">pdf_path = #{pdfPath},</if>
+            <if test="spn != null">spn = #{spn},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="supplierName != null">supplier_name = #{supplierName},</if>
+            <if test="supplierContactNumber != null">supplier_contact_number = #{supplierContactNumber},</if>
+            <if test="supplierEmail != null">supplier_email = #{supplierEmail},</if>
+            <if test="taskId != null">task_id = #{taskId},</if>
+        </trim>
+        where work_order_id = #{workOrderId}
+    </update>
+
+    <delete id="deleteWorkOrderById" parameterType="Long">
+        delete from work_order where work_order_id = #{workOrderId}
+    </delete>
+
+    <delete id="deleteWorkOrderByIds" parameterType="String">
+        delete from work_order where work_order_id in 
+        <foreach item="workOrderId" collection="array" open="(" separator="," close=")">
+            #{workOrderId}
+        </foreach>
+    </delete>
+
+</mapper>

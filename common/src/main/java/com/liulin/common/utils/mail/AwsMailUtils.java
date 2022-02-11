@@ -11,11 +11,13 @@ import com.liulin.common.utils.file.AwsFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.internet.*;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
 public class AwsMailUtils {
@@ -57,7 +59,7 @@ public class AwsMailUtils {
         }
     }
 
-    public static Boolean smtpSend(String sendAddress,String toAddress,String senderName,String subject,String content) throws Exception {
+    public static Boolean smtpSend(String sendAddress,String toAddress,String senderName,String subject,String content,String attachmentUrl,String fileName) throws Exception {
 
         // Create a Properties object to contain connection configuration information.
         Properties props = System.getProperties();
@@ -74,9 +76,24 @@ public class AwsMailUtils {
         msg.setFrom(new InternetAddress(sendAddress,senderName));
         msg.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(toAddress));
         msg.setSubject(subject);
-        msg.setContent(content,"text/html");
+//        msg.setContent(content,"text/html");
+        //添加附件部分
+        //邮件内容部分1---文本内容
+        MimeBodyPart body0 = new MimeBodyPart(); //邮件中的文字部分
+        body0.setContent(content,"text/html;charset=utf-8");
+        //邮件内容部分2---附件1
+        MimeBodyPart body1 = new MimeBodyPart(); //附件1
+        if(attachmentUrl.contains("http")){
+            body1.setDataHandler( new DataHandler( new URL(attachmentUrl)) );//./代表项目根目录下
+        }else{
+            body1.setDataHandler( new DataHandler( new FileDataSource(attachmentUrl)) );//./代表项目根目录下
+        }
 
-
+        body1.setFileName( MimeUtility.encodeText(fileName) );
+        MimeMultipart mm = new MimeMultipart();
+        mm.addBodyPart(body0);
+        mm.addBodyPart(body1);
+        msg.setContent(mm);
         // Add a configuration set header. Comment or delete the
         // next line if you are not using a configuration set
 //        msg.setHeader("X-SES-CONFIGURATION-SET", CONFIGSET);

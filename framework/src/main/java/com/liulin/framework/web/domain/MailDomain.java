@@ -19,6 +19,26 @@ public class MailDomain {
 
     private String subject;
 
+    private String attachmentUrl;
+
+    private String fileName;
+
+    public String getAttachmentUrl() {
+        return attachmentUrl;
+    }
+
+    public void setAttachmentUrl(String attachmentUrl) {
+        this.attachmentUrl = attachmentUrl;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public String getFrom() {
         return from;
     }
