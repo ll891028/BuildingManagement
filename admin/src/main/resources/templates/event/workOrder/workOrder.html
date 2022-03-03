@@ -11,16 +11,8 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                Work Order Number：
+                                Work Order No：
                                 <input type="text" name="workOrderNo"/>
-                            </li>
-                            <li>
-                                Due By：
-                                <input type="text" class="time-input" placeholder="Due By" name="dueBy"/>
-                            </li>
-                            <li>
-                                Priority：
-                                <input type="text" name="priority"/>
                             </li>
                             <li>
                                 Service Name：
@@ -29,6 +21,25 @@
                             <li>
                                 Manager Name：
                                 <input type="text" name="mangerName"/>
+                            </li>
+                            <li>
+                                Create Time：
+                                <input type="text" class="time-input" placeholder="Create Time" name="createTime"/>
+                            </li>
+                            <li>
+                                Task Name：
+                                <input type="text" name="taskName"/>
+                            </li>
+                            <li>
+                                Supplier Name：
+                                <input type="text" name="supplierName"/>
+                            </li>
+                            <li>
+                                Event Type：
+                                <select name="eventType" th:with="type=${@dict.getType('task_type')}">
+                                    <option value="">All</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa
@@ -42,18 +53,18 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="event:workOrder:add">
-                    <i class="fa fa-plus"></i> add
-                </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="event:workOrder:edit">
-                    <i class="fa fa-edit"></i> edit
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="event:workOrder:remove">
-                    <i class="fa fa-remove"></i> remove
-                </a>
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="event:workOrder:export">
-                    <i class="fa fa-download"></i> export
-                </a>
+<!--                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="event:workOrder:add">-->
+<!--                    <i class="fa fa-plus"></i> add-->
+<!--                </a>-->
+<!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="event:workOrder:edit">-->
+<!--                    <i class="fa fa-edit"></i> edit-->
+<!--                </a>-->
+<!--                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="event:workOrder:remove">-->
+<!--                    <i class="fa fa-remove"></i> remove-->
+<!--                </a>-->
+<!--                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="event:workOrder:export">-->
+<!--                    <i class="fa fa-download"></i> export-->
+<!--                </a>-->
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
@@ -64,6 +75,7 @@
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('event:workOrder:edit')}]];
         var removeFlag = [[${@permission.hasPermi('event:workOrder:remove')}]];
+        var eventTypeDatas = [[${@dict.getType('task_type')}]];
         var prefix = ctx + "event/workOrder";
 
         $(function() {
@@ -73,7 +85,12 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
+                detailUrl: ctx+"event/task/detail/{id}",
+                onDblClickCell: onDblClickCell,
                 modalName: " Work Order",
+                sortStable: true,                                   // 设置为 true 将获得稳定的排序
+                sortName: "createTime",                         // 排序列名称
+                sortOrder: "desc",
                 columns: [{
                     checkbox: true
                 },
@@ -84,19 +101,7 @@
                 },
                 {
                     field: 'workOrderNo',
-                    title: 'Work Order Number'
-                },
-                {
-                    field: 'dueBy',
-                    title: 'Due By'
-                },
-                {
-                    field: 'priority',
-                    title: 'Priority'
-                },
-                {
-                    field: 'assignedTo',
-                    title: 'Assigned To'
+                    title: 'Work Order No'
                 },
                 {
                     field: 'serviceName',
@@ -104,25 +109,48 @@
                 },
                 {
                     field: 'mangerName',
-                    title: 'Manager Name'
+                    title: 'Sender'
                 },
+                {
+                    field: 'createTime',
+                    title: 'Send Time',
+                    sortable:true
+                },
+                {
+                    field: 'taskName',
+                    title: 'Task Name'
+                },
+                {
+                    field: 'supplierName',
+                    title: 'Supplier Company Name'
+                },
+                {
+                    field: 'eventType',
+                    title: 'Event Type',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(eventTypeDatas, value);
+                    }
+                }
+                ,
                 {
                     title: 'action',
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" ' +
-                                'onclick="$.operate.edit(\'' + row.workOrderId + '\')"><i class="fa ' +
-                                'fa-edit"></i>edit</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" ' +
-                                'onclick="$.operate.remove(\'' + row.workOrderId + '\')"><i class="fa ' +
-                                'fa-remove"></i>remove</a>');
+                                'onclick="$.operate.detailTab(\'' + row.taskId + '\')"><i class="fa ' +
+                                'fa-edit"></i>detail</a> ');
                         return actions.join('');
                     }
-                }]
+                }
+                ]
             };
             $.table.init(options);
         });
+        function onDblClickCell(field, value, row, $element){
+            // alert("name：" + field + " value：" + value+" row:"+row.pdfPath);
+            window.open(row.pdfPath);
+        }
     </script>
 </body>
 </html>

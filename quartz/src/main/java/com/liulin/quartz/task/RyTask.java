@@ -66,7 +66,7 @@ public class RyTask
                 if(detail!=null){
                     Date schDate = detail.getSchDate();
                     if(!DateUtils.diffCurrentMonth(schDate,now)){
-                        return;
+                        continue;
                     }
                     if(schedule.getFrequency()==Schedule.MONTHLY){
                         //插入一条数据

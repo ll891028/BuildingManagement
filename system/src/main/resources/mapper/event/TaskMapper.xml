@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liulin.system.mapper.TaskMapper">
     
-    <resultMap type="Task" id="TaskResult">
+    <resultMap type="com.liulin.system.domain.Task" id="TaskResult">
         <result property="taskId"    column="task_id"    />
         <result property="taskName"    column="task_name"    />
         <result property="buildingId"    column="building_id"    />
@@ -32,6 +32,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="taskType"    column="task_type"    />
         <result property="rootCause"    column="root_cause"    />
         <result property="serviceName"    column="service_name"    />
+        <result property="invoiceNo"    column="invoice_no"    />
+        <result property="invoiceAmount"    column="invoice_amount"    />
+        <result property="taskNo"    column="task_no"    />
     </resultMap>
 
     <sql id="selectTaskVo">
@@ -41,7 +44,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                time_scheduled,
                priority,
                need_work_order, need_quote, task_status, attachment_ids, create_by, create_time, update_by,
-               update_time,order_instruction,quote_instruction,order_status,quote_status,order_supplier_id,task_type,root_cause
+               update_time,order_instruction,quote_instruction,order_status,quote_status,order_supplier_id,task_type,root_cause,
+               invoice_no,invoice_amount,task_no
         from task
     </sql>
 
@@ -62,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taskStatus != null "> and task_status = #{taskStatus}</if>
             <if test="taskType != null "> and task_type = #{taskType}</if>
             <if test="rootCause != null "> and root_cause = #{rootCause}</if>
+            <if test="taskNo != null "> and task_no like concat('%',#{taskNo},'%') </if>
         </where>
     </select>
     
@@ -98,6 +103,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderSupplierId != null">order_supplier_id,</if>
             <if test="taskType != null">task_type,</if>
             <if test="rootCause != null">root_cause,</if>
+            <if test="invoiceNo != null">invoice_no,</if>
+            <if test="invoiceAmount != null">invoice_amount,</if>
+            <if test="taskNo != null">task_no,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="taskName != null and taskName != ''">#{taskName},</if>
@@ -124,6 +132,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderSupplierId != null">#{orderSupplierId},</if>
             <if test="taskType != null">#{taskType},</if>
             <if test="rootCause != null">#{rootCause},</if>
+            <if test="invoiceNo != null">#{invoiceNo},</if>
+            <if test="invoiceAmount != null">#{invoiceAmount},</if>
+            <if test="taskNo != null">#{taskNo},</if>
          </trim>
     </insert>
 
@@ -149,11 +160,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="taskType != null">task_type = #{taskType},</if>
             <if test="rootCause != null">root_cause = #{rootCause},</if>
-            order_instruction = #{orderInstruction},
-            quote_instruction = #{quoteInstruction},
-            order_status = #{orderStatus},
-            quote_status = #{quoteStatus},
-            order_supplier_id = #{orderSupplierId},
+            <if test="invoiceNo != null">invoice_no = #{invoiceNo},</if>
+            <if test="invoiceAmount != null">invoice_amount = #{invoiceAmount},</if>
+            <if test="taskNo != null">task_no = #{taskNo},</if>
+            <if test="orderInstruction != null">order_instruction = #{orderInstruction},</if>
+            <if test="quoteInstruction != null">quote_instruction = #{quoteInstruction},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="quoteStatus != null">quote_status = #{quoteStatus},</if>
+            <if test="orderSupplierId != null">order_supplier_id = #{orderSupplierId},</if>
         </trim>
         where task_id = #{taskId}
     </update>
@@ -170,7 +184,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <update id="updateTaskStatus" parameterType="Task">
-        update task set task_status = #{taskStatus} where task_id = #{taskId}
+        update task set order_status = #{orderStatus} where task_id = #{taskId}
     </update>
 
 </mapper>

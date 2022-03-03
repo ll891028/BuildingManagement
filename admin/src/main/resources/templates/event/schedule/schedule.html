@@ -10,6 +10,10 @@
                 <form id="formId">
                     <div class="select-list">
                         <ul>
+                            <li >
+                                Schedule No：
+                                <input type="text" name="schNo"/>
+                            </li>
                             <li>
                                 Service：
                                 <select name="serviceId">
@@ -105,6 +109,9 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 modalName: " schedule",
+                sortStable: true,                                   // 设置为 true 将获得稳定的排序
+                sortName: "startDate",                         // 排序列名称
+                sortOrder: "desc",
                 columns: [{
                     checkbox: true
                 },
@@ -112,6 +119,10 @@
                         field: 'schId',
                         title: 'Schedule Id',
                         visible: false
+                    },
+                    {
+                        field: 'schNo',
+                        title: 'Schedule No'
                     },
                     {
                         field: 'schName',
@@ -145,7 +156,8 @@
                     },
                     {
                         field: 'startDate',
-                        title: 'Start Date'
+                        title: 'Start Date',
+                        sortable:true
                     },
                     {
                         field: 'status',

@@ -4,6 +4,7 @@ import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.system.domain.*;
+import com.liulin.system.mapper.ScheduleDetailMapper;
 import com.liulin.system.mapper.ScheduleMapper;
 import com.liulin.system.service.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -38,6 +39,9 @@ public class ScheduleServiceImpl implements IScheduleService
 
     @Autowired
     private IAttachmentService attachmentService;
+
+    @Autowired
+    private ScheduleDetailMapper scheduleDetailMapper;
 
 
     /**
@@ -87,6 +91,10 @@ public class ScheduleServiceImpl implements IScheduleService
                 schedule.getCreateBy(),schedule.getBuildingId() ,schedule.getCompanyId() );
         schedule.setAttachmentIds(attachmentIds);
         int result = scheduleMapper.insertSchedule(schedule);
+        Schedule updateNo = new Schedule();
+        updateNo.setSchId(schedule.getSchId());
+        updateNo.setSchNo("PM-"+schedule.getSchId());
+        scheduleMapper.updateSchedule(updateNo);
         if(CollectionUtils.isNotEmpty(schedule.getAssetIds())){
             for (Long assetId : schedule.getAssetIds()) {
                 ScheduleAsset scheduleAsset = new ScheduleAsset();
@@ -227,18 +235,19 @@ public class ScheduleServiceImpl implements IScheduleService
         if(detail!=null){
             Date schDate = detail.getSchDate();
             if(DateUtils.diffCurrentMonth(schDate,startDate)){
+                //插入一条数据
+                ScheduleDetail saver = new ScheduleDetail();
                 if(schedule.getFrequency()==Schedule.MONTHLY){
-                    //插入一条数据
-                    ScheduleDetail saver = new ScheduleDetail();
+
                     BeanUtils.copyProperties(detail,saver);
                     saver.setSchDetailId(null);
                     saver.setCreateTime(now);
                     saver.setSchDate(DateUtils.addTime(startDate,Schedule.MONTHLY));
                     saver.setStatus(Schedule.PENDING);
                     scheduleDetailService.insertScheduleDetail(saver);
+
                 }else if(schedule.getFrequency()==Schedule.QUARTERLY){
                     //插入一条数据
-                    ScheduleDetail saver = new ScheduleDetail();
                     BeanUtils.copyProperties(detail,saver);
                     saver.setSchDetailId(null);
                     saver.setCreateTime(now);
@@ -247,7 +256,6 @@ public class ScheduleServiceImpl implements IScheduleService
                     scheduleDetailService.insertScheduleDetail(saver);
                 }else if(schedule.getFrequency()==Schedule.HALF_YEARLY){
                     //插入一条数据
-                    ScheduleDetail saver = new ScheduleDetail();
                     BeanUtils.copyProperties(detail,saver);
                     saver.setSchDetailId(null);
                     saver.setCreateTime(now);
@@ -256,7 +264,6 @@ public class ScheduleServiceImpl implements IScheduleService
                     scheduleDetailService.insertScheduleDetail(saver);
                 }else if(schedule.getFrequency()==Schedule.YEARLY){
                     //插入一条数据
-                    ScheduleDetail saver = new ScheduleDetail();
                     BeanUtils.copyProperties(detail,saver);
                     saver.setSchDetailId(null);
                     saver.setCreateTime(now);
@@ -264,6 +271,10 @@ public class ScheduleServiceImpl implements IScheduleService
                     saver.setStatus(Schedule.PENDING);
                     scheduleDetailService.insertScheduleDetail(saver);
                 }
+                ScheduleDetail updater = new ScheduleDetail();
+                updater.setSchDetailId(saver.getSchDetailId());
+                updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                scheduleDetailMapper.updateScheduleDetail(updater);
             }else {
                 if(schedule.getFrequency()==Schedule.MONTHLY){
                     //插入两条数据
@@ -274,9 +285,17 @@ public class ScheduleServiceImpl implements IScheduleService
                     saver.setSchDate(startDate);
                     saver.setStatus(Schedule.PENDING);
                     scheduleDetailService.insertScheduleDetail(saver);
+                    ScheduleDetail updater = new ScheduleDetail();
+                    updater.setSchDetailId(saver.getSchDetailId());
+                    updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                    scheduleDetailMapper.updateScheduleDetail(updater);
                     saver.setSchDetailId(null);
                     saver.setSchDate(DateUtils.addTime(saver.getSchDate(),Schedule.MONTHLY));
                     scheduleDetailService.insertScheduleDetail(saver);
+                    updater = new ScheduleDetail();
+                    updater.setSchDetailId(saver.getSchDetailId());
+                    updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                    scheduleDetailMapper.updateScheduleDetail(updater);
                 }else if(schedule.getFrequency()==Schedule.QUARTERLY){
                     //插入两条数据
                     ScheduleDetail saver = new ScheduleDetail();
@@ -286,9 +305,17 @@ public class ScheduleServiceImpl implements IScheduleService
                     saver.setSchDate(startDate);
                     saver.setStatus(Schedule.PENDING);
                     scheduleDetailService.insertScheduleDetail(saver);
+                    ScheduleDetail updater = new ScheduleDetail();
+                    updater.setSchDetailId(saver.getSchDetailId());
+                    updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                    scheduleDetailMapper.updateScheduleDetail(updater);
                     saver.setSchDetailId(null);
                     saver.setSchDate(DateUtils.addTime(saver.getSchDate(),Schedule.QUARTERLY));
                     scheduleDetailService.insertScheduleDetail(saver);
+                    updater = new ScheduleDetail();
+                    updater.setSchDetailId(saver.getSchDetailId());
+                    updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                    scheduleDetailMapper.updateScheduleDetail(updater);
                 }else if(schedule.getFrequency()==Schedule.HALF_YEARLY){
                     //插入两条数据
                     ScheduleDetail saver = new ScheduleDetail();
@@ -298,9 +325,17 @@ public class ScheduleServiceImpl implements IScheduleService
                     saver.setSchDate(startDate);
                     saver.setStatus(Schedule.PENDING);
                     scheduleDetailService.insertScheduleDetail(saver);
+                    ScheduleDetail updater = new ScheduleDetail();
+                    updater.setSchDetailId(saver.getSchDetailId());
+                    updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                    scheduleDetailMapper.updateScheduleDetail(updater);
                     saver.setSchDetailId(null);
                     saver.setSchDate(DateUtils.addTime(saver.getSchDate(),Schedule.HALF_YEARLY));
                     scheduleDetailService.insertScheduleDetail(saver);
+                    updater = new ScheduleDetail();
+                    updater.setSchDetailId(saver.getSchDetailId());
+                    updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                    scheduleDetailMapper.updateScheduleDetail(updater);
                 }else if(schedule.getFrequency()==Schedule.YEARLY){
                     //插入两条数据
                     ScheduleDetail saver = new ScheduleDetail();
@@ -310,9 +345,17 @@ public class ScheduleServiceImpl implements IScheduleService
                     saver.setSchDate(startDate);
                     saver.setStatus(Schedule.PENDING);
                     scheduleDetailService.insertScheduleDetail(saver);
+                    ScheduleDetail updater = new ScheduleDetail();
+                    updater.setSchDetailId(saver.getSchDetailId());
+                    updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                    scheduleDetailMapper.updateScheduleDetail(updater);
                     saver.setSchDetailId(null);
                     saver.setSchDate(DateUtils.addTime(saver.getSchDate(),Schedule.YEARLY));
                     scheduleDetailService.insertScheduleDetail(saver);
+                    updater = new ScheduleDetail();
+                    updater.setSchDetailId(saver.getSchDetailId());
+                    updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                    scheduleDetailMapper.updateScheduleDetail(updater);
                 }
             }
 
@@ -325,9 +368,17 @@ public class ScheduleServiceImpl implements IScheduleService
                 saver.setSchDate(schedule.getStartDate());
                 saver.setStatus(Schedule.PENDING);
                 scheduleDetailService.insertScheduleDetail(saver);
+                ScheduleDetail updater = new ScheduleDetail();
+                updater.setSchDetailId(saver.getSchDetailId());
+                updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                scheduleDetailMapper.updateScheduleDetail(updater);
                 saver.setSchDetailId(null);
                 saver.setSchDate(DateUtils.addTime(schedule.getStartDate(),Schedule.MONTHLY));
                 scheduleDetailService.insertScheduleDetail(saver);
+                updater = new ScheduleDetail();
+                updater.setSchDetailId(saver.getSchDetailId());
+                updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                scheduleDetailMapper.updateScheduleDetail(updater);
             }else if(schedule.getFrequency()==Schedule.QUARTERLY){
                 //插入两条数据
                 ScheduleDetail saver = new ScheduleDetail();
@@ -336,9 +387,17 @@ public class ScheduleServiceImpl implements IScheduleService
                 saver.setSchDate(schedule.getStartDate());
                 saver.setStatus(Schedule.PENDING);
                 scheduleDetailService.insertScheduleDetail(saver);
+                ScheduleDetail updater = new ScheduleDetail();
+                updater.setSchDetailId(saver.getSchDetailId());
+                updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                scheduleDetailMapper.updateScheduleDetail(updater);
                 saver.setSchDetailId(null);
                 saver.setSchDate(DateUtils.addTime(schedule.getStartDate(),Schedule.QUARTERLY));
                 scheduleDetailService.insertScheduleDetail(saver);
+                updater = new ScheduleDetail();
+                updater.setSchDetailId(saver.getSchDetailId());
+                updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                scheduleDetailMapper.updateScheduleDetail(updater);
             }else if(schedule.getFrequency()==Schedule.HALF_YEARLY){
                 //插入两条数据
                 ScheduleDetail saver = new ScheduleDetail();
@@ -347,9 +406,17 @@ public class ScheduleServiceImpl implements IScheduleService
                 saver.setSchDate(schedule.getStartDate());
                 saver.setStatus(Schedule.PENDING);
                 scheduleDetailService.insertScheduleDetail(saver);
+                ScheduleDetail updater = new ScheduleDetail();
+                updater.setSchDetailId(saver.getSchDetailId());
+                updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                scheduleDetailMapper.updateScheduleDetail(updater);
                 saver.setSchDetailId(null);
                 saver.setSchDate(DateUtils.addTime(schedule.getStartDate(),Schedule.HALF_YEARLY));
                 scheduleDetailService.insertScheduleDetail(saver);
+                updater = new ScheduleDetail();
+                updater.setSchDetailId(saver.getSchDetailId());
+                updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                scheduleDetailMapper.updateScheduleDetail(updater);
             }else if(schedule.getFrequency()==Schedule.YEARLY){
                 //插入两条数据
                 ScheduleDetail saver = new ScheduleDetail();
@@ -358,10 +425,20 @@ public class ScheduleServiceImpl implements IScheduleService
                 saver.setSchDate(schedule.getStartDate());
                 saver.setStatus(Schedule.PENDING);
                 scheduleDetailService.insertScheduleDetail(saver);
+                ScheduleDetail updater = new ScheduleDetail();
+                updater.setSchDetailId(saver.getSchDetailId());
+                updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                scheduleDetailMapper.updateScheduleDetail(updater);
                 saver.setSchDetailId(null);
                 saver.setSchDate(DateUtils.addTime(schedule.getStartDate(),Schedule.YEARLY));
                 scheduleDetailService.insertScheduleDetail(saver);
+                updater = new ScheduleDetail();
+                updater.setSchDetailId(saver.getSchDetailId());
+                updater.setSchDetailNo("PMD-"+saver.getSchDetailId());
+                scheduleDetailMapper.updateScheduleDetail(updater);
             }
+
+
         }
     }
 }

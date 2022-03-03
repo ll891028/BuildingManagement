@@ -1,14 +1,14 @@
 package com.liulin.system.domain;
 
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
 import com.liulin.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Safety Check对象 safety_check
@@ -46,6 +46,16 @@ public class SafetyCheck extends BaseEntity
     private Long buildingId;
 
     private List<Long> assetIds;
+
+    private String safetyCheckNo;
+
+    public String getSafetyCheckNo() {
+        return safetyCheckNo;
+    }
+
+    public void setSafetyCheckNo(String safetyCheckNo) {
+        this.safetyCheckNo = safetyCheckNo;
+    }
 
     public List<Long> getAssetIds() {
         return assetIds;

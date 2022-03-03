@@ -200,7 +200,7 @@ public class PdfItextUtils {
 //            logoImg.setMargins(40, 0, 0, 0);
             Border titleBorder =new SolidBorder(colorWhite,1f);
 
-            Cell companyLogo=new Cell(4,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER).setHeight(100f);
+            Cell companyLogo=new Cell(5,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER).setHeight(100f);
             companyLogo.add(logoImg);
             Cell workOrderTitle=new Cell(1,1).add(new Paragraph("WO REQUEST #")).setTextAlignment(TextAlignment.LEFT).setBackgroundColor(color).setBorder(titleBorder);
             UnitValue[] innerTableUnitValue = new UnitValue[]{

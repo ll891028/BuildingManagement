@@ -5,6 +5,7 @@ import com.liulin.common.core.controller.BaseController;
 import com.liulin.common.core.domain.AjaxResult;
 import com.liulin.common.core.page.TableDataInfo;
 import com.liulin.common.enums.BusinessType;
+import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.poi.ExcelUtil;
 import com.liulin.system.domain.WorkOrder;
 import com.liulin.system.service.IWorkOrderService;
@@ -46,6 +47,7 @@ public class WorkOrderController extends BaseController
     @ResponseBody
     public TableDataInfo list(WorkOrder workOrder)
     {
+        workOrder.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         startPage();
         List<WorkOrder> list = workOrderService.selectWorkOrderList(workOrder);
         return getDataTable(list);

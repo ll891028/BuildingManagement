@@ -1,12 +1,13 @@
 package com.liulin.system.domain;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
 import com.liulin.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * scheduleDetail对象 schedule_detail
@@ -60,6 +61,16 @@ public class ScheduleDetail extends BaseEntity
     private Long buildingId;
 
     private Long companyId;
+
+    private String schDetailNo;
+
+    public String getSchDetailNo() {
+        return schDetailNo;
+    }
+
+    public void setSchDetailNo(String schDetailNo) {
+        this.schDetailNo = schDetailNo;
+    }
 
     public Long getCompanyId() {
         return companyId;

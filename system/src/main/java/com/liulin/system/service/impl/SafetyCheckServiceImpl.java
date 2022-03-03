@@ -1,20 +1,20 @@
 package com.liulin.system.service.impl;
 
-import java.util.List;
+import com.liulin.common.core.text.Convert;
 import com.liulin.common.utils.DateUtils;
+import com.liulin.system.domain.SafetyCheck;
 import com.liulin.system.domain.SafetyCheckAsset;
 import com.liulin.system.domain.Schedule;
-import com.liulin.system.domain.ScheduleAsset;
+import com.liulin.system.mapper.SafetyCheckMapper;
 import com.liulin.system.service.ISafetyCheckAssetService;
+import com.liulin.system.service.ISafetyCheckService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.liulin.system.mapper.SafetyCheckMapper;
-import com.liulin.system.domain.SafetyCheck;
-import com.liulin.system.service.ISafetyCheckService;
-import com.liulin.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Safety CheckService业务层处理
@@ -67,7 +67,10 @@ public class SafetyCheckServiceImpl implements ISafetyCheckService
     {
         safetyCheck.setCreateTime(DateUtils.getNowDate());
         int result = safetyCheckMapper.insertSafetyCheck(safetyCheck);
-
+        SafetyCheck updateNo = new SafetyCheck();
+        updateNo.setSafetyCheckId(safetyCheck.getSafetyCheckId());
+        updateNo.setSafetyCheckNo("SC-"+safetyCheck.getSafetyCheckId());
+        safetyCheckMapper.updateSafetyCheck(updateNo);
         if(CollectionUtils.isNotEmpty(safetyCheck.getAssetIds())){
             for (Long assetId : safetyCheck.getAssetIds()) {
                 SafetyCheckAsset safetyCheckAsset = new SafetyCheckAsset();

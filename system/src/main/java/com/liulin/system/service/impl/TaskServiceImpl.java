@@ -82,6 +82,17 @@ public class TaskServiceImpl implements ITaskService
             task.setAttachmentIds(attachmentIds);
         }
         int result = taskMapper.insertTask(task);
+        if(task.getTaskType().equals(Task.TASK)){
+            Task updateTaskNo = new Task();
+            updateTaskNo.setTaskId(task.getTaskId());
+            updateTaskNo.setTaskNo("TK-"+task.getTaskId());
+            taskMapper.updateTask(updateTaskNo);
+        }else if(task.getTaskType().equals(Task.INCIDENT)){
+            Task updateTaskNo = new Task();
+            updateTaskNo.setTaskId(task.getTaskId());
+            updateTaskNo.setTaskNo("IN-"+task.getTaskId());
+            taskMapper.updateTask(updateTaskNo);
+        }
         if(CollectionUtils.isNotEmpty(task.getAssetIds())){
             for (Long assetId : task.getAssetIds()) {
                 TaskAsset taskAsset = new TaskAsset();
@@ -134,6 +145,7 @@ public class TaskServiceImpl implements ITaskService
             }
 
         }
+
         if(task.getNeedWorkOrder().equals(Task.N)){
             task.setOrderInstruction(null);
             task.setOrderSupplierId(null);

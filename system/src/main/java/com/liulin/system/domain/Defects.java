@@ -1,12 +1,13 @@
 package com.liulin.system.domain;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.liulin.common.annotation.Excel;
 import com.liulin.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * Defects Register对象 defects
@@ -56,6 +57,16 @@ public class Defects extends BaseEntity
     private Long buildingId;
 
     private Long companyId;
+
+    private String defectNo;
+
+    public String getDefectNo() {
+        return defectNo;
+    }
+
+    public void setDefectNo(String defectNo) {
+        this.defectNo = defectNo;
+    }
 
     public Long getCompanyId() {
         return companyId;

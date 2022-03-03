@@ -147,7 +147,9 @@
 			var logoUrls = new Array();
 			if($.common.isNotEmpty(logoUrl)){
 				logoUrls.push(logoUrl);
+				$("#logo").val(logoUrl);
 			}
+
 			$(attachments).each(function (index,item) {
 				initPrevConfig[index] = {
 					caption: item.fileName, /*文件标题*/

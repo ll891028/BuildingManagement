@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,13 @@ public class Task extends BaseEntity
     public static final Integer Y = 1;
 
     public static final Integer N = 0;
+
+    public static final Integer TASK = 1;
+
+    public static final Integer INCIDENT = 2;
+
+
+
 
     /** Task Id */
     private Long taskId;
@@ -78,6 +86,8 @@ public class Task extends BaseEntity
     @Excel(name = "Attachment")
     private String attachmentIds;
 
+    private String taskNo;
+
     private List<Long> assetIds;
 
     private Long buildingId;
@@ -104,6 +114,34 @@ public class Task extends BaseEntity
     private String serviceName;
 
     private Long companyId;
+
+    private String invoiceNo;
+
+    private BigDecimal invoiceAmount;
+
+    public String getTaskNo() {
+        return taskNo;
+    }
+
+    public void setTaskNo(String taskNo) {
+        this.taskNo = taskNo;
+    }
+
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
+    }
+
+    public BigDecimal getInvoiceAmount() {
+        return invoiceAmount;
+    }
+
+    public void setInvoiceAmount(BigDecimal invoiceAmount) {
+        this.invoiceAmount = invoiceAmount;
+    }
 
     public Long getCompanyId() {
         return companyId;

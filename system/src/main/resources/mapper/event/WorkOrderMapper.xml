@@ -32,21 +32,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="supplierContactNumber"    column="supplier_contact_number"    />
         <result property="supplierEmail"    column="supplier_email"    />
         <result property="taskId"    column="task_id"    />
+        <result property="eventType"    column="event_type"    />
     </resultMap>
 
     <sql id="selectWorkOrderVo">
-        select work_order_id, work_order_no, due_by, priority, assigned_to, service_name, service_id, contact_number, description, media1, media2, spn_logo, spn_name, spn_address, manger_name, contact_email, create_time, building_id, user_id, task_name, pdf_path, spn, company_name, supplier_name, supplier_contact_number,supplier_email,task_id from work_order
+        select work_order_id, work_order_no, due_by, priority, assigned_to, service_name, service_id, contact_number, description, media1, media2, spn_logo, spn_name, spn_address, manger_name, contact_email,
+               create_time, building_id, user_id, task_name, pdf_path, spn, company_name, supplier_name, supplier_contact_number,
+               supplier_email,task_id,event_type
+        from work_order
     </sql>
 
     <select id="selectWorkOrderList" parameterType="WorkOrder" resultMap="WorkOrderResult">
         <include refid="selectWorkOrderVo"/>
         <where>  
-            <if test="workOrderNo != null  and workOrderNo != ''"> and work_order_no = #{workOrderNo}</if>
+            <if test="workOrderNo != null  and workOrderNo != ''"> and work_order_no like concat('%',#{workOrderNo},'%') </if>
             <if test="dueBy != null "> and due_by = #{dueBy}</if>
             <if test="priority != null  and priority != ''"> and priority = #{priority}</if>
             <if test="assignedTo != null  and assignedTo != ''"> and assigned_to = #{assignedTo}</if>
             <if test="serviceName != null  and serviceName != ''"> and service_name like concat('%', #{serviceName}, '%')</if>
             <if test="mangerName != null  and mangerName != ''"> and manger_name like concat('%', #{mangerName}, '%')</if>
+            <if test="buildingId != null"> and building_id = #{buildingId}</if>
         </where>
     </select>
     
@@ -60,10 +65,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where task_id = #{taskId}
     </select>
         
-    <insert id="insertWorkOrder" parameterType="WorkOrder">
+    <insert id="insertWorkOrder" parameterType="WorkOrder" useGeneratedKeys="true" keyProperty="workOrderId">
         insert into work_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="workOrderId != null">work_order_id,</if>
             <if test="workOrderNo != null">work_order_no,</if>
             <if test="dueBy != null">due_by,</if>
             <if test="priority != null">priority,</if>
@@ -90,9 +94,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="supplierContactNumber != null">supplier_contact_number,</if>
             <if test="supplierEmail != null">supplier_email,</if>
             <if test="taskId != null">task_id,</if>
+            <if test="eventType != null">event_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="workOrderId != null">#{workOrderId},</if>
             <if test="workOrderNo != null">#{workOrderNo},</if>
             <if test="dueBy != null">#{dueBy},</if>
             <if test="priority != null">#{priority},</if>
@@ -119,6 +123,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="supplierContactNumber != null">#{supplierContactNumber},</if>
             <if test="supplierEmail != null">#{supplierEmail},</if>
             <if test="taskId != null">#{taskId},</if>
+            <if test="eventType != null">#{eventType},</if>
          </trim>
     </insert>
 
@@ -151,6 +156,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="supplierContactNumber != null">supplier_contact_number = #{supplierContactNumber},</if>
             <if test="supplierEmail != null">supplier_email = #{supplierEmail},</if>
             <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="eventType != null">event_type = #{eventType},</if>
         </trim>
         where work_order_id = #{workOrderId}
     </update>

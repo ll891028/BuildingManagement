@@ -102,6 +102,16 @@ public class WorkOrder extends BaseEntity
 
     private Long taskId;
 
+    private Integer eventType;
+
+    public Integer getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(Integer eventType) {
+        this.eventType = eventType;
+    }
+
     public Long getTaskId() {
         return taskId;
     }

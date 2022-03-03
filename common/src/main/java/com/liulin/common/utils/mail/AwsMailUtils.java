@@ -7,7 +7,6 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
 import com.liulin.common.config.LiulinConfig;
-import com.liulin.common.utils.file.AwsFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +21,7 @@ import java.util.Properties;
 
 public class AwsMailUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(AwsFileUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(AwsMailUtils.class);
 
     private final static Regions clientRegion = Regions.AP_SOUTHEAST_2;
 

@@ -18,11 +18,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="buildingId"    column="building_id"    />
+        <result property="defectNo"    column="defect_no"    />
     </resultMap>
 
     <sql id="selectDefectsVo">
         select defect_id, date_raised, location, defect_type, description, status, date_complete, attachment_ids,
-               create_by, create_time, update_by, update_time,building_id from defects
+               create_by, create_time, update_by, update_time,building_id, defect_no from defects
     </sql>
 
     <select id="selectDefectsList" parameterType="Defects" resultMap="DefectsResult">
@@ -30,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="dateRaised != null "> and date_raised = #{dateRaised}</if>
             <if test="location != null  and location != ''"> and location = #{location}</if>
+            <if test="defectNo != null  and defectNo != ''"> and defect_no = #{defectNo}</if>
             <if test="defectType != null  and defectType != ''"> and defect_type = #{defectType}</if>
             <if test="description != null  and description != ''"> and description = #{description}</if>
             <if test="status != null "> and status = #{status}</if>
@@ -59,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="buildingId != null">building_id,</if>
+            <if test="defectNo != null and defectNo != ''">defect_no,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="dateRaised != null">#{dateRaised},</if>
@@ -73,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="buildingId != null">#{buildingId},</if>
+            <if test="defectNo != null and defectNo != ''">#{defectNo},</if>
          </trim>
     </insert>
 
@@ -91,6 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="buildingId != null">building_id = #{buildingId},</if>
+            <if test="defectNo != null and defectNo != ''">defect_no = #{defectNo},</if>
         </trim>
         where defect_id = #{defectId}
     </update>

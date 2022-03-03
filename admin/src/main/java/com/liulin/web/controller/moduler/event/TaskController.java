@@ -411,7 +411,7 @@ public class TaskController extends BaseController
     {
         task.setUpdateBy(ShiroUtils.getLoginName());
         task.setUpdateTime(new Date());
-        taskService.updateTask(task);
+        taskService.updateStatus(task);
         return  AjaxResult.success();
     }
 

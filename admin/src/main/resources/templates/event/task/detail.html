@@ -151,14 +151,14 @@
             </div>
             <div id="orderDiv"  th:style="'display:' + ${task.needWorkOrder>0 ? 'block' : 'none'}">
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Order Instruction</label>
+                    <label class="col-sm-3 control-label">Order Instruction:</label>
                     <div class="col-sm-8">
                         <textarea name="orderInstruction" id="orderInstruction" class="form-control" readonly
                                   required>[[*{actionRequired}]]</textarea>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Order Status</label>
+                    <label class="col-sm-3 control-label">Order Status:</label>
                     <div class="col-sm-8">
                         <select name="orderStatus" id="orderStatus" class="form-control m-b"
                                 th:with="type=${@dict.getType('order_status')}" disabled >
@@ -168,13 +168,27 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Order Supplier</label>
+                    <label class="col-sm-3 control-label">Order Supplier:</label>
                     <div class="col-sm-8">
                         <input type="hidden" name="orderSupplierId" id="orderSupplierId" class="form-control"
                                th:field="*{orderSupplierId}"
                         />
                         <input type="text" name="orderSupplierName" id="orderSupplierName" class="form-control"
                                readonly th:field="*{orderSupplierName}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Invoice NO：</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="invoiceNo" id="invoiceNo" class="form-control" readonly
+                               th:field="*{invoiceNo}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Invoice Amount(AUD$)：</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="invoiceAmount" id="invoiceAmount" class="form-control" readonly
+                               th:field="*{invoiceAmount}" onkeyup="value=value.match(/\d+\.?\d{0,2}/,'')"/>
                     </div>
                 </div>
             </div>

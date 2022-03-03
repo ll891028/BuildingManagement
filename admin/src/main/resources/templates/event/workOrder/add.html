@@ -2,168 +2,13 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <th:block th:include="include :: header('新增Work Order')" />
-    <th:block th:include="include :: datetimepicker-css" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-workOrder-add">
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Work Order Number：</label>
-                <div class="col-sm-8">
-                    <input name="workOrderNo" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Due By：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <input name="dueBy" class="form-control" placeholder="yyyy-MM-dd" type="text">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Priority：</label>
-                <div class="col-sm-8">
-                    <input name="priority" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Assigned To：</label>
-                <div class="col-sm-8">
-                    <textarea name="assignedTo" class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Service Name：</label>
-                <div class="col-sm-8">
-                    <input name="serviceName" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Service Id：</label>
-                <div class="col-sm-8">
-                    <input name="serviceId" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Contact Number：</label>
-                <div class="col-sm-8">
-                    <input name="contactNumber" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Description：</label>
-                <div class="col-sm-8">
-                    <textarea name="description" class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Media1：</label>
-                <div class="col-sm-8">
-                    <input name="media1" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Media2：</label>
-                <div class="col-sm-8">
-                    <input name="media2" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Spn Logo：</label>
-                <div class="col-sm-8">
-                    <input name="spnLogo" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Spn Name：</label>
-                <div class="col-sm-8">
-                    <input name="spnName" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Spn Address：</label>
-                <div class="col-sm-8">
-                    <textarea name="spnAddress" class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Manager Name：</label>
-                <div class="col-sm-8">
-                    <input name="mangerName" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Contact Email：</label>
-                <div class="col-sm-8">
-                    <input name="contactEmail" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Building Id：</label>
-                <div class="col-sm-8">
-                    <input name="buildingId" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Manager Id：</label>
-                <div class="col-sm-8">
-                    <input name="userId" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Task Name：</label>
-                <div class="col-sm-8">
-                    <input name="taskName" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">PDF Path：</label>
-                <div class="col-sm-8">
-                    <textarea name="pdfPath" class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">SPN：</label>
-                <div class="col-sm-8">
-                    <input name="spn" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Building Name：</label>
-                <div class="col-sm-8">
-                    <input name="buildingName" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Building Address：</label>
-                <div class="col-sm-8">
-                    <input name="buildingAddress" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Company Name：</label>
-                <div class="col-sm-8">
-                    <input name="companyName" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Supplier Name：</label>
-                <div class="col-sm-8">
-                    <input name="supplierName" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Supplier Contact Number：</label>
-                <div class="col-sm-8">
-                    <input name="supplierContactNumber" class="form-control" type="text">
-                </div>
-            </div>
         </form>
     </div>
     <th:block th:include="include :: footer" />
-    <th:block th:include="include :: datetimepicker-js" />
     <script th:inline="javascript">
         var prefix = ctx + "event/workOrder"
         $("#form-workOrder-add").validate({
@@ -175,12 +20,6 @@
                 $.operate.save(prefix + "/add", $('#form-workOrder-add').serialize());
             }
         }
-
-        $("input[name='dueBy']").datetimepicker({
-            format: "yyyy-mm-dd",
-            minView: "month",
-            autoclose: true
-        });
     </script>
 </body>
 </html>

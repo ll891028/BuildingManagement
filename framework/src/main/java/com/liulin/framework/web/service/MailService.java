@@ -76,7 +76,7 @@ public class MailService {
         javaMailSender.send(message);
     }
 
-    public void sendMail(MailDomain mailDomain){
+    public boolean sendMail(MailDomain mailDomain){
 //        // 构建一个邮件对象
 //        MimeMessage message = javaMailSender.createMimeMessage();
 //        try {
@@ -106,7 +106,7 @@ public class MailService {
 //        } catch (MessagingException e) {
 //            e.printStackTrace();
 //        }
-        sendSMTPMailByAws(mailDomain);
+        return sendSMTPMailByAws(mailDomain);
 
     }
 

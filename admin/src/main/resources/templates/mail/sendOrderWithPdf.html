@@ -90,7 +90,10 @@
     });
     function submitHandler() {
 
-        // $.modal.close();
+        // $.modal.closeTab();
+        // return;
+
+
         // return;
         var content = $('.summernote').summernote('code');
         $("#content").val(content);
@@ -112,7 +115,7 @@
                         url: ctx+"event/task/" + "/change/status",
                         type: "post",
                         dataType: "json",
-                        data: {taskId:taskId,taskStatus:3},
+                        data: {taskId:taskId,orderStatus:3},
                         beforeSend: function () {
                             $.modal.loading("please wait");
                             $.modal.disable();
@@ -127,7 +130,9 @@
                                 $.modal.alertError(result.msg);
                             }
                             $.modal.closeLoading();
-                            $.modal.enable();
+                            // $.modal.enable();
+                            $.modal.close();
+                            parent.$.table.refresh();
                         }
                     };
                     $.ajax(config2)

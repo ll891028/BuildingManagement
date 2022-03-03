@@ -11,6 +11,14 @@
                     <input type="hidden" th:value="${taskType}" name="taskType">
                     <div class="select-list">
                         <ul>
+                            <li th:if="${taskType==1}">
+                                Task No：
+                                <input type="text" name="taskNo"/>
+                            </li>
+                            <li th:if="${taskType==2}">
+                                Incident No：
+                                <input type="text" name="taskNo"/>
+                            </li>
                             <li>
                                 Service：
                                 <select name="serviceId">
@@ -131,6 +139,10 @@
                 visible: false
             },
             {
+                field: 'taskNo',
+                title: 'Task No'
+            },
+            {
                 field: 'taskName',
                 title: 'Name'
             },
@@ -148,7 +160,8 @@
             },
             {
                 field: 'dateRaised',
-                title: 'Date Raised'
+                title: 'Date Raised',
+                sortable:true
             },
             {
                 field: 'timeScheduled',
@@ -200,10 +213,13 @@
                     actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
                         'onclick="quoteList(\'' + row.taskId + '\')"><i class="fa ' +
                         'fa-money"> </i> quote price</a> ');
-                    if(row.taskStatus!=3){
-                        actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
-                            'onclick="sendWorkOrder(\'' + row.taskId + '\')"><i class="fa ' +
-                            'fa-money"> </i> send work order</a>');
+                    if(row.needWorkOrder==1 && row.orderStatus!=3){
+                        actions.push('<a class="btn btn-primary btn-xs" href="javascript:void(0)" ' +
+                            'onclick="sendWorkOrder(\'' + row.taskId + '\')"><i class="fa fa-mail-forward"> </i> send work order</a>');
+                    }
+                    if(row.needWorkOrder==1 && row.orderStatus==3){
+                        actions.push('<a disabled="disable" class="btn btn-primary btn-xs" href="javascript:void(0)" >' +
+                            '<i class="fa fa-mail-forward"> </i> send work order</a>');
                     }
                     return actions.join('');
                 }
@@ -217,6 +233,10 @@
                     field: 'taskId',
                     title: 'Task Id',
                     visible: false
+                },
+                {
+                    field: 'taskNo',
+                    title: 'Incident No'
                 },
                 {
                     field: 'taskName',
@@ -243,7 +263,8 @@
                 },
                 {
                     field: 'dateRaised',
-                    title: 'Date Raised'
+                    title: 'Date Raised',
+                    sortable:true
                 },
                 {
                     field: 'timeScheduled',
@@ -291,6 +312,14 @@
                         actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" ' +
                             'onclick="quoteList(\'' + row.taskId + '\')"><i class="fa ' +
                             'fa-money"> </i> quote price</a>');
+                        if(row.needWorkOrder==1 && row.orderStatus!=3){
+                            actions.push('<a class="btn btn-primary btn-xs" href="javascript:void(0)" ' +
+                                'onclick="sendWorkOrder(\'' + row.taskId + '\')"><i class="fa fa-mail-forward"> </i> send work order</a>');
+                        }
+                        if(row.needWorkOrder==1 && row.orderStatus==3){
+                            actions.push('<a disabled="disable" class="btn btn-primary btn-xs" href="javascript:void(0)" >' +
+                                '<i class="fa fa-mail-forward"> </i> send work order</a>');
+                        }
                         return actions.join('');
                     }
                 }]
@@ -303,7 +332,10 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 modalName: ModelName,
-                columns: tableConfig
+                columns: tableConfig,
+                sortStable: true,                                   // 设置为 true 将获得稳定的排序
+                sortName: "dateRaised",                         // 排序列名称
+                sortOrder: "desc",
             };
             $.table.init(options);
         });
@@ -313,7 +345,7 @@
         }
 
         function sendWorkOrder(taskId) {
-            $.modal.openTab("Send Work Order", ctx + "mail/sendOrderWithPdf/"+taskId)
+            $.modal.open("Send Work Order", ctx + "mail/sendOrderWithPdf/"+taskId)
         }
     </script>
 </body>

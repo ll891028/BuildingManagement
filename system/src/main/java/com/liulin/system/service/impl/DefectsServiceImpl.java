@@ -65,7 +65,12 @@ public class DefectsServiceImpl implements IDefectsService
         String[] originalFileNames = defects.getOriginalFileNames().split(",");
         String attachmentIds = attachmentService.insertAttachments(attachmentUrls,originalFileNames,defects.getCreateBy(),defects.getBuildingId() ,defects.getCompanyId() );
         defects.setAttachmentIds(attachmentIds);
-        return defectsMapper.insertDefects(defects);
+        int result = defectsMapper.insertDefects(defects);
+        Defects updateNo = new Defects();
+        updateNo.setDefectId(defects.getDefectId());
+        updateNo.setDefectNo("DF-"+defects.getDefectId());
+        defectsMapper.updateDefects(updateNo);
+        return result;
     }
 
     /**

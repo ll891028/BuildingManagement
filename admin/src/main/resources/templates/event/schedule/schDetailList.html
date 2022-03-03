@@ -11,6 +11,10 @@
                 <input type="hidden" name="schId" th:value="${scheduleId}">
                 <div class="select-list">
                     <ul>
+                        <li >
+                            Schedule Detail No：
+                            <input type="text" name="schDetailNo"/>
+                        </li>
                         <li>
                             PM Schedule Status：
                             <select name="status" th:with="type=${@dict.getType('task_status')}">
@@ -55,6 +59,10 @@
                     visible: false
                 },
                 {
+                    field: 'schDetailNo',
+                    title: 'Schedule Detail No',
+                },
+                {
                     field: 'schName',
                     title: 'Name'
 
@@ -85,13 +93,13 @@
                     field: 'schDate',
                     title: 'Date Schedule'
                 },
-                {
-                    field: 'needWorkOrder',
-                    title: 'Need Work Order',
-                    formatter: function (value, row, index) {
-                        return $.table.selectDictLabel(needWorkOrderDatas, value);
-                    }
-                },
+                // {
+                //     field: 'needWorkOrder',
+                //     title: 'Need Work Order',
+                //     formatter: function (value, row, index) {
+                //         return $.table.selectDictLabel(needWorkOrderDatas, value);
+                //     }
+                // },
                 {
                     field: 'needQuote',
                     title: 'Need Quote',

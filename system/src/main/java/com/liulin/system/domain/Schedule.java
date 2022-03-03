@@ -116,6 +116,16 @@ public class Schedule extends BaseEntity
 
     private Long companyId;
 
+    private String schNo;
+
+    public String getSchNo() {
+        return schNo;
+    }
+
+    public void setSchNo(String schNo) {
+        this.schNo = schNo;
+    }
+
     public Long getCompanyId() {
         return companyId;
     }

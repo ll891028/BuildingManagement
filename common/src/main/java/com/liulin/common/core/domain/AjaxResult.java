@@ -1,7 +1,8 @@
 package com.liulin.common.core.domain;
 
-import java.util.HashMap;
 import com.liulin.common.utils.StringUtils;
+
+import java.util.HashMap;
 
 /**
  * 操作消息提醒
@@ -168,7 +169,7 @@ public class AjaxResult extends HashMap<String, Object>
      */
     public static AjaxResult error()
     {
-        return AjaxResult.error("操作失败");
+        return AjaxResult.error("operation fail");
     }
 
     /**

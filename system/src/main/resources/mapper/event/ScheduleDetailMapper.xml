@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liulin.system.mapper.ScheduleDetailMapper">
     
-    <resultMap type="ScheduleDetail" id="ScheduleDetailResult">
+    <resultMap type="com.liulin.system.domain.ScheduleDetail" id="ScheduleDetailResult">
         <result property="schDetailId"    column="sch_detail_id"    />
         <result property="schId"    column="sch_id"    />
         <result property="schDate"    column="sch_date"    />
@@ -23,13 +23,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="needWorkOrder"    column="needWorkOrder"    />
         <result property="needQuote"    column="needQuote"    />
         <result property="description"    column="description"    />
+        <result property="description"    column="description"    />
+        <result property="schDetailNo"    column="sch_detail_no"    />
 
 
     </resultMap>
 
     <sql id="selectScheduleDetailVo">
         select sch_detail_id, sch_id, sch_date, complete_date, status, create_by, create_time, update_by,
-               update_time, attachment_ids,description from schedule_detail
+               update_time, attachment_ids,description,sch_detail_no from schedule_detail
     </sql>
 
     <select id="selectScheduleDetailList" parameterType="ScheduleDetail" resultMap="ScheduleDetailResult">
@@ -39,8 +41,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join service t3 on t2.service_id = t3.service_id
         <where>  
             <if test="status != null "> and t1.status = #{status}</if>
+            <if test="schDetailNo != null and schDetailNo!=''"> and t1.sch_detail_no like concat('%',#{schDetailNo},'%') </if>
             <if test="schId != null "> and t1.sch_id = #{schId}</if>
-            <if test="buildingId != null "> and t2.building_id = #{buildingId}</if>
             <if test="buildingId != null "> and t2.building_id = #{buildingId}</if>
             <if
                     test="params.beginSchDate != null and params.beginSchDate != '' and params.endSchDate != null and params.endSchDate != ''"> and sch_date between STR_TO_DATE(#{params.beginSchDate}, '%d-%m-%Y') and STR_TO_DATE(#{params.endSchDate}, '%d-%m-%Y') </if>
@@ -73,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time,</if>
             <if test="attachmentIds != null">attachment_ids,</if>
             <if test="description != null and description!=''">description,</if>
+            <if test="schDetailNo != null and schDetailNo!=''">sch_detail_no,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="schId != null">#{schId},</if>
@@ -85,6 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">#{updateTime},</if>
             <if test="attachmentIds != null">#{attachmentIds},</if>
             <if test="description != null and description!=''">#{description},</if>
+            <if test="schDetailNo != null and schDetailNo!=''">#{schDetailNo},</if>
          </trim>
     </insert>
 
@@ -101,6 +105,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="attachmentIds != null">attachment_ids = #{attachmentIds},</if>
             <if test="description != null and description!=''">description = #{description},</if>
+            <if test="schDetailNo != null and schDetailNo!=''">sch_detail_no = #{schDetailNo},</if>
         </trim>
         where sch_detail_id = #{schDetailId}
     </update>

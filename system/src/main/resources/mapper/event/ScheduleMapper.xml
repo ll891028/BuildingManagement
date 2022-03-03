@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liulin.system.mapper.ScheduleMapper">
     
-    <resultMap type="Schedule" id="ScheduleResult">
+    <resultMap type="com.liulin.system.domain.Schedule" id="ScheduleResult">
         <result property="schId"    column="sch_id"    />
         <result property="schName"    column="sch_name"    />
         <result property="buildingId"    column="building_id"    />
@@ -30,6 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="serviceName"    column="service_name"    />
         <result property="quoteSummary"    column="quote_summary"    />
         <result property="attachmentIds"    column="attachment_ids"    />
+        <result property="schNo"    column="sch_no"    />
 
     </resultMap>
 
@@ -50,7 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectScheduleVo">
         select sch_id, sch_name,building_id, description, action_required, service_id, priority, frequency, start_date,
                needWorkOrder, needQuote, status, order_instruction, quote_instruction, order_status, quote_status,
-               order_supplier_id, create_by, create_time, update_by, update_time,quote_summary,attachment_ids from schedule
+               order_supplier_id, create_by, create_time, update_by, update_time,quote_summary,attachment_ids,sch_no from schedule
     </sql>
 
     <select id="selectScheduleList" parameterType="Schedule" resultMap="ScheduleResult">
@@ -71,6 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="needQuote != null "> and needQuote = #{needQuote}</if>
             <if test="status != null "> and t1.status = #{status}</if>
             <if test="orderInstruction != null  and orderInstruction != ''"> and order_instruction = #{orderInstruction}</if>
+            <if test="schNo != null  and schNo != ''"> and sch_no like concat('%',#{schNo},'%') </if>
         </where>
     </select>
 
@@ -180,6 +182,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="attachmentIds != null and attachmentIds!=''">attachment_ids,</if>
+            <if test="schNo != null and schNo!=''">sch_no,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="schName != null and schName!=''">#{schName},</if>
@@ -204,6 +207,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="attachmentIds != null and attachmentIds!=''">#{attachmentIds},</if>
+            <if test="schNo != null and schNo!=''">#{schNo},</if>
          </trim>
     </insert>
 
@@ -231,7 +235,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
-            attachment_ids = #{attachmentIds}
+            <if test="attachmentIds != null">attachment_ids = #{attachmentIds},</if>
+            <if test="schNo != null and schNo != ''">sch_no = #{schNo},</if>
         </trim>
         where sch_id = #{schId}
     </update>
