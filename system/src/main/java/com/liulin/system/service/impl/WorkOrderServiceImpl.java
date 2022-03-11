@@ -63,6 +63,10 @@ public class WorkOrderServiceImpl implements IWorkOrderService
     @Override
     public int insertWorkOrder(WorkOrder workOrder)
     {
+        int i = workOrderMapper.insertWorkOrder(workOrder);
+        if(i!=0){
+            workOrder.setWorkOrderNo("WO-"+workOrder.getWorkOrderId());
+        }
         String timeStr = DateUtils.parseDateToStr("yyyy/MM/dd", workOrder.getCreateTime());
         String keyName="workOrderPdf/"+workOrder.getSpn()+"/"+timeStr+"/"+workOrder.getWorkOrderNo()+".pdf";
         try {
@@ -76,13 +80,13 @@ public class WorkOrderServiceImpl implements IWorkOrderService
         }catch (Exception ex){
             ex.printStackTrace();
         }
-
-//        workOrder.setCreateTime(DateUtils.getNowDate());
-        int i = workOrderMapper.insertWorkOrder(workOrder);
         if(i!=0){
-            workOrder.setWorkOrderNo("WO-"+workOrder.getWorkOrderId());
             workOrderMapper.updateWorkOrder(workOrder);
         }
+
+//        workOrder.setCreateTime(DateUtils.getNowDate());
+
+
         return i;
     }
 

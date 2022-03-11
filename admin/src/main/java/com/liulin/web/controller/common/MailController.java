@@ -8,6 +8,7 @@ import com.liulin.common.core.redis.RedisCache;
 import com.liulin.common.utils.ShiroUtils;
 import com.liulin.common.utils.StringUtils;
 import com.liulin.common.utils.file.AwsFileUtils;
+import com.liulin.common.utils.file.FileTypeUtils;
 import com.liulin.framework.web.domain.MailDomain;
 import com.liulin.framework.web.service.MailService;
 import com.liulin.system.domain.*;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: LinLiu
@@ -143,29 +143,29 @@ public class MailController {
             int count = 0;
             String media1Path = "";
             String media2Path = "";
-//            if (StringUtils.isNotEmpty(task.getAttachmentIds())) {
-//                String[] attachmentIds = task.getAttachmentIds().split(",");
-//                long[] attachmentIdArray =
-//                        Arrays.asList(attachmentIds).stream().mapToLong(Long::parseLong).toArray();
-//                List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
-//                for (Attachment attachment : attachments) {
-//                    if (count == 3) {
-//                        break;
-//                    }
-//                    if (FileTypeUtils.getFileTypeByExt(attachment.getExt()).equals("image")) {
-//                        String filePathPrefix = LiulinConfig.getProfile() + "/aws/";
-//                        String filePath = AwsFileUtils.amazonS3DownloadingByUrl(attachment.getAttachmentUrl(), filePathPrefix);
-//                        if (count == 1) {
-//                            media1Path = filePath;
-//                        } else {
-//                            media2Path = filePath;
-//                        }
-//                        count++;
-//                    }
-//                }
-//            }
+            if (StringUtils.isNotEmpty(task.getAttachmentIds())) {
+                String[] attachmentIds = task.getAttachmentIds().split(",");
+                long[] attachmentIdArray =
+                        Arrays.asList(attachmentIds).stream().mapToLong(Long::parseLong).toArray();
+                List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+                for (Attachment attachment : attachments) {
+                    if (count == 3) {
+                        break;
+                    }
+                    if (FileTypeUtils.getFileTypeByExt(attachment.getExt()).equals("image")) {
+                        String filePathPrefix = LiulinConfig.getProfile() + "/aws/";
+                        String filePath = AwsFileUtils.amazonS3DownloadingByUrl(attachment.getAttachmentUrl(), filePathPrefix);
+                        if (count == 1) {
+                            media1Path = filePath;
+                        } else {
+                            media2Path = filePath;
+                        }
+                        count++;
+                    }
+                }
+            }
             Date now = new Date();
-            String workOrderNumber = WorkOrder.genWorkOrderNum();
+//            String workOrderNumber = WorkOrder.genWorkOrderNum();
             WorkOrder workOrder = new WorkOrder();
             workOrder.setDueBy(task.getTimeScheduled());
             workOrder.setPriority(task.getPriorityStr());
@@ -179,8 +179,8 @@ public class MailController {
 //        String media2 = AwsFileUtils.amazonS3DownloadingByUrl(media2Url, LiulinConfig.getProfile()+"/aws/tempImg/");
             workOrder.setMedia1(media1Path);
             workOrder.setMedia2(media2Path);
-//        workOrder.setSpnLogo(building.getLogo());
-//            workOrder.setSpnLogo(logoPath);
+            workOrder.setSpnLogo(building.getLogo());
+            workOrder.setSpnLogo(logoPath);
             workOrder.setSpnName(building.getDeptName());
             workOrder.setSpnAddress(building.getAddress());
             workOrder.setMangerName(sysUser.getLoginName());
@@ -189,7 +189,7 @@ public class MailController {
             workOrder.setBuildingId(building.getDeptId());
             workOrder.setUserId(sysUser.getUserId());
             workOrder.setTaskName(task.getTaskName());
-            workOrder.setPdfPath(LiulinConfig.getProfile() + "/aws/pdf/" + workOrderNumber + ".pdf");
+//            workOrder.setPdfPath(LiulinConfig.getProfile() + "/aws/pdf/" + workOrderNumber + ".pdf");
             workOrder.setSpn(building.getSpn());
             workOrder.setCompanyName(ShiroUtils.getSysUser().getCompany().getDeptName());
             workOrder.setSupplierName(supplier.getCompanyName());
@@ -198,49 +198,50 @@ public class MailController {
             workOrder.setEventType(task.getTaskType());
             workOrderService.insertWorkOrder(workOrder);
             mmp.put("attachmentUrl", workOrder.getPdfPath());
-            mmp.put("fileName", workOrderNumber + ".pdf");
+            mmp.put("fileName", workOrder.getWorkOrderNo() + ".pdf");
 
         }else{
             int count = 0;
             String media1Path = "";
             String media2Path = "";
-//            if (StringUtils.isNotEmpty(task.getAttachmentIds())) {
-//                String[] attachmentIds = task.getAttachmentIds().split(",");
-//                long[] attachmentIdArray =
-//                        Arrays.asList(attachmentIds).stream().mapToLong(Long::parseLong).toArray();
-//                List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
-//                for (Attachment attachment : attachments) {
-//                    if (count == 3) {
-//                        break;
-//                    }
-//                    if (FileTypeUtils.getFileTypeByExt(attachment.getExt()).equals("image")) {
-//                        String filePathPrefix = LiulinConfig.getProfile() + "/aws/";
-//                        String filePath = AwsFileUtils.amazonS3DownloadingByUrl(attachment.getAttachmentUrl(), filePathPrefix);
-//                        if (count == 1) {
-//                            media1Path = filePath;
-//                        } else {
-//                            media2Path = filePath;
-//                        }
-//                        count++;
-//                    }
-//                }
-//            }
+            if (StringUtils.isNotEmpty(task.getAttachmentIds())) {
+                String[] attachmentIds = task.getAttachmentIds().split(",");
+                long[] attachmentIdArray =
+                        Arrays.asList(attachmentIds).stream().mapToLong(Long::parseLong).toArray();
+                List<Attachment> attachments = attachmentService.selectAttachmentByIds(attachmentIdArray);
+                for (Attachment attachment : attachments) {
+                    if (count == 3) {
+                        break;
+                    }
+                    if (FileTypeUtils.getFileTypeByExt(attachment.getExt()).equals("image")) {
+                        String filePathPrefix = LiulinConfig.getProfile() + "/aws/";
+                        String filePath = AwsFileUtils.amazonS3DownloadingByUrl(attachment.getAttachmentUrl(), filePathPrefix);
+                        if (count == 1) {
+                            media1Path = filePath;
+                        } else {
+                            media2Path = filePath;
+                        }
+                        count++;
+                    }
+                }
+            }
             Date now = new Date();
             String workOrderNumber = WorkOrder.genWorkOrderNum();
             WorkOrder workOrder = new WorkOrder();
             workOrder.setWorkOrderId(workOrderTmp.getWorkOrderId());
-            Integer workOrderIndex = redisCache.getCacheObject(building.getDeptId() + ":workOrderIndex");
-            String workOrderIndexStr = "";
-            if (workOrderIndex == null) {
-                redisCache.setCacheObject(building.getDeptId() + ":workOrderIndex", 1, 1, TimeUnit.DAYS);
-                workOrderIndexStr = "0000";
-            } else {
-                workOrderIndexStr = String.format("%04d", workOrderIndex);
-//            workOrderIndexStr = String.format("%s%04d", workOrderIndex);
-                workOrderIndex++;
-                redisCache.setCacheObject(building.getDeptId() + ":workOrderIndex", workOrderIndex, 1, TimeUnit.DAYS);
-            }
-            workOrder.setWorkOrderNo(WorkOrder.genWorkOrderNum() + workOrderIndexStr);
+//            Integer workOrderIndex = redisCache.getCacheObject(building.getDeptId() + ":workOrderIndex");
+//            String workOrderIndexStr = "";
+//            if (workOrderIndex == null) {
+//                redisCache.setCacheObject(building.getDeptId() + ":workOrderIndex", 1, 1, TimeUnit.DAYS);
+//                workOrderIndexStr = "0000";
+//            } else {
+//                workOrderIndexStr = String.format("%04d", workOrderIndex);
+////            workOrderIndexStr = String.format("%s%04d", workOrderIndex);
+//                workOrderIndex++;
+//                redisCache.setCacheObject(building.getDeptId() + ":workOrderIndex", workOrderIndex, 1, TimeUnit.DAYS);
+//            }
+//            workOrder.setWorkOrderNo(WorkOrder.genWorkOrderNum() + workOrderIndexStr);
+            workOrder.setWorkOrderNo("WO-"+workOrder.getWorkOrderId());
             workOrder.setDueBy(task.getTimeScheduled());
             workOrder.setPriority(task.getPriorityStr());
             workOrder.setAssignedTo(supplier.getCompanyName() + " " + supplier.getContactNumber());
@@ -248,10 +249,10 @@ public class MailController {
             workOrder.setServiceId(servize.getServiceId());
             workOrder.setContactNumber(sysUser.getPhonenumber());
             workOrder.setDescription(task.getDescription());
-//            String logoPath = AwsFileUtils.amazonS3DownloadingByUrl(building.getLogo(), LiulinConfig.getProfile() + "/aws/tempImg/");
+            String logoPath = AwsFileUtils.amazonS3DownloadingByUrl(building.getLogo(), LiulinConfig.getProfile() + "/aws/tempImg/");
             workOrder.setMedia1(media1Path);
             workOrder.setMedia2(media2Path);
-//            workOrder.setSpnLogo(logoPath);
+            workOrder.setSpnLogo(logoPath);
             workOrder.setSpnName(building.getDeptName());
             workOrder.setSpnAddress(building.getAddress());
             workOrder.setMangerName(sysUser.getLoginName());
@@ -267,7 +268,7 @@ public class MailController {
             workOrder.setSupplierContactNumber(supplier.getContactNumber());
             workOrder.setTaskId(taskId);
             workOrder.setEventType(task.getTaskType());
-//            workOrderService.updateWorkOrder(workOrder);
+            workOrderService.updateWorkOrder(workOrder);
             mmp.put("attachmentUrl", workOrder.getPdfPath());
             mmp.put("fileName", workOrderNumber + ".pdf");
         }
