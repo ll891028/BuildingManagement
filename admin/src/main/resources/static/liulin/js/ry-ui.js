@@ -1012,12 +1012,12 @@ var table = {
             	table.set();
             	var _url = $.operate.detailUrl(id);
             	var options = {
-                    title: table.options.modalName + "详细",
+                    title: table.options.modalName + " Detail",
                     width: width,
                     height: height,
                     url: _url,
                     skin: 'layui-layer-gray', 
-                    btn: ['关闭'],
+                    btn: ['close'],
                     yes: function (index, layero) {
                         layer.close(index);
                     }

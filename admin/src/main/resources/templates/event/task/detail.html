@@ -178,6 +178,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-4">
+                        <a class="btn btn-success" th:onclick="sendWorkOrder([[*{taskId}]]);" >Send Work Order</a>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-3 control-label">Invoice NO：</label>
                     <div class="col-sm-8">
                         <input type="text" name="invoiceNo" id="invoiceNo" class="form-control" readonly
@@ -337,17 +343,17 @@
         function selectSupplier(){
             $.modal.open("Select Supplier", prefix + "/selectSupplier/"+$("#serviceId").val());
         }
-
-        function sendWorkOrder(){
-            var url = ctx + "mail/sendOrder/";
-            if($.common.isEmpty($("#assetIds").val())){
-                url +=$("#orderSupplierId").val()+"/"+$("#serviceId").val();
-            }else{
-                url +=$("#orderSupplierId").val()+"/"+$("#assetIds").val()+"/"+$("#serviceId").val();
-            }
-            $.modal.open("send work order",
-                url);
-        }
+        //
+        // function sendWorkOrder(){
+        //     var url = ctx + "mail/sendOrder/";
+        //     if($.common.isEmpty($("#assetIds").val())){
+        //         url +=$("#orderSupplierId").val()+"/"+$("#serviceId").val();
+        //     }else{
+        //         url +=$("#orderSupplierId").val()+"/"+$("#assetIds").val()+"/"+$("#serviceId").val();
+        //     }
+        //     $.modal.open("send work order",
+        //         url);
+        // }
 
         function sendQuoteRequest(){
             var url = ctx + "mail/sendQuote/";
@@ -368,6 +374,9 @@
             var actionRequired = $(obj).val();
             $("#orderInstruction").val(actionRequired);
             $("#quoteInstruction").val(actionRequired);
+        }
+        function sendWorkOrder(taskId) {
+            $.modal.open("Send Work Order", ctx + "mail/sendOrderWithPdf/"+taskId)
         }
     </script>
 </body>

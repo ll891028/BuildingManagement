@@ -90,7 +90,8 @@
     });
     function submitHandler() {
 
-        // $.modal.closeTab();
+        // $.modal.close();
+        // parent.parent.$.table.refresh();
         // return;
 
 
@@ -132,7 +133,7 @@
                             $.modal.closeLoading();
                             // $.modal.enable();
                             $.modal.close();
-                            parent.$.table.refresh();
+                            parent.parent.$.table.refresh();
                         }
                     };
                     $.ajax(config2)
