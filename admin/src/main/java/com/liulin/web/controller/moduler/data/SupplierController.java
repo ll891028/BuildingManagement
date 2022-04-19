@@ -84,6 +84,7 @@ public class SupplierController extends BaseController
     @ResponseBody
     public AjaxResult export(Supplier supplier)
     {
+        supplier.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         List<Supplier> list = supplierService.selectSupplierList(supplier);
         ExcelUtil<Supplier> util = new ExcelUtil<Supplier>(Supplier.class);
         return util.exportExcel(list, "supplier数据");

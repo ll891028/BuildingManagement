@@ -70,6 +70,7 @@ public class ServizeController extends BaseController
     @ResponseBody
     public AjaxResult export(Servize servize)
     {
+        servize.setCompanyId(ShiroUtils.getSysUser().getCompany().getDeptId());
         List<Servize> list = servizeService.selectServizeList(servize);
         ExcelUtil<Servize> util = new ExcelUtil<Servize>(Servize.class);
         return util.exportExcel(list, "service数据");

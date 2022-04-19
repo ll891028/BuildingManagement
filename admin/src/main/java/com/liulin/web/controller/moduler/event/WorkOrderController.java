@@ -62,6 +62,7 @@ public class WorkOrderController extends BaseController
     @ResponseBody
     public AjaxResult export(WorkOrder workOrder)
     {
+        workOrder.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         List<WorkOrder> list = workOrderService.selectWorkOrderList(workOrder);
         ExcelUtil<WorkOrder> util = new ExcelUtil<WorkOrder>(WorkOrder.class);
         return util.exportExcel(list, "Work Order数据");

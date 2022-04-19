@@ -93,6 +93,7 @@ public class TaskController extends BaseController
     @ResponseBody
     public AjaxResult export(Task task)
     {
+        task.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         List<Task> list = taskService.selectTaskList(task);
         ExcelUtil<Task> util = new ExcelUtil<Task>(Task.class);
         return util.exportExcel(list, "Task数据");

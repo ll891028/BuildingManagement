@@ -56,7 +56,7 @@ public class DefectsController extends BaseController
     @ResponseBody
     public TableDataInfo list(Defects defects)
     {
-//        defects.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
+        defects.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         startPage();
         List<Defects> list = defectsService.selectDefectsList(defects);
         return getDataTable(list);
@@ -71,6 +71,7 @@ public class DefectsController extends BaseController
     @ResponseBody
     public AjaxResult export(Defects defects)
     {
+        defects.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         List<Defects> list = defectsService.selectDefectsList(defects);
         ExcelUtil<Defects> util = new ExcelUtil<Defects>(Defects.class);
         return util.exportExcel(list, "Defects Register数据");

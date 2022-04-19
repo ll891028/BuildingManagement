@@ -82,6 +82,7 @@ public class AssetController extends BaseController
     @ResponseBody
     public AjaxResult export(Asset asset)
     {
+        asset.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         List<Asset> list = assetService.selectAssetList(asset);
         ExcelUtil<Asset> util = new ExcelUtil<Asset>(Asset.class);
         return util.exportExcel(list, "Asset数据");

@@ -84,6 +84,7 @@ public class ResidentController extends BaseController
     @ResponseBody
     public AjaxResult export(Resident resident)
     {
+        resident.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         List<Resident> list = residentService.selectResidentList(resident);
         ExcelUtil<Resident> util = new ExcelUtil<Resident>(Resident.class);
         return util.exportExcel(list, "resident数据");

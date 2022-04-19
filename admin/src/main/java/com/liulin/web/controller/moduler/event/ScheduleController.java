@@ -120,6 +120,7 @@ public class ScheduleController extends BaseController
     @ResponseBody
     public AjaxResult export(Schedule schedule)
     {
+        schedule.setBuildingId(ShiroUtils.getSysUser().getBuilding().getDeptId());
         List<Schedule> list = scheduleService.selectScheduleList(schedule);
         ExcelUtil<Schedule> util = new ExcelUtil<Schedule>(Schedule.class);
         return util.exportExcel(list, "schedule数据");
